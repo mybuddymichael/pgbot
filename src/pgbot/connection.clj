@@ -4,7 +4,7 @@
 
 (defn create
   "Given a host and a port, generate an IRC connection map, containing
-  pairs for the socket, the writer, and the reader."
+  pairs for the socket, the reader, and the writer."
   [host port]
   (let [socket (Socket. host port)]
     {:socket socket
