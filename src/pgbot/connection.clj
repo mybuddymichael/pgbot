@@ -24,4 +24,4 @@
   (send-message irc (str "NICK " nickname))
   (send-message irc (str "USER " nickname " i * " nickname))
   (when password
-    (send-message irc (str "PRIVMSG nickserv :identify" nickname password))))
+    (send-message irc (str "PRIVMSG nickserv :identify " nickname password))))
