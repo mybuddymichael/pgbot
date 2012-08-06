@@ -11,6 +11,11 @@
      :in (io/reader socket)
      :out (io/writer socket)}))
 
+(defn print-input [irc]
+  (while true
+    (binding [*in* (irc :in)]
+      (println (read-line)))))
+
 (defn send-message [irc message]
   (binding [*out* (irc :out)]
     (println message)))
