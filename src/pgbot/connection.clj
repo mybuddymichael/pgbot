@@ -16,9 +16,10 @@
     (binding [*in* (:in irc)]
       (println (read-line)))))
 
-(defn send-message [irc message]
-  (binding [*out* (:out irc)]
-    (println message)))
+(defn send-message [irc & strings]
+  (let [message (string/join " " strings)]
+    (binding [*out* (:out irc)]
+      (println message))))
 
 (defn register [irc nickname & [password]]
   (send-message irc (str "NICK " nickname))
