@@ -13,11 +13,11 @@
 
 (defn print-input [irc]
   (while true
-    (binding [*in* (irc :in)]
+    (binding [*in* (:in irc)]
       (println (read-line)))))
 
 (defn send-message [irc message]
-  (binding [*out* (irc :out)]
+  (binding [*out* (:out irc)]
     (println message)))
 
 (defn register [irc nickname & [password]]
