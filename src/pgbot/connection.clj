@@ -25,3 +25,8 @@
   (send-message irc (str "USER " nickname " i * " nickname))
   (when password
     (send-message irc (str "PRIVMSG nickserv :identify " nickname password))))
+
+(defn join
+  "Join a specified channel."
+  [irc channel]
+  (send-message irc (str "JOIN " channel)))
