@@ -24,12 +24,12 @@
       (println message))))
 
 (defn register [irc nickname & [password]]
-  (send-message irc (str "NICK " nickname))
-  (send-message irc (str "USER " nickname " i * " nickname))
+  (send-message irc "NICK" nickname)
+  (send-message irc "USER" nickname " i * " nickname)
   (when password
-    (send-message irc (str "PRIVMSG nickserv :identify " nickname password))))
+    (send-message irc "PRIVMSG nickserv :identify" nickname password)))
 
 (defn join
   "Join a specified channel."
   [irc channel]
-  (send-message irc (str "JOIN " channel)))
+  (send-message irc "JOIN" channel))
