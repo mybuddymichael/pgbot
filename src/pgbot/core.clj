@@ -8,5 +8,5 @@
         (connection/register irc nickname password)
         (connection/register irc nickname))
       (when channel
-        (connection/send-message irc (str "JOIN #" channel)))
+        (connection/join irc channel))
       (connection/print-input irc))))
