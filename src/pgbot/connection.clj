@@ -13,18 +13,18 @@
      :in (io/reader socket)
      :out (io/writer socket)}))
 
-(defn send-message [irc & strings]
+(defn send-message [connection & strings]
   (let [message (string/join " " strings)]
-    (binding [*out* (:out irc)]
+    (binding [*out* (:out connection)]
       (println message))))
 
-(defn register [irc nickname & [password]]
-  (send-message irc "NICK" nickname)
-  (send-message irc "USER" nickname " i * " nickname)
+(defn register [connection nickname & [password]]
+  (send-message connection "NICK" nickname)
+  (send-message connection "USER" nickname " i * " nickname)
   (when password
-    (send-message irc "PRIVMSG nickserv :identify" nickname password)))
+    (send-message connection "PRIVMSG nickserv :identify" nickname password)))
 
 (defn join
   "Join a specified channel."
-  [irc channel]
-  (send-message irc "JOIN" channel))
+  [connection channel]
+  (send-message connection "JOIN" channel))
