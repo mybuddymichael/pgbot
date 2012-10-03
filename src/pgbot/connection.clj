@@ -24,7 +24,7 @@
   (when password
     (send-message connection "PRIVMSG nickserv :identify" nickname password)))
 
-(defn join
+(defn join-channel
   "Join a specified channel."
   [connection channel]
   (send-message connection "JOIN" channel))
