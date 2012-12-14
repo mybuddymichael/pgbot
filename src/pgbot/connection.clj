@@ -1,5 +1,6 @@
 (ns pgbot.connection
-  "Create and handle IRC connections."
+  "Create and handle IRC connections. The IRC connection map is the base
+  object of our program."
   (:require (clojure [string :as string])
             (clojure.java [io :as io]))
   (:import java.net.Socket))
