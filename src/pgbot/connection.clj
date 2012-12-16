@@ -30,16 +30,11 @@
   [connection channel]
   (send-message connection "JOIN" channel))
 
-(defn connect [& {:keys [host port nick nick-password channel]}]
-  (let [connection (create host port)]
-    (future
-      (register connection nick nick-password)
+(defn connect [& {:keys [host port nick password channel]}]
+  (future
+    (let [connection (create :host host :port port :nick nick)]
+      (register connection nick password)
       (join-channel connection channel)
-      (loop [lines (line-seq (connection :in))]
-        (if-let [line (first lines)]
-          (do
-            (when (re-find #"PING" line)
-              (send-message connection "PONG"))
-            (println line)
-            (recur (rest lines)))
-          (.close (connection :socket)))))))
+      (while true
+        (let [next-line (binding [*in* (:in connection)] read-line)]
+          (println next-line))))))
