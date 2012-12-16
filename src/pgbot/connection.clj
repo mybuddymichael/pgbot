@@ -6,13 +6,14 @@
   (:import java.net.Socket))
 
 (defn create
-  "Given a host and a port, generate an IRC connection map, containing
-   pairs for the socket, the reader, and the writer."
-  [host port]
+  "Take several parameters and return a map containing information about
+   the irc connection."
+  [& {:keys [host port nick]}]
   (let [socket (Socket. host (Integer. port))]
     {:socket socket
      :in (io/reader socket)
-     :out (io/writer socket)}))
+     :out (io/writer socket)
+     :nick nick}))
 
 (defn send-message [connection & strings]
   (let [message (string/join " " strings)]
