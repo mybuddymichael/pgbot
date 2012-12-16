@@ -16,9 +16,8 @@
      :nick nick}))
 
 (defn send-message [connection & strings]
-  (let [message (string/join " " strings)]
-    (binding [*out* (:out connection)]
-      (println message))))
+  (binding [*out* (:out connection)]
+    (println (string/join " " strings))))
 
 (defn register [connection nickname & [password]]
   (send-message connection "NICK" nickname)
