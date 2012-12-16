@@ -19,11 +19,11 @@
   (binding [*out* (:out connection)]
     (println (string/join " " strings))))
 
-(defn register [connection nickname & [password]]
-  (send-message connection "NICK" nickname)
-  (send-message connection "USER" nickname " i * " nickname)
+(defn register [connection nick & [password]]
+  (send-message connection "USER" nick "i *" nick)
+  (send-message connection "NICK" nick)
   (when password
-    (send-message connection "PRIVMSG nickserv :identify" nickname password)))
+    (send-message connection "PRIVMSG nickserv :identify" nick password)))
 
 (defn join-channel
   "Join a specified channel."
