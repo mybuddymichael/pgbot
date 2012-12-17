@@ -6,7 +6,7 @@
 
 (defn create
   "Create a connection and get a map containing information about it."
-  [& {:keys [host port nick]}]
+  [host port & [nick]]
   (let [socket (Socket. host (Integer. port))]
     {:socket socket
      :in (io/reader socket)
