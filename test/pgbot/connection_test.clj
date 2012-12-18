@@ -3,6 +3,7 @@
   (:use pgbot.connection))
 
 (defonce connection (create "irc.freenode.net" 6667 "pgbot"))
+(.close (connection :socket))
 
 (deftest create-returns-a-map-with-socket-in-out-and-nick
   (is (= [true true true true]
@@ -23,5 +24,3 @@
 (deftest connection-has-a-nick
   (is (= "pgbot"
          (connection :nick))))
-
-(.close (connection :socket))
