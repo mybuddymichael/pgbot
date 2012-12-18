@@ -1,4 +1,4 @@
-(ns pgbot.test.connection
+(ns pgbot.connection-test
   (:require [clojure.test :refer [use-fixtures deftest is]])
   (:use pgbot.connection))
 
