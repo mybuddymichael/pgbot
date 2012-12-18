@@ -2,7 +2,7 @@
   (:require [clojure.test :refer [use-fixtures deftest is]])
   (:use pgbot.connection))
 
-(def connection (create "irc.freenode.net" 6667 "pgbot"))
+(defonce connection (create "irc.freenode.net" 6667 "pgbot"))
 
 (deftest create-returns-a-map-with-socket-in-out-and-nick
   (is (= [true true true true]
