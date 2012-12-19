@@ -24,3 +24,8 @@
 (deftest connection-has-a-nick
   (is (= "pgbot"
          (connection :nick))))
+
+(deftest nick-is-optional
+  (let [connection (create "irc.freenode.net" 6667)]
+    (is (= nil (connection :nick)))
+    (.close (connection :socket))))
