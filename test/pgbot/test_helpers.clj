@@ -6,7 +6,13 @@
   "Create a test function using `clojure.test/deftest`, but using a
   string instead of a symbol to name the test."
   [name & body]
-  (let [test-name (symbol (clojure.string/replace name #"\W" "-"))]
+  (let [test-name
+        (-> name
+          (clojure.string/lower-case)
+          (clojure.string/replace #"\W" "-")
+          (clojure.string/replace #"-+" "-")
+          (clojure.string/replace #"-$" "")
+          (symbol))]
     `(deftest ~test-name ~@body)))
 
 (deftest- test-pgbot-test-defines-tests
