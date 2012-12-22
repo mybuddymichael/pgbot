@@ -30,3 +30,7 @@
 (deftest- test-deftest*-defines-tests
   (let [_ (deftest* "this is my test")]
     (is (clojure.test/function? this-is-my-test))))
+
+(deftest- test-deftest-*-defines-tests
+  (let [_ (deftest-* "this is another test")]
+    (is (clojure.test/function? this-is-another-test))))
