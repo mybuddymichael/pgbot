@@ -1,32 +1,31 @@
 (ns pgbot.connection-test
   (:require [clojure.test :refer [deftest is]])
-  (:use pgbot.connection
-        pgbot.test-helpers))
+  (:use pgbot.connection))
 
 (defonce connection (create "irc.freenode.net" 6667 "pgbot"))
 (.close (connection :socket))
 
-(deftest* "create returns a map with :socket, :in, :out, and :nick"
+(deftest create-returns-a-map-with-socket-in-out-and-nick
   (is (= [true true true true]
          (map #(contains? connection %) [:socket :in :out :nick]))))
 
-(deftest* "connection has a socket"
+(deftest connection-has-a-socket
   (is (= java.net.Socket
          (class (connection :socket)))))
 
-(deftest* "connection has a reader"
+(deftest connection-has-a-reader
   (is (= java.io.BufferedReader
          (class (connection :in)))))
 
-(deftest* "connection has a writer"
+(deftest connection-has-a-writer
   (is (= java.io.BufferedWriter
          (class (connection :out)))))
 
-(deftest* "connection has a nick"
+(deftest connection-has-a-nick
   (is (= "pgbot"
          (connection :nick))))
 
-(deftest* "nick is optional"
+(deftest nick-is-optional
   (let [connection (create "irc.freenode.net" 6667)]
     (is (= nil (connection :nick)))
     (.close (connection :socket))))
