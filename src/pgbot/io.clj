@@ -3,6 +3,8 @@
 
 (defn send-message
   "Send a message through a connection's writer."
-  [connection message]
+  [connection message & messages]
   (binding [*out* (connection :out)]
-    (println message)))
+    (if messages
+      (println (str message " " (clojure.string/join " " messages)))
+      (println message))))

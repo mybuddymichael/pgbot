@@ -15,3 +15,8 @@
   (send-message *connection* "Test string.")
   (is (= "Test string.\n"
          (str (*connection* :out)))))
+
+(deftest send-message-concatenates-multiple-arguments-with-spaces
+  (send-message *connection* "This" "and" "that.")
+  (is (= "This and that.\n"
+         (str (*connection* :out)))))
