@@ -2,7 +2,7 @@
   "Custom helper functions for writing tests."
   (require [clojure.test :refer [deftest deftest- is]]))
 
-(defmacro pgbot-test
+(defmacro deftest*
   "Create a test function using `clojure.test/deftest`, but using a
   string instead of a symbol to name the test."
   [name & body]
