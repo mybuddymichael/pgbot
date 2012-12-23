@@ -5,6 +5,4 @@
   "Send a message through a connection's writer."
   [connection message & messages]
   (binding [*out* (connection :out)]
-    (if messages
-      (println (str message " " (clojure.string/join " " messages)))
-      (println message))))
+    (println (clojure.string/join " " (cons message messages)))))
