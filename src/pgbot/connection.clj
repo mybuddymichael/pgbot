@@ -16,4 +16,5 @@
   "Send a 'handshake' message to register the connection."
   [connection]
   (let [nick (connection :nick)]
+    (pgbot.io/send-message connection "NICK" nick)
     (pgbot.io/send-message connection "USER" nick "i *" nick)))
