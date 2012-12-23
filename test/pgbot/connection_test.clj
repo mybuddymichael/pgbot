@@ -2,7 +2,8 @@
   (:require [clojure.test :refer [deftest is]]
             pgbot.connection))
 
-(defonce connection (create "irc.freenode.net" 6667 "pgbot"))
+(defonce connection
+  (#'pgbot.connection/create "irc.freenode.net" 6667 "pgbot"))
 (.close (connection :socket))
 
 (deftest create-returns-a-map-with-socket-in-out-and-nick
@@ -26,6 +27,6 @@
          (connection :nick))))
 
 (deftest nick-is-optional
-  (let [connection (create "irc.freenode.net" 6667)]
+  (let [connection (#'pgbot.connection/create "irc.freenode.net" 6667)]
     (is (= nil (connection :nick)))
     (.close (connection :socket))))
