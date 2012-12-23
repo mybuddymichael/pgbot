@@ -6,7 +6,7 @@
 (def ^:dynamic *connection*)
 
 (defn connection-fixture [f]
-  (binding [*connection* {:out (StringWriter.)}]
+  (binding [*connection* {:out (java.io.StringWriter.)}]
     (f)))
 
 (use-fixtures :each connection-fixture)
