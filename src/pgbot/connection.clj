@@ -11,3 +11,9 @@
      :in (clojure.java.io/reader socket)
      :out (clojure.java.io/writer socket)
      :nick nick}))
+
+(defn- register
+  "Send a 'handshake' message to register the connection."
+  [connection]
+  (let [nick (connection :nick)]
+    (pgbot.io/send-message connection "USER" nick "i *" nick)))
