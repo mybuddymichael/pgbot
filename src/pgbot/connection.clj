@@ -5,7 +5,7 @@
 
 (defn- create
   "Create a connection and get a map containing information about it."
-  [host port & [nick]]
+  [host port nick]
   (let [socket (java.net.Socket. host (Integer. port))]
     {:socket socket
      :in (clojure.java.io/reader socket)
