@@ -1,6 +1,6 @@
 (ns pgbot.connection-test
-  (:require [clojure.test :refer [deftest is]])
-  (:use pgbot.connection))
+  (:require [clojure.test :refer [deftest is]]
+            pgbot.connection))
 
 (defonce connection (create "irc.freenode.net" 6667 "pgbot"))
 (.close (connection :socket))
