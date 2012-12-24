@@ -26,6 +26,10 @@
   (is (= "pgbot"
          (connection :nick))))
 
+(deftest connection-has-a-channel
+  (is (= "##pgbottest"
+         (connection :channel))))
+
 (deftest send-message-writes-message-to-connection-out
   (let [connection {:out (java.io.StringWriter.)}]
     (#'pgbot.core/send-message connection "Test string.")
