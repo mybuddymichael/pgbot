@@ -10,7 +10,7 @@
      :out (clojure.java.io/writer socket)
      :nick nick}))
 
-(defn send-message
+(defn- send-message
   "Send a message through a connection's writer. This takes multiple
   string arguments and will join them with spaces in between."
   [connection message & messages]
