@@ -44,3 +44,15 @@
     (#'pgbot.core/register-connection connection)
     (is (= "NICK pgbot\nUSER pgbot i * pgbot\n"
            (str (connection :out))))))
+
+(deftest read-line-from-connection-gets-a-single-line
+  (let [connection
+        (#'pgbot.core/create-connection "irc.freenode.net" 6667 "pgbot")]
+    (is (string? (#'pgbot.core/read-line-from-connection connection)))
+    (.close (connection :socket))))
+
+(deftest read-line-from-connection-returns-nil-if-socket-is-closed
+  (let [connection
+        (#'pgbot.core/create-connection "irc.freenode.net" 6667 "pgbot")]
+    (.close (connection :socket))
+    (is (nil? (#'pgbot.core/read-line-from-connection connection)))))

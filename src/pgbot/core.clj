@@ -23,3 +23,10 @@
   (let [nick (connection :nick)]
     (send-message connection "NICK" nick)
     (send-message connection "USER" nick "i *" nick)))
+
+(defn- read-line-from-connection
+  "Read a single line from the connection. Returns nil if the socket is
+  closed."
+  [connection]
+  (try (.readLine (connection :in))
+    (catch java.net.SocketException _ nil)))
