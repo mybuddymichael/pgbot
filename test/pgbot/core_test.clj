@@ -38,7 +38,7 @@
     (is (= "This and that.\n"
            (str (connection :out))))))
 
-(deftest register-sends-the-appropriate-handshake-messages
+(deftest register-connection-sends-the-appropriate-handshake-messages
   (let [connection {:out (java.io.StringWriter.)
                     :nick "pgbot"}]
     (#'pgbot.core/register-connection connection)
