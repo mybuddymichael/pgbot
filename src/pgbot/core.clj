@@ -15,7 +15,7 @@
     (send-message connection "NICK" nick)
     (send-message connection "USER" nick "i *" nick)))
 
-(defn- create-connection
+(defn connect
   "Create a connection. Returns a map containing information about it."
   [host port nick channel]
   (let [socket (java.net.Socket. host (Integer. port))
