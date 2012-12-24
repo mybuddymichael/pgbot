@@ -27,7 +27,8 @@
          (connection :nick))))
 
 (deftest register-sends-the-appropriate-handshake-messages
-  (let [connection {:out (java.io.StringWriter.) :nick "pgbot"}]
+  (let [connection {:out (java.io.StringWriter.)
+                    :nick "pgbot"}]
     (#'pgbot.connection/register connection)
     (is (= "NICK pgbot\nUSER pgbot i * pgbot\n"
            (str (connection :out))))))
