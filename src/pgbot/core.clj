@@ -14,7 +14,7 @@
 
 (defn- send-message
   "Send a message through a connection's writer. This takes multiple
-  string arguments and will join them with spaces in-between."
+   string arguments and will join them with spaces in-between."
   [connection message & messages]
   (binding [*out* (connection :out)]
     (println (clojure.string/join " " (cons message messages)))))
@@ -28,7 +28,7 @@
 
 (defn- read-line-from-connection
   "Read a single line from the connection. Returns nil if the socket is
-  closed."
+   closed."
   [connection]
   (try (.readLine (connection :in))
     (catch java.net.SocketException _ nil)))
