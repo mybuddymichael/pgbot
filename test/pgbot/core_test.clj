@@ -3,8 +3,8 @@
             pgbot.core))
 
 (defonce connection
-  (#'pgbot.core/create-connection
-     "irc.freenode.net" 6667 "pgbot" "##pgbottest"))
+  (#'pgbot.core/create-connection "irc.freenode.net" 6667 "pgbot"
+                                  "##pgbottest"))
 (.close (connection :socket))
 
 (deftest create-returns-a-map-with-socket-in-out-and-nick
@@ -52,14 +52,14 @@
 
 (deftest read-line-from-connection-gets-a-single-line
   (let [connection
-        (#'pgbot.core/create-connection
-           "irc.freenode.net" 6667 "pgbot" "##pgbottest")]
+        (#'pgbot.core/create-connection "irc.freenode.net" 6667 "pgbot"
+                                        "##pgbottest")]
     (is (string? (#'pgbot.core/read-line-from-connection connection)))
     (.close (connection :socket))))
 
 (deftest read-line-from-connection-returns-nil-if-socket-is-closed
   (let [connection
-        (#'pgbot.core/create-connection
-           "irc.freenode.net" 6667 "pgbot" "##pgbottest")]
+        (#'pgbot.core/create-connection "irc.freenode.net" 6667 "pgbot"
+                                        "##pgbottest")]
     (.close (connection :socket))
     (is (nil? (#'pgbot.core/read-line-from-connection connection)))))
