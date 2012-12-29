@@ -38,3 +38,23 @@
   [line]
   (when-let [[_ server] (re-find #"^PING :(.+)" line)]
     (str "PONG :" server)))
+
+(defn connect
+  "Entry point for operating the bot. This creates a connection, does
+   the dance to ensure that it stays open, and begins listening for
+   messages in a new thread.
+
+   It returns the connection map."
+  [host port nick channel]
+  (let [connection
+        (create-connection "irc.freenode.net" 6667 "pgbot" "##pgbottest")]
+    (register-connection connection)
+    (send-message connection "JOIN" channel)
+    (future
+      (loop [line (read-line-from-connection connection)]
+        (when line
+          (println line)
+          (when-let [message (parse-line line)]
+            (send-message connection message))
+          (recur (read-line-from-connection connection)))))
+    connection))
