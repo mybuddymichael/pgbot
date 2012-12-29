@@ -32,3 +32,9 @@
   [connection]
   (try (.readLine (connection :in))
     (catch java.net.SocketException _ nil)))
+
+(defn- parse-line
+  "Check if a line matches our rules. Returns a string or returns nil."
+  [line]
+  (when-let [[_ server] (re-find #"^PING :(.+)" line)]
+    (str "PONG :" server)))
