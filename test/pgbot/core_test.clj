@@ -6,14 +6,14 @@
   "Define a test using deftest, but with a string as the name instead of
    a symbol."
   [name-string & body]
-  (let [test-name-symbol
-        (-> test-name-string
+  (let [name-symbol
+        (-> name-string
             clojure.string/lower-case
             (clojure.string/replace #"\W" "-")
             (clojure.string/replace #"-+" "-")
             (clojure.string/replace #"-$" "")
             symbol)]
-  `(deftest ~test-name-symbol ~@body)))
+  `(deftest ~name-symbol ~@body)))
 
 (defonce connection
   (#'pgbot.core/create-connection "irc.freenode.net" 6667 "pgbot"
