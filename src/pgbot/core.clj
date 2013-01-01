@@ -2,6 +2,7 @@
   "A simple IRC bot.")
 
 (def ^:private plugins
+  "Returns seq of plugin namespace symbols."
   (->> (file-seq (clojure.java.io/file "src/pgbot/plugin"))
        (map str)
        (filter #(re-matches #".*\.clj" %))
