@@ -1,5 +1,5 @@
 (ns pgbot.core-test
-  (:require [clojure.test :refer [deftest is]]
+  (:require [clojure.test :refer [is]]
             pgbot.core))
 
 (defmacro ^:private deftest*
@@ -13,7 +13,7 @@
             (clojure.string/replace #"-+" "-")
             (clojure.string/replace #"-$" "")
             symbol)]
-  `(deftest ~name-symbol ~@body)))
+  `(clojure.test/deftest ~name-symbol ~@body)))
 
 (defonce connection
   (#'pgbot.core/create-connection "irc.freenode.net" 6667 "pgbot"
