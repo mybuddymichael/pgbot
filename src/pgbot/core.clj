@@ -1,6 +1,14 @@
 (ns pgbot.core
   "A simple IRC bot.")
 
+(def ^:private plugins
+  (->> (file-seq (clojure.java.io/file "src/pgbot/plugin"))
+       (map str)
+       (filter #(re-matches #".*\.clj" %))
+       (map (fn [s]
+              (let [[_ namespace-string] (re-matches #".*/(\w+)\.clj" s)]
+                (symbol (str "pgbot.plugin." namespace-string)))))))
+
 (defn- create-connection
   "Open a connection to a server. Returns a map containing information
    about the connection."
