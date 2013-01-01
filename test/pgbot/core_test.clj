@@ -3,6 +3,8 @@
             pgbot.core))
 
 (defmacro ^:private deftest*
+  "Define a test using deftest, but with a string as the name instead of
+   a symbol."
   [test-name-string & body]
   (let [test-name-symbol
         (-> test-name-string
