@@ -20,7 +20,7 @@
                                   "##pgbottest"))
 (.close (connection :socket))
 
-(deftest create-returns-a-map-with-socket-in-out-and-nick
+(deftest* "create returns a socket with socket, in, out, nick, and channel"
   (is (= (map (fn [x] true) (range 5))
          (map #(contains? connection %) [:socket :in :out :nick :channel]))))
 
