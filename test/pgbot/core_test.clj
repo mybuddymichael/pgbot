@@ -21,8 +21,8 @@
 (.close (connection :socket))
 
 (deftest create-returns-a-map-with-socket-in-out-and-nick
-  (is (= [true true true true]
-         (map #(contains? connection %) [:socket :in :out :nick]))))
+  (is (= (map (fn [x] true) (range 5))
+         (map #(contains? connection %) [:socket :in :out :nick :channel]))))
 
 (deftest connection-has-a-socket
   (is (= java.net.Socket
