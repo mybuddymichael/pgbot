@@ -11,6 +11,9 @@
                     (re-matches #".*plugin/([A-Za-z_]+)\.clj$" string)]
                 (symbol (str "pgbot.plugin." namespace-string)))))))
 
+(doseq [p plugins]
+  (require `~p))
+
 (defn- create-connection
   "Open a connection to a server. Returns a map containing information
    about the connection."
