@@ -81,7 +81,3 @@
                                         "##pgbottest")]
     (.close (connection :socket))
     (is (nil? (#'pgbot.core/read-line-from-connection connection)))))
-
-(deftest parse-line-pongs-the-server
-  (is (= "PONG :server-name"
-         (#'pgbot.core/parse-line "PING :server-name"))))
