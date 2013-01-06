@@ -6,9 +6,9 @@
   (->> (file-seq (clojure.java.io/file "src/pgbot/plugin"))
        (map str)
        (filter #(re-matches #".*\.clj" %))
-       (map (fn [s]
+       (map (fn [string]
               (let [[_ namespace-string]
-                    (re-matches #".*plugin/([A-Za-z_]+)\.clj$" s)]
+                    (re-matches #".*plugin/([A-Za-z_]+)\.clj$" string)]
                 (symbol (str "pgbot.plugin." namespace-string)))))))
 
 (defn- create-connection
