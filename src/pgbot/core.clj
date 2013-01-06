@@ -60,7 +60,7 @@
    It returns the connection map."
   [host port nick channel]
   (let [connection
-        (create-connection "irc.freenode.net" 6667 "pgbot" "##pgbottest")]
+        (create-connection host port nick channel)]
     (register-connection connection)
     (send-message connection "JOIN" channel)
     (future
