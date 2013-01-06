@@ -7,7 +7,8 @@
        (map str)
        (filter #(re-matches #".*\.clj" %))
        (map (fn [s]
-              (let [[_ namespace-string] (re-matches #".*/(\w+)\.clj" s)]
+              (let [[_ namespace-string]
+                    (re-matches #".*plugin/([A-Za-z_]+)\.clj$" s)]
                 (symbol (str "pgbot.plugin." namespace-string)))))))
 
 (defn- create-connection
