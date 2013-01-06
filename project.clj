@@ -3,4 +3,5 @@
   :license {:name "The MIT License"
             :url "http://www.opensource.org/licenses/MIT"}
   :dependencies [[org.clojure/clojure "1.4.0"]]
+  :test-paths ["test" "src/pgbot/plugin"]
   :main pgbot.core)
