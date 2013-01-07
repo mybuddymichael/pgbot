@@ -1,4 +1,4 @@
-(defproject pgbot "0.0.1"
+(defproject pgbot "0.1.0"
   :description "A simple IRC bot, written in Clojure."
   :license {:name "The MIT License"
             :url "http://www.opensource.org/licenses/MIT"}
