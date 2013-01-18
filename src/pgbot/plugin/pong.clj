@@ -1,6 +1,6 @@
 (ns pgbot.plugin.pong
   "PONGs the IRC server to keep the connection alive."
-  (:require [clojure.test :refer [deftest is]]))
+  (:require [clojure.test :refer [deftest- is]]))
 
 (defn run [])
 
@@ -10,9 +10,9 @@
   (when-let [[_ server] (re-find #"^PING :(.+)" line)]
     (str "PONG :" server)))
 
-(deftest parse-returns-a-pong-message-when-pinged
+(deftest- parse-returns-a-pong-message-when-pinged
   (is (= "PONG :server-name"
          (parse "PING :server-name"))))
 
-(deftest parse-returns-nil-when-not-being-pinged
+(deftest- parse-returns-nil-when-not-being-pinged
   (is (nil? (parse "not a ping message"))))
