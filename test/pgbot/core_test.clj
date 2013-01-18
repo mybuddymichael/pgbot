@@ -2,18 +2,22 @@
   (:require [clojure.test :refer [is]]
             pgbot.core))
 
+(defn- string->symbol
+  "Converts a string to a hyphen-separated symbol."
+  [string]
+  (-> string
+      clojure.string/lower-case
+      (clojure.string/replace #"\W" "-")
+      (clojure.string/replace #"-+" "-")
+      (clojure.string/replace #"-$" "")
+      symbol))
+
 (defmacro ^:private deftest*
   "Define a test using deftest, but with a string as the name instead of
    a symbol."
   [name-string & body]
-  (let [name-symbol
-        (-> name-string
-            clojure.string/lower-case
-            (clojure.string/replace #"\W" "-")
-            (clojure.string/replace #"-+" "-")
-            (clojure.string/replace #"-$" "")
-            symbol)]
-  `(clojure.test/deftest ~name-symbol ~@body)))
+  (let [name-symbol (string->symbol name-string)]
+    `(clojure.test/deftest ~name-symbol ~@body)))
 
 (defonce connection
   (#'pgbot.core/create-connection "irc.freenode.net" 6667 "pgbot"
