@@ -60,8 +60,7 @@
 
    It returns the connection map."
   [host port nick channel]
-  (let [connection
-        (create-connection host port nick channel)]
+  (let [connection (create-connection host port nick channel)]
     (register-connection connection)
     (send-message connection "JOIN" channel)
     (future
@@ -71,10 +70,11 @@
           (when-let [message (ping-pong line)]
             (send-message connection message)
             (println message))
-          (doseq [p plugins]
-            (when-let [message ((ns-resolve p 'parse) line)]
-              (send-message connection message)
-              (println message)))
+          (when (re-find (re-pattern (str ":@" (connection :nick))) line)
+            (doseq [p plugins]
+              (when-let [message ((ns-resolve p 'parse) line)]
+                (send-message connection message)
+                (println message))))
           (recur (read-line-from-connection connection)))))
 
     connection))
