@@ -69,3 +69,10 @@
                                         "##pgbottest")]
     (.close (connection :socket))
     (is (nil? (#'pgbot.core/read-line-from-connection connection)))))
+
+(deftest-* "ping-pong returns a pong message when pinged"
+  (is (= "PONG :server-name"
+         (#'pgbot.core/ping-pong "PING :server-name"))))
+
+(deftest-* "parse returns nil when not being pinged"
+  (is (nil? (#'pgbot.core/ping-pong "not a ping message"))))

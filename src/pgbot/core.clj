@@ -47,6 +47,12 @@
   (try (.readLine (connection :in))
     (catch java.net.SocketException _ nil)))
 
+(defn- ping-pong
+  "Returns a PONG string if the server is PINGing."
+  [line]
+  (when-let [[_ server] (re-find #"^PING :(.+)" line)]
+    (str "PONG :" server)))
+
 (defn connect
   "Entry point for operating the bot. This creates a connection, does
    the dance to ensure that it stays open, and begins listening for
@@ -62,6 +68,9 @@
       (loop [line (read-line-from-connection connection)]
         (when line
           (println line)
+          (when-let [message (ping-pong line)]
+            (send-message connection message)
+            (println message))
           (doseq [p plugins]
             (when-let [message ((ns-resolve p 'parse) line)]
               (send-message connection message)
