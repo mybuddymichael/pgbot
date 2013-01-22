@@ -48,7 +48,7 @@
     (catch java.net.SocketException _ nil)))
 
 (defn- ping-pong
-  "Returns a PONG string if the server is PINGing."
+  "Returns a PONG string if the line is a PING."
   [line]
   (when-let [[_ server] (re-find #"^PING :(.+)" line)]
     (str "PONG :" server)))
