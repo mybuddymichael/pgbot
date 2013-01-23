@@ -1,5 +1,6 @@
 (ns pgbot.core
-  "A simple IRC bot.")
+  "A simple IRC bot."
+  (:require [clj-time.core]))
 
 (def ^:private plugins
   "Returns seq of plugin namespace symbols, one for each plugin in
