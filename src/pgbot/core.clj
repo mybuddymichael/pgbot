@@ -1,6 +1,13 @@
 (ns pgbot.core
   "A simple IRC bot."
-  (:require [clj-time.core]))
+  (:require overtone.at-at))
+
+(def ^:private pgbot-pool (overtone.at-at/mk-pool))
+
+(defn- every*
+  "Excutes a provided function every provided interval."
+  [time-in-secs f]
+  (overtone.at-at/every (* time-in-secs 1000) f pgbot-pool))
 
 (def ^:private plugins
   "Returns seq of plugin namespace symbols, one for each plugin in
