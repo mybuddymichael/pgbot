@@ -54,6 +54,16 @@
   (when-let [[_ server] (re-find #"^PING :(.+)" line)]
     (str "PONG :" server)))
 
+(defn- every
+  "Excutes a provided function every provided interval."
+  ([interval-in-secs f] (every interval-in-secs f (clj-time.core/now)))
+  ([interval-in-secs f last-time]
+   (let [now (clj-time.core/now)]
+     (if (> (clj-time.core/in-secs (clj-time.core/interval last-time now))
+            interval-in-secs)
+       (do (f) (recur interval-in-secs f now))
+       (recur interval-in-secs f last-time)))))
+
 (defn connect
   "Entry point for operating the bot. This creates a connection, does
    the dance to ensure that it stays open, and begins listening for
