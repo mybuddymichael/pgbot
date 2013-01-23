@@ -3,6 +3,6 @@
   :license {:name "The MIT License"
             :url "http://www.opensource.org/licenses/MIT"}
   :dependencies [[org.clojure/clojure "1.4.0"]
-                 [clj-time "0.4.4"]]
+                 [overtone/at-at "1.1.1"]]
   :test-paths ["test" "src/pgbot/plugin"]
   :main pgbot.core)
