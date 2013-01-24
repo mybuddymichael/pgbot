@@ -16,7 +16,7 @@
 (doseq [p plugins]
   (require `~p))
 
-(def ^:private pgbot-pool (overtone.at-at/mk-pool))
+(def ^:private thread-pool (overtone.at-at/mk-pool))
 
 (defn- create-connection
   "Open a connection to a server. Returns a map containing information
