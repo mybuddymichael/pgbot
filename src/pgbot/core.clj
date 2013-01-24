@@ -18,11 +18,6 @@
 
 (def ^:private pgbot-pool (overtone.at-at/mk-pool))
 
-(defn- every*
-  "Excutes a provided function every provided interval."
-  [time-in-secs f]
-  (overtone.at-at/every (* time-in-secs 1000) f pgbot-pool))
-
 (defn- create-connection
   "Open a connection to a server. Returns a map containing information
    about the connection."
