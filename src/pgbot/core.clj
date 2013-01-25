@@ -79,5 +79,4 @@
                 (send-message connection message)
                 (println message))))
           (recur (read-line-from-connection connection)))))
-
     connection))
