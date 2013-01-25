@@ -16,7 +16,9 @@
 (doseq [p plugins]
   (require `~p))
 
-(def ^:private thread-pool (overtone.at-at/mk-pool))
+(def ^:private thread-pool
+  "Returns the app's thread pool for interval-based code execution."
+  (overtone.at-at/mk-pool))
 
 (defn- create-connection
   "Open a connection to a server. Returns a map containing information
