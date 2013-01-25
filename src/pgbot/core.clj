@@ -21,7 +21,7 @@
   (overtone.at-at/mk-pool))
 
 (defn- create-connection
-  "Open a connection to a server. Returns a map containing information
+  "Opens a connection to a server. Returns a map containing information
    about the connection."
   [host port nick channel]
   (let [socket (java.net.Socket. host (Integer. port))]
@@ -32,21 +32,21 @@
      :channel channel}))
 
 (defn- send-message
-  "Send a message through a connection's writer. This takes multiple
+  "Sends a message through a connection's writer. This takes multiple
    string arguments and will join them with spaces in-between."
   [connection message & messages]
   (binding [*out* (connection :out)]
     (println (clojure.string/join " " (cons message messages)))))
 
 (defn- register-connection
-  "Send a 'handshake' message to register the connection."
+  "Sends a 'handshake' message to register the connection."
   [connection]
   (let [nick (connection :nick)]
     (send-message connection "NICK" nick)
     (send-message connection "USER" nick "i *" nick)))
 
 (defn- read-line-from-connection
-  "Read a single line from the connection. Returns nil if the socket is
+  "Reads a single line from the connection. Returns nil if the socket is
    closed."
   [connection]
   (try (.readLine (connection :in))
@@ -61,9 +61,7 @@
 (defn connect
   "Entry point for operating the bot. This creates a connection, does
    the dance to ensure that it stays open, and begins listening for
-   messages in a new thread.
-
-   It returns the connection map."
+   messages in a new thread. It returns the connection map."
   [host port nick channel]
   (let [connection (create-connection host port nick channel)]
     (future
