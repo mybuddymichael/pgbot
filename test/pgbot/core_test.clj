@@ -32,11 +32,6 @@
   (is (= "##pgbottest"
          (connection :channel))))
 
-(deftest-* "plugins is a seq of symbols"
-  (is (seq? @#'pgbot.core/plugins))
-  (is (= clojure.lang.Symbol
-         (class (first @#'pgbot.core/plugins)))))
-
 (deftest-* "send-message writes the message to connection :out"
   (let [connection {:out (java.io.StringWriter.)}]
     (#'pgbot.core/send-message connection "Test string.")
