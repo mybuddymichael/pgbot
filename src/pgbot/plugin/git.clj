@@ -6,6 +6,8 @@
   (let [git-push-log-files
         (->> (file-seq (clojure.java.io/file "/tmp"))
              (map str)
-             (filter #(re-matches #".*\.edn" %)))]))
+             (filter #(re-matches #".*\.edn" %))
+             (map slurp)
+             (map read-string))]))
 
 (defn parse [line])
