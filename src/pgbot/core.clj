@@ -69,8 +69,12 @@
     (future
       (register-connection connection)
       (send-message connection "JOIN" channel)
-      (overtone.at-at/every 5000 #(doseq [p plugins] (ns-resolve p 'run))
-                            thread-pool)
+      (overtone.at-at/every
+        5000
+        #(doseq [p plugins]
+           (when-let [messages ((ns-resolve p 'run))]
+             (doseq [m messages] (send-message-to-channel m))))
+        thread-pool)
       (loop [line (read-line-from-connection connection)]
         (when line
           (println line)
