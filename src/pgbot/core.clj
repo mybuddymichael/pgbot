@@ -72,7 +72,7 @@
       (overtone.at-at/every
         5000
         #(doseq [p plugins]
-           (when-let [messages ((ns-resolve p 'run))]
+           (when-let [messages ((ns-resolve p 'run) connection)]
              (doseq [m messages] (send-message-to-channel m))))
         thread-pool)
       (loop [line (read-line-from-connection connection)]
@@ -83,7 +83,7 @@
             (println message))
           (when (re-find (re-pattern (str ":@" (connection :nick))) line)
             (doseq [p plugins]
-              (when-let [message ((ns-resolve p 'parse) line)]
+              (when-let [message ((ns-resolve p 'parse) connection line)]
                 (send-message connection message)
                 (println message))))
           (recur (read-line-from-connection connection)))))

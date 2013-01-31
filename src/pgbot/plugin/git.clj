@@ -2,7 +2,7 @@
   "Watches for git pushes and displays notifications."
   (:require clojure.java.io))
 
-(defn run []
+(defn run [connection]
   (let [git-push-log-maps (->> (file-seq (clojure.java.io/file "/tmp"))
                                (map str)
                                (filter #(re-matches #".*\.edn" %))
@@ -11,4 +11,4 @@
     (->> (map (fn [x] (:messages x)) git-push-log-maps)
          (flatten))))
 
-(defn parse [line])
+(defn parse [connection line])
