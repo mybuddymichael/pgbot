@@ -8,6 +8,7 @@
                                (filter #(re-matches #".*\.edn" %))
                                (map slurp)
                                (map read-string))]
-    (flatten (map (fn [x] (:messages x)) git-push-log-maps))))
+    (flatten
+      (map (fn [x] (:messages x)) git-push-log-maps))))
 
 (defn parse [connection line])
