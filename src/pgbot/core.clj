@@ -36,7 +36,9 @@
    string arguments and will join them with spaces in-between."
   [connection message & messages]
   (binding [*out* (connection :out)]
-    (println (clojure.string/join " " (cons message messages)))))
+    (if (coll? message)
+      (doseq [m message] (println m))
+      (println (clojure.string/join " " (cons message messages))))))
 
 (defn- register-connection
   "Sends a 'handshake' message to register the connection."
