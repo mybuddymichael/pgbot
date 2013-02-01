@@ -37,7 +37,7 @@
    message is sequential, it prints out each string in the list."
   [connection message & messages]
   (binding [*out* (connection :out)]
-    (if (coll? message)
+    (if (sequential? message)
       (doseq [m message] (println m))
       (println (clojure.string/join " " (cons message messages))))))
 
