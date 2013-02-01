@@ -75,8 +75,8 @@
       (overtone.at-at/every
         5000
         #(doseq [p plugins]
-           (when-let [messages ((ns-resolve p 'run) connection)]
-             (doseq [m messages] (send-message-to-channel m))))
+           (when-let [message ((ns-resolve p 'run) connection)]
+             (send-message connection message)))
         thread-pool)
       (loop [line (read-line-from-connection connection)]
         (when line
