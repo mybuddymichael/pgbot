@@ -44,6 +44,12 @@
     (is (= "This and that.\n"
            (str (connection :out))))))
 
+(deftest-* "send-message writes a coll of messages in sequence"
+  (let [connection {:out (java.io.StringWriter.)}]
+    (#'pgbot.core/send-message connection '("This" "and" "that."))
+    (is (= "This\nand\nthat.\n"
+           (str (connection :out))))))
+
 (deftest-* "register-connection sends the appropriate handshake message"
   (let [connection {:out (java.io.StringWriter.)
                     :nick "pgbot"}]
