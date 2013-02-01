@@ -9,3 +9,5 @@
                                (map slurp)
                                (map read-string))]
     (flatten (map (fn [x] (:messages x)) git-push-log-maps))))
+
+(defn parse [connection line])
