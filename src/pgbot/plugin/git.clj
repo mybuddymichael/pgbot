@@ -17,12 +17,11 @@
     log-maps))
 
 (defn run [connection]
-  (let [git-push-log-maps (->> (file-seq (clojure.java.io/file "/tmp"))
-                               (map str)
-                               (filter #(re-matches #".*\.edn" %))
-                               (map slurp)
-                               (map read-string))]
-    (flatten
-      (map (fn [x] (:messages x)) git-push-log-maps))))
+  (let [git-log-maps (get-git-log-maps)
+        messages (map #(str "PRIVMSG " (connection :channel)
+                            " :" (count (% :commits)) " commits pushed to "
+                            (% :repo) " on branch " (% :branch) ".\n")
+                      git-log-maps)]
+    messages))
 
 (defn parse [connection line])
