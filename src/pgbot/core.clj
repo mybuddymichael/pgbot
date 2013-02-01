@@ -33,7 +33,8 @@
 
 (defn- send-message
   "Sends a message through a connection's writer. This takes multiple
-   string arguments and will join them with spaces in-between."
+   string arguments and will join them with spaces in-between, or, if
+   message is sequential, it prints out each string in the list."
   [connection message & messages]
   (binding [*out* (connection :out)]
     (if (coll? message)
