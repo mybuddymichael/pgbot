@@ -66,9 +66,7 @@
    the dance to ensure that it stays open, and begins listening for
    messages in a new thread. It returns the connection map."
   [host port nick channel]
-  (let [connection (create-connection host port nick channel)
-        send-message-to-channel (partial send-message connection "PRIVMSG"
-                                         channel ":")]
+  (let [connection (create-connection host port nick channel)]
     (future
       (register-connection connection)
       (send-message connection "JOIN" channel)
