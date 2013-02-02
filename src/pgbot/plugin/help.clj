@@ -1,7 +1,7 @@
 (ns pgbot.plugin.help
   "Displays information about pgbot.")
 
-(def keywords #{"help" "source" "info" "information"})
+(def keywords #{#"help" #"source" #"info" #"information"})
 
 (defn run [connection])
 
