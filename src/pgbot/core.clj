@@ -71,7 +71,7 @@
       (register-connection connection)
       (send-message connection "JOIN" channel)
       (overtone.at-at/every
-        5000
+        10000
         #(doseq [p plugins]
            (when-let [message ((ns-resolve p 'run) connection)]
              (send-message connection message)))
