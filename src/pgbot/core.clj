@@ -75,7 +75,8 @@
         #(doseq [p plugins]
            (when-let [message ((ns-resolve p 'run) connection)]
              (send-message connection message)))
-        thread-pool)
+        thread-pool
+        :initial-delay 30000)
       (loop [line (read-line-from-connection connection)]
         (when line
           (println line)
