@@ -73,7 +73,8 @@
       (send-message connection "JOIN" channel)
       (overtone.at-at/every
         10000
-        #(doseq [p plugins]
+        #(doseq [p @pgbot.plugin/plugins]
+           (require `~p)
            (when-let [message ((ns-resolve p 'run) connection)]
              (send-message connection message)))
         thread-pool
@@ -85,7 +86,8 @@
             (send-message connection message)
             (println message))
           (when (re-find (re-pattern (str ":" (connection :nick))) line)
-            (doseq [p plugins]
+            (doseq [p @pgbot.plugin/plugins]
+              (require `~p)
               (when-let [message ((ns-resolve p 'parse) connection line)]
                 (send-message connection message)
                 (println message))))
