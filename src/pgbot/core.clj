@@ -3,19 +3,6 @@
   (:require pgbot.plugin
             overtone.at-at))
 
-(def ^:private plugins
-  "Returns seq of plugin namespace symbols, one for each plugin in
-   src/pgbot/plugins/."
-  (->> (file-seq (clojure.java.io/file "src/pgbot/plugin"))
-       (map str)
-       (filter #(re-matches #".*\.clj" %))
-       (map (fn [string]
-              (let [[_ namespace-string]
-                    (re-matches #".*plugin/([A-Za-z_]+)\.clj$" string)]
-                (symbol (str "pgbot.plugin." namespace-string)))))))
-
-(doseq [p plugins]
-  (require `~p))
 
 (def ^:private thread-pool
   "Returns the app's thread pool for interval-based code execution."
