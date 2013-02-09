@@ -3,7 +3,6 @@
   (:require pgbot.plugin
             overtone.at-at))
 
-
 (def ^:private thread-pool
   "Returns the app's thread pool for interval-based code execution."
   (overtone.at-at/mk-pool))
