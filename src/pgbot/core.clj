@@ -1,6 +1,7 @@
 (ns pgbot.core
   "A simple IRC bot."
-  (:require overtone.at-at))
+  (:require pgbot.plugin
+            overtone.at-at))
 
 (def ^:private plugins
   "Returns seq of plugin namespace symbols, one for each plugin in
