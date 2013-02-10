@@ -61,7 +61,7 @@
       (send-message connection "JOIN" channel)
       (overtone.at-at/every
         10000
-        #(doseq [p @pgbot.plugin/plugins]
+        #(doseq [p plugins]
            (require `~p)
            (when-let [message ((ns-resolve p 'run) connection)]
              (send-message connection message)))
