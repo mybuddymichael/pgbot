@@ -2,6 +2,9 @@
   "A simple IRC bot."
   (:require overtone.at-at))
 
+(def ^:private plugins
+  #{'pgbot.plugin.help})
+
 (def ^:private thread-pool
   "Returns the app's thread pool for interval-based code execution."
   (overtone.at-at/mk-pool))
