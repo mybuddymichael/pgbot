@@ -74,7 +74,7 @@
             (send-message connection message)
             (println message))
           (when (re-find (re-pattern (str ":" (connection :nick))) line)
-            (doseq [p @pgbot.plugin/plugins]
+            (doseq [p plugins]
               (require `~p)
               (when-let [message ((ns-resolve p 'parse) connection line)]
                 (send-message connection message)
