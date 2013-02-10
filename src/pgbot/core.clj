@@ -81,12 +81,10 @@
         (when line
           (println line)
           (when-let [message (ping-pong line)]
-            (send-message connection message)
-            (println message))
+            (send-message connection message))
           (when (re-find (re-pattern (str ":" (connection :nick))) line)
             (doseq [p plugins]
               (when-let [message ((ns-resolve p 'parse) connection line)]
-                (send-message connection message)
-                (println message))))
+                (send-message connection message))))
           (recur (read-line-from-connection connection)))))
     connection))
