@@ -5,6 +5,8 @@
 (def ^:private plugins
   #{'pgbot.plugin.help})
 
+(doseq [p plugins] (require `~p))
+
 (def ^:private thread-pool
   "Returns the app's thread pool for interval-based code execution."
   (overtone.at-at/mk-pool))
@@ -62,7 +64,6 @@
       (overtone.at-at/every
         10000
         #(doseq [p plugins]
-           (require `~p)
            (when-let [message ((ns-resolve p 'run) connection)]
              (send-message connection message)))
         thread-pool
@@ -75,7 +76,6 @@
             (println message))
           (when (re-find (re-pattern (str ":" (connection :nick))) line)
             (doseq [p plugins]
-              (require `~p)
               (when-let [message ((ns-resolve p 'parse) connection line)]
                 (send-message connection message)
                 (println message))))
