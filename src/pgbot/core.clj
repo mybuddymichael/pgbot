@@ -1,7 +1,6 @@
 (ns pgbot.core
   "A simple IRC bot."
-  (:require pgbot.plugin
-            overtone.at-at))
+  (:require overtone.at-at))
 
 (def ^:private thread-pool
   "Returns the app's thread pool for interval-based code execution."
