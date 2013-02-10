@@ -13,7 +13,8 @@
                       (map slurp)
                       (map read-string)
                       (doall))]
-    (doseq [f log-files] (clojure.java.io/delete-file (debug f)))
+    (doseq [f log-files]
+      (clojure.java.io/delete-file f))
     log-maps))
 
 (defn run [connection]
