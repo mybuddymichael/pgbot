@@ -8,7 +8,7 @@
 (defn- log
   "Log a string to a preferred output."
   [s]
-  (spit "/var/log/pgbot.log" s :append true))
+  (spit "/tmp/pgbot.log" s :append true))
 
 (doseq [p plugins] (require `~p))
 
