@@ -5,17 +5,17 @@
 (def ^:private plugins
   #{'pgbot.plugin.help})
 
-(defn- log
-  "Log a string to a preferred output."
-  [s]
-  (spit "/tmp/pgbot.log" s :append true))
-
 (doseq [p plugins]
   (require `~p))
 
 (def ^:private thread-pool
   "Returns the app's thread pool for interval-based code execution."
   (overtone.at-at/mk-pool))
+
+(defn- log
+  "Log a string to a preferred output."
+  [s]
+  (spit "/tmp/pgbot.log" s :append true))
 
 (defn- create-connection
   "Opens a connection to a server. Returns a map containing information
