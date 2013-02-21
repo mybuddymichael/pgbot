@@ -10,7 +10,8 @@
   [s]
   (spit "/tmp/pgbot.log" s :append true))
 
-(doseq [p plugins] (require `~p))
+(doseq [p plugins]
+  (require `~p))
 
 (def ^:private thread-pool
   "Returns the app's thread pool for interval-based code execution."
