@@ -6,8 +6,8 @@
   #{'pgbot.plugin.help})
 
 (def ^:private events
-  "Returns an agent containing a map of event keyword to functions
-   vector pairs."
+  "Returns an agent containing a map of event keywords to vectors of
+   action functions."
   (agent {:incoming []
           :outgoing []}))
 
