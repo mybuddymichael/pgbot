@@ -91,11 +91,9 @@
       (loop [line (read-line-from-connection connection)]
         (when line
           (println line)
-          (when-let [message (ping-pong line)]
-            (send-message connection message))
           (when (re-find (re-pattern (str ":" (connection :nick))) line)
-            (doseq [p plugins]
-              (when-let [message ((ns-resolve p 'parse) connection line)]
-                (send-message connection message))))
+            (trigger-event :incoming line))
+          (when (re-find #"^PING :(.+)" line)
+            (trigger-event :ping line))
           (recur (read-line-from-connection connection)))))
     connection))
