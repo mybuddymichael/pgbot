@@ -8,10 +8,10 @@
 (def events
   "Returns an agent containing a map of event keywords to vectors of
    action functions."
-  (agent {:incoming ['log]
+  (agent {:incoming ['log
+                     'pong]
           :outgoing ['log
-                     'send-message]
-          :ping ['pong]}))
+                     'send-message]}))
 
 (defn trigger-event
   [event data]
