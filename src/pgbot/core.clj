@@ -69,7 +69,7 @@
 (defn- pong
   "Returns a PONG string if the line is a PING."
   [line]
-  (if-let [[_ server] (re-matches #"^PING :(.*)" line)]
+  (when-let [[_ server] (re-matches #"^PING :(.*)" line)]
     (trigger-event :outgoing (str "PONG :" server))))
 
 (defn connect
