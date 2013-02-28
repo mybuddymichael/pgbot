@@ -69,7 +69,8 @@
 (defn- pong
   "Returns a PONG string if the line is a PING."
   [line]
-  (trigger-event :outgoing (str "PONG :" server)))
+  (if-let [[_ server] (re-matches #"^PING :(.*)" line)]
+    (trigger-event :outgoing (str "PONG :" server))))
 
 (defn connect
   "Entry point for operating the bot. This creates a connection, does
