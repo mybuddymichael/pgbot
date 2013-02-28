@@ -5,7 +5,7 @@
 (def ^:private plugins
   #{'pgbot.plugin.help})
 
-(def ^:private events
+(def events
   "Returns an agent containing a map of event keywords to vectors of
    action functions."
   (agent {:incoming ['log]
