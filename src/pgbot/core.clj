@@ -10,7 +10,8 @@
    action functions."
   (agent {:incoming ['log]
           :outgoing ['log
-                     'send-message]}))
+                     'send-message]
+          :ping ['pong]}))
 
 (defn trigger-event
   [event data]
