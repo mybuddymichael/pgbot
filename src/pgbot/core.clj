@@ -8,8 +8,9 @@
 (def ^:private events
   "Returns an agent containing a map of event keywords to vectors of
    action functions."
-  (agent {:incoming []
-          :outgoing []}))
+  (agent {:incoming ['log]
+          :outgoing ['log
+                     'send-message]}))
 
 (doseq [p plugins]
   (require `~p))
