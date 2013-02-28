@@ -66,7 +66,7 @@
   (try (.readLine (connection :in))
     (catch java.net.SocketException _ nil)))
 
-(defn- ping-pong
+(defn- pong
   "Returns a PONG string if the line is a PING."
   [line]
   (when-let [[_ server] (re-find #"^PING :(.+)" line)]
