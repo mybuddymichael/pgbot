@@ -43,11 +43,9 @@
   (binding [*out* (connection :out)]
     (if (sequential? message)
       (doseq [m message]
-        (println m)
-        (log m))
+        (println m))
       (let [m (clojure.string/join " " (cons message messages))]
-        (println m)
-        (log m)))))
+        (println m)))))
 
 (defn- register-connection
   "Sends a 'handshake' message to register the connection."
