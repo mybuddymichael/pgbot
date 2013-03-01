@@ -8,10 +8,10 @@
 (def ^:private events
   "Returns an agent containing a map of event keywords to vectors of
    action functions."
-  {:incoming ['log
-              'pong]
-   :outgoing ['log
-              'send-message]})
+  {:incoming #{'log
+               'pong}
+   :outgoing #{'log
+               'send-message}})
 
 (defn trigger-event
   "Triggers the specified event, optionally passing data to the event's
