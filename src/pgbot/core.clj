@@ -9,7 +9,7 @@
   "Returns an agent containing a map of event keywords to vectors of
    action functions."
   {:incoming #{'log
-               'pong}
+               'ping-pong}
    :outgoing #{'log
                'send-message}})
 
@@ -69,7 +69,7 @@
   (try (.readLine (connection :in))
     (catch java.net.SocketException _ nil)))
 
-(defn- pong
+(defn- ping-pong
   "Returns a PONG string if the line is a PING."
   [line]
   (when-let [[_ server] (re-matches #"^PING :(.*)" line)]
