@@ -58,8 +58,9 @@
   "Sends a 'handshake' message to register the connection."
   [connection]
   (let [nick (connection :nick)]
-    (send-message connection "NICK" nick)
-    (send-message connection "USER" nick "i *" nick)))
+    (trigger-event :outgoing
+                   (str "NICK " nick)
+                   (str "USER " nick " i * " nick))))
 
 (defn- read-line-from-connection
   "Reads a single line from the connection. Returns nil if the socket is
