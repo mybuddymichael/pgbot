@@ -14,6 +14,8 @@
                      'send-message]}))
 
 (defn trigger-event
+  "Triggers the specified event, optionally passing data to the event's
+   action functions."
   [event & data]
   (map #(apply % data) (@events event)))
 
