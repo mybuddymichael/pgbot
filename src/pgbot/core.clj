@@ -14,8 +14,8 @@
                      'send-message]}))
 
 (defn trigger-event
-  [event data]
-  (map #(apply % data []) (@events event)))
+  [event & data]
+  (map #(apply % data) (@events event)))
 
 (doseq [p plugins]
   (require `~p))
