@@ -90,8 +90,6 @@
         :initial-delay 30000)
       (loop [line (read-line-from-connection connection)]
         (when line
-          (when (or (re-matches (re-pattern (str ":" (connection :nick))) line)
-                    (re-matches #"^PING :(.+)" line))
-            (trigger-event :incoming line))
+          (trigger-event :incoming line)
           (recur (read-line-from-connection connection)))))
     connection))
