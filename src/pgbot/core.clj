@@ -5,6 +5,9 @@
 (def ^:private plugins
   #{'pgbot.plugin.help})
 
+(doseq [p plugins]
+  (require `~p))
+
 (def ^:private events
   "Returns an agent containing a map of event keywords to sets of action
    functions."
@@ -18,9 +21,6 @@
    action functions."
   [event & data]
   (map #(apply % data) (@events event)))
-
-(doseq [p plugins]
-  (require `~p))
 
 (def ^:private thread-pool
   "Returns the app's thread pool for interval-based code execution."
