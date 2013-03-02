@@ -65,7 +65,8 @@
   "Sends a 'handshake' message to register the connection."
   [connection]
   (let [nick (connection :nick)]
-    (trigger-event :outgoing
+    (trigger-event connection
+                   :outgoing
                    (str "NICK " nick)
                    (str "USER " nick " i * " nick))))
 
@@ -105,6 +106,6 @@
         :initial-delay 30000)
       (loop [line (read-line-from-connection connection)]
         (when line
-          (trigger-event :incoming line)
+          (trigger-event connection :incoming line)
           (recur (read-line-from-connection connection)))))
     connection))
