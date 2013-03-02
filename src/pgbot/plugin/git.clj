@@ -1,6 +1,7 @@
 (ns pgbot.plugin.git
   "Watches for git pushes and displays notifications."
-  (:require clojure.java.io))
+  (:require clojure.java.io
+            clojure.edn))
 
 (defn- get-git-log-maps []
   "Parses /tmp for Git push .edn files, reads them into Clojure maps,
@@ -11,7 +12,7 @@
                        (filter #(re-matches #".*irc.*git.*\.edn$" %)))
         log-maps (->> log-files
                       (map slurp)
-                      (map read-string)
+                      (map clojure.edn/read-string)
                       (doall))]
     (doseq [f log-files] (clojure.java.io/delete-file f))
     log-maps))
