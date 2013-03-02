@@ -23,6 +23,11 @@
   (doseq [f (events event)]
     (apply f connection data)))
 
+(defn- print-line
+  [_ & messages]
+  (doseq [m messages]
+    (println m)))
+
 (defn- log
   "Log a string to a preferred output."
   [_ s]
