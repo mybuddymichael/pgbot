@@ -28,7 +28,7 @@
 
 (defn- log
   "Log a string to a preferred output."
-  [s]
+  [_ s]
   (spit "/tmp/pgbot.log" (str (java.util.Date.) " : " s "\n") :append true))
 
 (defn- create-connection
