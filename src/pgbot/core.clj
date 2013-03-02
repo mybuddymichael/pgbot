@@ -39,7 +39,7 @@
      :nick nick
      :channel channel}))
 
-(defn- parse-message
+(defn- parse
   "Takes a message string and returns a map of the message properties."
   [message]
   (let [[_ prefix type destination content]

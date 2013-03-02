@@ -32,12 +32,12 @@
   (is (= "##pgbottest"
          (connection :channel))))
 
-(deftest-* "parse-message returns a map with message parts"
+(deftest-* "parse returns a map with message parts"
   (is (= {:prefix "m@m.net"
           :type "PRIVMSG"
           :destination "##pgbottest"
           :content "Hi."}
-         (#'pgbot.core/parse-message ":m@m.net PRIVMSG ##pgbottest :Hi."))))
+         (#'pgbot.core/parse ":m@m.net PRIVMSG ##pgbottest :Hi."))))
 
 (deftest-* "send-message writes the message to connection :out"
   (let [connection {:out (java.io.StringWriter.)}]
