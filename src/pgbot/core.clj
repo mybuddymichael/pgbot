@@ -29,7 +29,7 @@
 (defn- log
   "Log a string to a preferred output."
   [s]
-  (spit "/tmp/pgbot.log" s :append true))
+  (spit "/tmp/pgbot.log" (str (java.util.Date.) " : " s "\n") :append true))
 
 (defn- create-connection
   "Opens a connection to a server. Returns a map containing information
