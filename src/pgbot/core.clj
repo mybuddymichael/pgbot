@@ -22,10 +22,6 @@
   [event & data]
   (map #(apply % data) (@events event)))
 
-(def ^:private thread-pool
-  "Returns the app's thread pool for interval-based code execution."
-  (overtone.at-at/mk-pool))
-
 (defn- log
   "Log a string to a preferred output."
   [_ s]
@@ -86,6 +82,10 @@
   [connection line]
   (when-let [[_ server] (re-matches #"^PING :(.*)" line)]
     (trigger-event connection :outgoing (str "PONG :" server))))
+
+(def ^:private thread-pool
+  "Returns the app's thread pool for interval-based code execution."
+  (overtone.at-at/mk-pool))
 
 (defn connect
   "Entry point for operating the bot. This creates a connection, does
