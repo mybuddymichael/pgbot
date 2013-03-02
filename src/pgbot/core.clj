@@ -111,6 +111,6 @@
         :initial-delay 30000)
     (loop [line (read-line-from-connection connection)]
       (when line
-        (trigger-event connection :incoming line)
+        (trigger-event connection :incoming (parse line))
         (recur (read-line-from-connection connection))))
     connection))
