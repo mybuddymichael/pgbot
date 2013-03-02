@@ -30,8 +30,9 @@
 
 (defn- log
   "Log a string to a preferred output."
-  [_ s]
-  (spit "/tmp/pgbot.log" (str (java.util.Date.) " : " s "\n") :append true))
+  [_ & messages]
+  (doseq [m messages]
+    (spit "/tmp/pgbot.log" (str (java.util.Date.) " : " m "\n") :append true)))
 
 (defn- create-connection
   "Opens a connection to a server. Returns a map containing information
