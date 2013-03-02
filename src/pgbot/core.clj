@@ -42,6 +42,17 @@
      :nick nick
      :channel channel}))
 
+(defn- parse-message
+  "Takes a message string and returns a map of the message properties."
+  [message]
+  (let [[_ prefix type destination content]
+        (re-matches #"^(?:[:](\S+) )?(\S+)(?: (?!:)(.+?))?(?: [:](.+))?$"
+                    message)]
+    {:prefix prefix
+     :type type
+     :destination destination
+     :content content}))
+
 (defn- send-message
   "Sends a message through a connection's writer. This takes multiple
    string arguments and will join them with spaces in-between, or, if
