@@ -70,7 +70,8 @@
     (catch java.net.SocketException _ nil)))
 
 (defn- ping-pong
-  "Returns a PONG string if the line is a PING."
+  "Triggers an outgoing event with a PONG string if the incoming message
+   is a PING."
   [line]
   (when-let [[_ server] (re-matches #"^PING :(.*)" line)]
     (trigger-event :outgoing (str "PONG :" server))))
