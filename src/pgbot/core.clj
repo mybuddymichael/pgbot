@@ -20,7 +20,8 @@
   "Triggers the specified event, passing in the connection map and data
    to the event's action functions."
   [connection event & data]
-  (map #(apply % connection data) (@events event)))
+  (doseq [f (events event)]
+    (apply f connection data)))
 
 (defn- log
   "Log a string to a preferred output."
