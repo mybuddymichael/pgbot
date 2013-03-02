@@ -17,10 +17,10 @@
                'send-message}})
 
 (defn trigger-event
-  "Triggers the specified event, optionally passing data to the event's
-   action functions."
-  [event & data]
-  (map #(apply % data) (@events event)))
+  "Triggers the specified event, passing in the connection map and data
+   to the event's action functions."
+  [connection event & data]
+  (map #(apply % connection data) (@events event)))
 
 (defn- log
   "Log a string to a preferred output."
