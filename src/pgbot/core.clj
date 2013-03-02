@@ -57,16 +57,11 @@
      :content content}))
 
 (defn- send-message
-  "Sends a message through a connection's writer. This takes multiple
-   string arguments and will join them with spaces in-between, or, if
-   message is sequential, it prints out each string in the list."
-  [connection message & messages]
+  "Sends one or more messages through a connection's writer."
+  [connection & messages]
   (binding [*out* (connection :out)]
-    (if (sequential? message)
-      (doseq [m message]
-        (println m))
-      (let [m (clojure.string/join " " (cons message messages))]
-        (println m)))))
+    (doseq [m messages]
+      (println m))))
 
 (defn- register-connection
   "Sends a 'handshake' message to register the connection."
