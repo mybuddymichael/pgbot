@@ -98,18 +98,17 @@
    messages in a new thread. It returns the connection map."
   [host port nick channel]
   (let [connection (create-connection host port nick channel)]
-    (future
-      (register-connection connection)
-      (send-message connection "JOIN" channel)
-      (overtone.at-at/every
+    (register-connection connection)
+    (trigger-event connection :outgoing (str "JOIN " channel))
+    #_(overtone.at-at/every
         10000
         #(doseq [p plugins]
            (when-let [message ((ns-resolve p 'run) connection)]
              (send-message connection message)))
         thread-pool
         :initial-delay 30000)
-      (loop [line (read-line-from-connection connection)]
-        (when line
-          (trigger-event connection :incoming line)
-          (recur (read-line-from-connection connection)))))
+    (loop [line (read-line-from-connection connection)]
+      (when line
+        (trigger-event connection :incoming line)
+        (recur (read-line-from-connection connection))))
     connection))
