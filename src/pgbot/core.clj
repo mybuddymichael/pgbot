@@ -8,14 +8,6 @@
 (doseq [p plugins]
   (require `~p))
 
-(def ^:private events
-  "Returns an agent containing a map of event keywords to sets of action
-   functions."
-  {:incoming #{'log
-               'ping-pong}
-   :outgoing #{'log
-               'send-message}})
-
 (defn trigger-event
   "Triggers the specified event, passing in the connection map and data
    to the event's action functions."
@@ -89,6 +81,16 @@
 (def ^:private thread-pool
   "Returns the app's thread pool for interval-based code execution."
   (overtone.at-at/mk-pool))
+
+(def ^:private events
+  "Returns an agent containing a map of event keywords to sets of action
+   functions."
+  {:incoming #{log
+               print-line
+               ping-pong}
+   :outgoing #{log
+               print-line
+               send-message}})
 
 (defn connect
   "Entry point for operating the bot. This creates a connection, does
