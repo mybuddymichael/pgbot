@@ -50,6 +50,15 @@
      :destination destination
      :content content}))
 
+(defn- de-parse
+  "Takes a message map and returns a reconstructed message string."
+  [{:keys [prefix type destination content]}]
+  (let [prefix
+        (if prefix
+          (str ":" prefix " ")
+          "")]
+    (str prefix type " " destination " :" content)))
+
 (defn- send-message
   "Sends one or more messages through a connection's writer."
   [connection & messages]
