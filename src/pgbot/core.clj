@@ -21,11 +21,11 @@
      :nick nick
      :channel channel}))
 
-(defn- read-line-from-connection
-  "Reads a single line from the connection. Returns nil if the socket is
-   closed."
+(defn- get-message
+  "Grabs a single line from the connection, parsing it into a message
+   map, or returning nil if the socket is closed."
   [connection]
-  (try (.readLine (connection :in))
+  (try (->> (connection :in) .readLine parse)
     (catch java.net.SocketException _ nil)))
 
 (defn- parse
