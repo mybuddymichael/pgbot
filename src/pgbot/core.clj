@@ -95,7 +95,7 @@
                print-line
                send-message}})
 
-(defn trigger-event
+(defn- trigger-event
   "Triggers the specified event, passing in the connection map and data
    to the event's action functions."
   [connection event & data]
