@@ -55,20 +55,11 @@
 
 (deftest-* "send-message writes the message to connection :out"
   (let [connection {:out (java.io.StringWriter.)}]
-    (#'pgbot.core/send-message connection "Test string.")
-    (is (= "Test string.\n"
-           (str (connection :out))))))
-
-(deftest-* "send-message concatenates multiple args with spaces"
-  (let [connection {:out (java.io.StringWriter.)}]
-    (#'pgbot.core/send-message connection "This" "and" "that.")
-    (is (= "This and that.\n"
-           (str (connection :out))))))
-
-(deftest-* "send-message writes a coll of messages in sequence"
-  (let [connection {:out (java.io.StringWriter.)}]
-    (#'pgbot.core/send-message connection '("This" "and" "that."))
-    (is (= "This\nand\nthat.\n"
+    (#'pgbot.core/send-message connection {:prefix nil
+                                           :type "PRIVMSG"
+                                           :destination "##pgbottest"
+                                           :content "Hi, buddy."})
+    (is (= "PRIVMSG ##pgbottest :Hi, buddy.\n"
            (str (connection :out))))))
 
 (deftest-* "register-connection sends the appropriate handshake message"
