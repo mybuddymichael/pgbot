@@ -117,8 +117,8 @@
              (send-message connection message)))
         thread-pool
         :initial-delay 30000)
-    (loop [line (read-line-from-connection connection)]
+    (loop [line (get-message connection)]
       (when line
-        (trigger-event connection :incoming (parse line))
-        (recur (read-line-from-connection connection))))
+        (trigger-event connection :incoming line)
+        (recur (get-message connection))))
     connection))
