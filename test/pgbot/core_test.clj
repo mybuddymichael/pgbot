@@ -91,7 +91,7 @@
 (deftest-* "parse returns nil when not being pinged"
   (is (nil? (#'pgbot.core/ping-pong "not a ping message"))))
 
-(deftest-* "events in a map of keywords to fns"
+(deftest-* "events is a map of keywords to fns"
   (is (= [true true true]
          (map fn? (#'pgbot.core/events :incoming))))
   (is (= [true true true]
