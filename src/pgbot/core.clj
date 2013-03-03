@@ -74,9 +74,10 @@
 (defn- ping-pong
   "Triggers an outgoing event with a PONG string if the incoming message
    is a PING."
-  [connection line]
-  (when-let [[_ server] (re-matches #"^PING :(.*)" line)]
-    (trigger-event connection :outgoing (str "PONG :" server))))
+  [connection & messages]
+  (doseq [m messages]
+    (when (= (m :type) "PING")
+      (trigger-event connection :outgoing (str "PONG :" (m :content))))))
 
 (def ^:private thread-pool
   "Returns the app's thread pool for interval-based code execution."
