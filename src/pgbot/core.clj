@@ -8,17 +8,6 @@
 (doseq [p plugins]
   (require `~p))
 
-(defn- print-line
-  [_ & messages]
-  (doseq [m messages]
-    (println m)))
-
-(defn- log
-  "Log a string to a preferred output."
-  [_ & messages]
-  (doseq [m messages]
-    (spit "/tmp/pgbot.log" (str (java.util.Date.) " : " m "\n") :append true)))
-
 (defn- create-connection
   "Opens a connection to a server. Returns a map containing information
    about the connection."
@@ -29,6 +18,13 @@
      :out (clojure.java.io/writer socket)
      :nick nick
      :channel channel}))
+
+(defn- read-line-from-connection
+  "Reads a single line from the connection. Returns nil if the socket is
+   closed."
+  [connection]
+  (try (.readLine (connection :in))
+    (catch java.net.SocketException _ nil)))
 
 (defn- parse
   "Takes a message string and returns a map of the message properties."
@@ -48,6 +44,17 @@
         destination (when destination (str destination " "))]
     (str prefix type " " destination ":" content)))
 
+(defn- print-line
+  [_ & messages]
+  (doseq [m messages]
+    (println m)))
+
+(defn- log
+  "Log a string to a preferred output."
+  [_ & messages]
+  (doseq [m messages]
+    (spit "/tmp/pgbot.log" (str (java.util.Date.) " : " m "\n") :append true)))
+
 (defn- send-message
   "Sends one or more messages through a connection's writer."
   [connection & messages]
@@ -63,13 +70,6 @@
                    :outgoing
                    (str "NICK " nick)
                    (str "USER " nick " i * " nick))))
-
-(defn- read-line-from-connection
-  "Reads a single line from the connection. Returns nil if the socket is
-   closed."
-  [connection]
-  (try (.readLine (connection :in))
-    (catch java.net.SocketException _ nil)))
 
 (defn- ping-pong
   "Triggers an outgoing event with a PONG string if the incoming message
