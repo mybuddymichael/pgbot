@@ -8,15 +8,6 @@
 (doseq [p plugins]
   (require `~p))
 
-(declare events)
-
-(defn trigger-event
-  "Triggers the specified event, passing in the connection map and data
-   to the event's action functions."
-  [connection event & data]
-  (doseq [f (events event)]
-    (apply f connection data)))
-
 (defn- print-line
   [_ & messages]
   (doseq [m messages]
@@ -102,6 +93,13 @@
    :outgoing #{log
                print-line
                send-message}})
+
+(defn trigger-event
+  "Triggers the specified event, passing in the connection map and data
+   to the event's action functions."
+  [connection event & data]
+  (doseq [f (events event)]
+    (apply f connection data)))
 
 (defn connect
   "Entry point for operating the bot. This creates a connection, does
