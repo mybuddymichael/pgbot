@@ -82,7 +82,7 @@
   [connection & messages]
   (doseq [m messages]
     (when (= (m :type) "PING")
-      (trigger-event connection :outgoing (str "PONG :" (m :content))))))
+      (trigger-event connection :outgoing {:type "PONG" :content (m :content)}))))
 
 (def ^:private thread-pool
   "Returns the app's thread pool for interval-based code execution."
