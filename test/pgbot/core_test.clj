@@ -60,12 +60,15 @@
     (is (= ":m@m.net PRIVMSG ##pgbottest :Hi, buddy.\n"
            (str (connection :out))))))
 
-(deftest-* "register-connection sends the appropriate handshake message"
+(deftest-* "register-connection triggers the appropriate handshake messages"
   (let [connection {:out (java.io.StringWriter.)
                     :nick "pgbot"}]
-    (#'pgbot.core/register-connection connection)
-    (is (= "NICK pgbot\nUSER pgbot i * pgbot\n"
-           (str (connection :out))))))
+    (with-redefs-fn {#'pgbot.core/events {:outgoing
+                                          [#'pgbot.core/send-message]}}
+      (fn []
+        (#'pgbot.core/register-connection connection)
+        (is (= "NICK pgbot\nUSER pgbot i * pgbot\n"
+               (str (connection :out))))))))
 
 (deftest-* "read-line-from-connection gets a single line"
   (let [connection
