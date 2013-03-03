@@ -84,12 +84,14 @@
     (.close (connection :socket))
     (is (nil? (#'pgbot.core/get-message connection)))))
 
-(deftest-* "ping-pong returns a pong message when pinged"
-  (is (= "PONG :server-name"
-         (#'pgbot.core/ping-pong "PING :server-name"))))
-
-(deftest-* "parse returns nil when not being pinged"
-  (is (nil? (#'pgbot.core/ping-pong "not a ping message"))))
+(deftest-* "ping-pong triggers a pong message when pinged"
+  (let [connection {:out (java.io.StringWriter.)}]
+    (with-redefs-fn {#'pgbot.core/events {:outgoing
+                                          [#'pgbot.core/send-message]}}
+      (fn []
+        (#'pgbot.core/ping-pong connection {:type "PING" :content "server-name"})
+        (is (= "PONG :server-name\n"
+               (str (connection :out))))))))
 
 (deftest-* "events is a map of keywords to fns"
   (is (= [true true true]
