@@ -50,8 +50,9 @@
   "Takes a message map and returns a reconstructed message string."
   [{:keys [prefix type destination content]}]
   (let [prefix (when prefix (str ":" prefix " "))
-        destination (when destination (str destination " "))]
-    (str prefix type " " destination ":" content)))
+        type (if destination (str type " ") type)
+        content (when content (str " :" content))]
+    (str prefix type destination content)))
 
 (defn- print-line
   [_ & messages]
