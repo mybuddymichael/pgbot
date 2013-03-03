@@ -73,8 +73,8 @@
   (let [nick (connection :nick)]
     (trigger-event connection
                    :outgoing
-                   (str "NICK " nick)
-                   (str "USER " nick " i * " nick))))
+                   (parse (str "NICK " nick))
+                   (parse (str "USER " nick " i * " nick)))))
 
 (defn- ping-pong
   "Triggers an outgoing event with a PONG string if the incoming message
