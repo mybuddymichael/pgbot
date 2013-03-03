@@ -8,6 +8,8 @@
 (doseq [p plugins]
   (require `~p))
 
+(declare trigger-event)
+
 (defn- create-connection
   "Opens a connection to a server. Returns a map containing information
    about the connection."
