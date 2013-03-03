@@ -44,8 +44,9 @@
 (defn- compose
   "Takes a message map and returns a reconstructed message string."
   [{:keys [prefix type destination content]}]
-  (let [prefix (when prefix (str ":" prefix " "))]
-    (str prefix type " " destination " :" content)))
+  (let [prefix (when prefix (str ":" prefix " "))
+        destination (when destination (str destination " "))]
+    (str prefix type " " destination ":" content)))
 
 (defn- send-message
   "Sends one or more messages through a connection's writer."
