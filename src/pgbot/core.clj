@@ -112,7 +112,7 @@
   [host port nick channel]
   (let [connection (create-connection host port nick channel)]
     (register-connection connection)
-    (trigger-event connection :outgoing (str "JOIN " channel))
+    (trigger-event connection :outgoing {:type "JOIN" :destination channel})
     #_(overtone.at-at/every
         10000
         #(doseq [p plugins]
