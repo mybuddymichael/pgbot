@@ -98,7 +98,7 @@
    to the event's action functions."
   [connection event & data]
   (doseq [f (events event)]
-    (apply f connection data)))
+    (apply f connection (flatten data))))
 
 (defn connect
   "Entry point for operating the bot. This creates a connection, does
