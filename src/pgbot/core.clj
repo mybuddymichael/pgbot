@@ -57,13 +57,15 @@
 (defn- print-line
   [_ & messages]
   (doseq [m messages]
-    (println m)))
+    (println (compose m))))
 
 (defn- log
   "Log a string to a preferred output."
   [_ & messages]
   (doseq [m messages]
-    (spit "/tmp/pgbot.log" (str (java.util.Date.) " : " m "\n") :append true)))
+    (spit "/tmp/pgbot.log"
+          (str (java.util.Date.) " : " (compose m) "\n")
+          :append true)))
 
 (defn- register-connection
   "Sends a 'handshake' message to register the connection."
