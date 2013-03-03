@@ -39,6 +39,20 @@
           :content "Hi."}
          (#'pgbot.core/parse ":m@m.net PRIVMSG ##pgbottest :Hi."))))
 
+(deftest-* "de-parse reconstructs a message string"
+  (is (= "PING :hemingway.servers.net"
+         (#'pgbot.core/de-parse
+           {:prefix nil
+            :type "PING"
+            :destination nil
+            :content "hemingway.servers.net"})))
+  (is (= ":m@m.net PRIVMSG ##pgbottest :Hi."
+         (#'pgbot.core/de-parse
+           {:prefix "m@m.net"
+            :type "PRIVMSG"
+            :destination "##pgbottest"
+            :content "Hi."}))))
+
 (deftest-* "send-message writes the message to connection :out"
   (let [connection {:out (java.io.StringWriter.)}]
     (#'pgbot.core/send-message connection "Test string.")
