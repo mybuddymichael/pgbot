@@ -1,6 +1,6 @@
 (ns pgbot.core-test
-  (:require [clojure.test :refer [is]]
-            [pgbot.test-helpers :refer [deftest* deftest-*]]
+  (:require [clojure.test :use [is]]
+            [pgbot.test-helpers :use [deftest* deftest-*]]
             pgbot.core))
 
 (defonce connection
