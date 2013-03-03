@@ -55,11 +55,11 @@
 
 (deftest-* "send-message writes the message to connection :out"
   (let [connection {:out (java.io.StringWriter.)}]
-    (#'pgbot.core/send-message connection {:prefix nil
+    (#'pgbot.core/send-message connection {:prefix "m@m.net"
                                            :type "PRIVMSG"
                                            :destination "##pgbottest"
                                            :content "Hi, buddy."})
-    (is (= "PRIVMSG ##pgbottest :Hi, buddy.\n"
+    (is (= ":m@m.net PRIVMSG ##pgbottest :Hi, buddy.\n"
            (str (connection :out))))))
 
 (deftest-* "register-connection sends the appropriate handshake message"
