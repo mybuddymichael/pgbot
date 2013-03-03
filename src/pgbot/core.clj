@@ -41,7 +41,7 @@
      :destination destination
      :content content}))
 
-(defn- de-parse
+(defn- compose
   "Takes a message map and returns a reconstructed message string."
   [{:keys [prefix type destination content]}]
   (let [prefix

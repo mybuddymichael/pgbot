@@ -39,15 +39,15 @@
           :content "Hi."}
          (#'pgbot.core/parse ":m@m.net PRIVMSG ##pgbottest :Hi."))))
 
-(deftest-* "de-parse reconstructs a message string"
+(deftest-* "compose reconstructs a message string"
   (is (= "PING :hemingway.servers.net"
-         (#'pgbot.core/de-parse
+         (#'pgbot.core/compose
            {:prefix nil
             :type "PING"
             :destination nil
             :content "hemingway.servers.net"})))
   (is (= ":m@m.net PRIVMSG ##pgbottest :Hi."
-         (#'pgbot.core/de-parse
+         (#'pgbot.core/compose
            {:prefix "m@m.net"
             :type "PRIVMSG"
             :destination "##pgbottest"
