@@ -28,6 +28,13 @@
   (try (->> (connection :in) .readLine parse)
     (catch java.net.SocketException _ nil)))
 
+(defn- send-message
+  "Sends one or more messages through a connection's writer."
+  [connection & messages]
+  (binding [*out* (connection :out)]
+    (doseq [m messages]
+      (println (compose m)))))
+
 (defn- parse
   "Takes a message string and returns a map of the message properties."
   [message]
@@ -56,13 +63,6 @@
   [_ & messages]
   (doseq [m messages]
     (spit "/tmp/pgbot.log" (str (java.util.Date.) " : " m "\n") :append true)))
-
-(defn- send-message
-  "Sends one or more messages through a connection's writer."
-  [connection & messages]
-  (binding [*out* (connection :out)]
-    (doseq [m messages]
-      (println m))))
 
 (defn- register-connection
   "Sends a 'handshake' message to register the connection."
