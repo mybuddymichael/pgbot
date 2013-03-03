@@ -21,6 +21,9 @@
      :nick nick
      :channel channel}))
 
+(declare parse
+         compose)
+
 (defn- get-message
   "Grabs a single line from the connection, parsing it into a message
    map, or returning nil if the socket is closed."
