@@ -1,6 +1,5 @@
 (ns pgbot.core
-  "A simple IRC bot."
-  (:require overtone.at-at))
+  "A simple IRC bot.")
 
 (def ^:private plugins
   #{'pgbot.plugin.help})
@@ -87,10 +86,6 @@
     (when (= (m :type) "PING")
       (trigger-event connection :outgoing {:type "PONG" :content (m :content)}))))
 
-(def ^:private thread-pool
-  "Returns the app's thread pool for interval-based code execution."
-  (overtone.at-at/mk-pool))
-
 (def ^:private events
   "Returns an agent containing a map of event keywords to sets of action
    functions."
@@ -116,13 +111,6 @@
   (let [connection (create-connection host port nick channel)]
     (register-connection connection)
     (trigger-event connection :outgoing {:type "JOIN" :destination channel})
-    #_(overtone.at-at/every
-        10000
-        #(doseq [p plugins]
-           (when-let [message ((ns-resolve p 'run) connection)]
-             (send-message connection message)))
-        thread-pool
-        :initial-delay 30000)
     (loop [line (get-message connection)]
       (when line
         (trigger-event connection :incoming line)
