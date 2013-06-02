@@ -1,5 +1,7 @@
 (ns pgbot.core
-  "A simple IRC bot.")
+  "A simple IRC bot."
+  (:require [pgbot.connection :as connection]
+            [pgbot.messages :use [parse compose]]))
 
 (def ^:private plugins
   #{'pgbot.plugin.help})
@@ -8,53 +10,6 @@
   (require `~p))
 
 (declare trigger-event)
-
-(defn- create-connection
-  "Opens a connection to a server. Returns a map containing information
-   about the connection."
-  [host port nick channel]
-  (let [socket (java.net.Socket. host (Integer. port))]
-    {:socket socket
-     :in (clojure.java.io/reader socket)
-     :out (clojure.java.io/writer socket)
-     :nick nick
-     :channel channel}))
-
-(declare parse
-         compose)
-
-(defn- get-message
-  "Grabs a single line from the connection, parsing it into a message
-   map, or returning nil if the socket is closed."
-  [connection]
-  (try (->> (connection :in) .readLine parse)
-    (catch java.net.SocketException _ nil)))
-
-(defn- send-message
-  "Sends one or more messages through a connection's writer."
-  [connection & messages]
-  (binding [*out* (connection :out)]
-    (doseq [m messages]
-      (println (compose m)))))
-
-(defn- parse
-  "Takes a message string and returns a map of the message properties."
-  [message]
-  (let [[_ prefix type destination content]
-        (re-matches #"^(?:[:](\S+) )?(\S+)(?: (?!:)(.+?))?(?: [:](.+))?$"
-                    message)]
-    {:prefix prefix
-     :type type
-     :destination destination
-     :content content}))
-
-(defn- compose
-  "Takes a message map and returns a reconstructed message string."
-  [{:keys [prefix type destination content]}]
-  (let [prefix (when prefix (str ":" prefix " "))
-        type (if destination (str type " ") type)
-        content (when content (str " :" content))]
-    (str prefix type destination content)))
 
 (defn- print-line
   [_ & messages]
@@ -78,23 +33,15 @@
                    (parse (str "NICK " nick))
                    (parse (str "USER " nick " i * " nick)))))
 
-(defn- ping-pong
-  "Triggers an outgoing event with a PONG string if the incoming message
-   is a PING."
-  [connection & messages]
-  (doseq [m messages]
-    (when (= (m :type) "PING")
-      (trigger-event connection :outgoing {:type "PONG" :content (m :content)}))))
-
 (def ^:private events
   "Returns an agent containing a map of event keywords to sets of action
    functions."
   {:incoming #{log
                print-line
-               ping-pong}
+               connection/ping-pong}
    :outgoing #{log
                print-line
-               send-message}})
+               connection/send-message}})
 
 (defn- trigger-event
   "Triggers the specified event, passing in the connection map and data
@@ -108,12 +55,12 @@
    the dance to ensure that it stays open, and begins listening for
    messages in a new thread. It returns the connection map."
   [host port nick channel]
-  (let [connection (create-connection host port nick channel)]
+  (let [connection (connection/create host port nick channel)]
     (future
       (register-connection connection)
       (trigger-event connection :outgoing {:type "JOIN" :destination channel})
-      (loop [line (get-message connection)]
+      (loop [line (connection/get-line connection)]
         (when line
           (trigger-event connection :incoming line)
-          (recur (get-message connection)))))
+          (recur (connection/get-line connection)))))
     connection))
