@@ -48,7 +48,7 @@
                print-messages
                ping-pong}
    :outgoing #{log
-               print-line
+               print-messages
                connection/send-message}})
 
 (defn connect
