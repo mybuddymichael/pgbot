@@ -8,6 +8,13 @@
 
 (defroutes app-routes
   (POST "/" [user-name commit-message branch sha]
+        (let [message
+              (str user-name " just commited to " branch ": \""
+                   commit-message"\" (" sha ")")]
+          (trigger-event @connection :outgoing
+                         {:type "PRIVMSG"
+                          :destination (:channel @connection)
+                          :content message}))
         {:body nil}))
 
 (def application (api app-routes))
