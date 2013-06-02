@@ -60,3 +60,8 @@
           (trigger-event connection :incoming line)
           (recur (connection/get-line connection)))))
     connection))
+
+(defn -main [host port nick channel]
+  (let [connection (connect host port nick channel)]
+    (reset! git-listener/connection connection)
+    (git-listener/start-server)))
