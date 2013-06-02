@@ -109,10 +109,11 @@
    messages in a new thread. It returns the connection map."
   [host port nick channel]
   (let [connection (create-connection host port nick channel)]
-    (register-connection connection)
-    (trigger-event connection :outgoing {:type "JOIN" :destination channel})
-    (loop [line (get-message connection)]
-      (when line
-        (trigger-event connection :incoming line)
-        (recur (get-message connection))))
+    (future
+      (register-connection connection)
+      (trigger-event connection :outgoing {:type "JOIN" :destination channel})
+      (loop [line (get-message connection)]
+        (when line
+          (trigger-event connection :incoming line)
+          (recur (get-message connection)))))
     connection))
