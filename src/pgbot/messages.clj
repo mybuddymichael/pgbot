@@ -1,4 +1,5 @@
-(ns pgbot.messages)
+(ns pgbot.messages
+  "Functions for parsing and composing IRC lines.")
 
 (defn parse
   "Takes a message string and returns a map of the message properties."
