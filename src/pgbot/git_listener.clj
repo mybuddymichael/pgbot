@@ -1,8 +1,9 @@
-(ns pgbot.server
-  (:require pgbot.core
-            [compojure.core :use [defroutes POST]]
+(ns pgbot.git-listener
+  (:require [compojure.core :use [defroutes POST]]
             [compojure.handler :use [api]]
             [ring.adapter.jetty :use [run-jetty]]))
+
+(def connection (atom nil))
 
 (defroutes app-routes
   (POST "/" [user-name commit-message branch sha]
