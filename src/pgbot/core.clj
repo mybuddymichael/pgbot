@@ -1,5 +1,6 @@
 (ns pgbot.core
   "A simple IRC bot."
+  (:gen-class)
   (:require [pgbot.connection :as connection]
             [pgbot.messages :use [parse compose]]
             [pgbot.events :use [trigger-event]]
