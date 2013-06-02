@@ -11,7 +11,7 @@
 
 (declare trigger-event)
 
-(defn- print-line
+(defn- print-messages
   [_ & messages]
   (doseq [m messages]
     (println (compose m))))
@@ -45,7 +45,7 @@
   "Returns an agent containing a map of event keywords to sets of action
    functions."
   {:incoming #{log
-               print-line
+               print-messages
                connection/ping-pong}
    :outgoing #{log
                print-line
