@@ -1,15 +1,14 @@
 (ns pgbot.core
   "A simple IRC bot."
   (:require [pgbot.connection :as connection]
-            [pgbot.messages :use [parse compose]]))
+            [pgbot.messages :use [parse compose]]
+            [pgbot.events :use [trigger-event]]))
 
 (def ^:private plugins
   #{'pgbot.plugin.help})
 
 (doseq [p plugins]
   (require `~p))
-
-(declare trigger-event)
 
 (defn- print-messages
   [_ & messages]
@@ -50,13 +49,6 @@
    :outgoing #{log
                print-line
                connection/send-message}})
-
-(defn- trigger-event
-  "Triggers the specified event, passing in the connection map and data
-   to the event's action functions."
-  [connection event & data]
-  (doseq [f (events event)]
-    (apply f connection (flatten data))))
 
 (defn connect
   "Entry point for operating the bot. This creates a connection, does
