@@ -25,11 +25,3 @@
   (binding [*out* (connection :out)]
     (doseq [m messages]
       (println (compose m)))))
-
-(defn- ping-pong
-  "Triggers an outgoing event with a PONG string if the incoming message
-   is a PING."
-  [connection & messages]
-  (doseq [m messages]
-    (when (= (m :type) "PING")
-      (trigger-event connection :outgoing {:type "PONG" :content (m :content)}))))
