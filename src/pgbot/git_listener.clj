@@ -1,5 +1,6 @@
 (ns pgbot.git-listener
-  (:require [compojure.core :use [defroutes POST]]
+  (:require [pgbot.events :use [trigger-event]]
+            [compojure.core :use [defroutes POST]]
             [compojure.handler :use [api]]
             [ring.adapter.jetty :use [run-jetty]]))
 
