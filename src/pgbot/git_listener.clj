@@ -7,9 +7,9 @@
 (def connection (atom nil))
 
 (defroutes app-routes
-  (POST "/" [user-name commit-message branch sha]
+  (POST "/" [user-name commit-message repo branch sha]
         (let [message
-              (str user-name " on " branch ": \""
+              (str user-name " in " repo "/" branch ": \""
                    commit-message"\" (" sha ")")]
           (trigger-event @connection :outgoing
                          {:type "PRIVMSG"
