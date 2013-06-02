@@ -5,12 +5,6 @@
             [pgbot.events :use [trigger-event]]
             [pgbot.git-listener :as git-listener]))
 
-(def ^:private plugins
-  #{'pgbot.plugin.help})
-
-(doseq [p plugins]
-  (require `~p))
-
 (defn- print-messages
   [_ & messages]
   (doseq [m messages]
