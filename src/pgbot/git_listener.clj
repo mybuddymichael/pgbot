@@ -9,7 +9,7 @@
 (defroutes app-routes
   (POST "/" [user-name commit-message branch sha]
         (let [message
-              (str user-name " just commited to " branch ": \""
+              (str user-name " on " branch ": \""
                    commit-message"\" (" sha ")")]
           (trigger-event @connection :outgoing
                          {:type "PRIVMSG"
