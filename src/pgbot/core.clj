@@ -2,7 +2,8 @@
   "A simple IRC bot."
   (:require [pgbot.connection :as connection]
             [pgbot.messages :use [parse compose]]
-            [pgbot.events :use [trigger-event]]))
+            [pgbot.events :use [trigger-event]]
+            [pgbot.git-listener :as git-listener]))
 
 (def ^:private plugins
   #{'pgbot.plugin.help})
