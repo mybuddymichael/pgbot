@@ -45,7 +45,7 @@
    functions."
   {:incoming #{log
                print-messages
-               connection/ping-pong}
+               ping-pong}
    :outgoing #{log
                print-line
                connection/send-message}})
