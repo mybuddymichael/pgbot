@@ -4,13 +4,14 @@
 (defn create
   "Opens a connection to a server. Returns a map containing information
    about the connection."
-  [host port nick channel]
+  [host port nick channel & [events]]
   (let [socket (java.net.Socket. host (Integer. port))]
     {:socket socket
      :in (clojure.java.io/reader socket)
      :out (clojure.java.io/writer socket)
      :nick nick
-     :channel channel}))
+     :channel channel
+     :events events}))
 
 (defn get-line
   "Grabs a single line from the connection, parsing it into a message

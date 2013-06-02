@@ -63,7 +63,7 @@
    the dance to ensure that it stays open, and begins listening for
    messages in a new thread. It returns the connection map."
   [host port nick channel]
-  (let [connection (connection/create host port nick channel)]
+  (let [connection (connection/create host port nick channel events)]
     (future
       (register-connection connection)
       (trigger-event connection :outgoing {:type "JOIN" :destination channel})
