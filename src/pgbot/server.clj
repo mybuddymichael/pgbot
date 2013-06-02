@@ -10,4 +10,4 @@
 
 (def application (api app-routes))
 
-(defn start-server (run-jetty application {:port 8080 :join? false}))
+(defn start-server [] (run-jetty application {:port 8080 :join? false}))
