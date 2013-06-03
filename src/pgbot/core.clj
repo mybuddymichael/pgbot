@@ -28,20 +28,12 @@
                    (parse (str "NICK " nick))
                    (parse (str "USER " nick " i * " nick)))))
 
-(defn- ping-pong
-  "Triggers an outgoing event with a PONG string if the incoming message
-   is a PING."
-  [connection & messages]
-  (doseq [m messages]
-    (when (= (m :type) "PING")
-      (trigger-event connection :outgoing {:type "PONG" :content (m :content)}))))
-
 (def ^:private events
   "Returns an agent containing a map of event keywords to sets of action
    functions."
   {:incoming #{log
                print-messages
-               ping-pong}
+               connection/ping-pong}
    :outgoing #{log
                print-messages
                connection/send-message}})
