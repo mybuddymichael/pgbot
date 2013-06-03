@@ -19,15 +19,6 @@
           (str (java.util.Date.) " : " (compose m) "\n")
           :append true)))
 
-(defn- register-connection
-  "Sends a 'handshake' message to register the connection."
-  [connection]
-  (let [nick (connection :nick)]
-    (trigger-event connection
-                   :outgoing
-                   (parse (str "NICK " nick))
-                   (parse (str "USER " nick " i * " nick)))))
-
 (def ^:private events
   "Returns an agent containing a map of event keywords to sets of action
    functions."
@@ -45,7 +36,7 @@
   [host port nick channel]
   (let [connection (connection/create host port nick channel events)]
     (future
-      (register-connection connection)
+      (connection/register connection)
       (trigger-event connection :outgoing {:type "JOIN" :destination channel})
       (loop [line (connection/get-line connection)]
         (when line

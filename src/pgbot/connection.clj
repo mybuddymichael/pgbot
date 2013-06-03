@@ -14,6 +14,15 @@
      :channel channel
      :events events}))
 
+(defn register
+  "Sends a 'handshake' message to register the connection."
+  [connection]
+  (let [nick (connection :nick)]
+    (trigger-event connection
+                   :outgoing
+                   (parse (str "NICK " nick))
+                   (parse (str "USER " nick " i * " nick)))))
+
 (defn get-line
   "Grabs a single line from the connection, parsing it into a message
    map, or returning nil if the socket is closed."
