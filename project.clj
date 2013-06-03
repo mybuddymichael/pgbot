@@ -6,5 +6,5 @@
                  [compojure "1.1.5"]
                  [ring/ring-jetty-adapter "1.1.8"]
                  [org.clojure/tools.namespace "0.2.3"]]
-  :test-paths ["test" "src/pgbot/plugin"]
+  :test-paths ["test"]
   :main pgbot.core)
