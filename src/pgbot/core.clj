@@ -44,7 +44,7 @@
           (recur (connection/get-line connection)))))
     connection))
 
-(defn -main [host port nick channel]
+(defn -main [host port nick channel git-listener-port]
   (let [connection (connect host port nick channel)]
     (reset! git-listener/connection connection)
-    (git-listener/start-server)))
+    (git-listener/start-server :port git-listener-port)))
