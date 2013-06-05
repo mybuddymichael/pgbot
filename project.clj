@@ -6,4 +6,5 @@
                  [compojure "1.1.5"]
                  [ring/ring-jetty-adapter "1.1.8"]]
   :test-paths ["test"]
-  :main pgbot.core)
+  :main pgbot.core
+  :profiles {:dev {:dependencies [[org.clojure/tools.namespace "0.2.3"]]}})
