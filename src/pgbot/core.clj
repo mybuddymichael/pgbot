@@ -4,29 +4,17 @@
   (:require [pgbot.connection :as connection]
             [pgbot.messages :use [parse compose]]
             [pgbot.events :use [trigger-event]]
-            [pgbot.git-listener :as git-listener]))
-
-(defn- print-messages
-  [_ & messages]
-  (doseq [m messages]
-    (println (compose m))))
-
-(defn- log
-  "Log a string to a preferred output."
-  [_ & messages]
-  (doseq [m messages]
-    (spit "/tmp/pgbot.log"
-          (str (java.util.Date.) " : " (compose m) "\n")
-          :append true)))
+            [pgbot.git-listener :as git-listener]
+            [pgbot.output :as output]))
 
 (def ^:private events
   "Returns an agent containing a map of event keywords to sets of action
    functions."
-  {:incoming #{log
-               print-messages
+  {:incoming #{output/log
+               output/print-messages
                connection/ping-pong}
-   :outgoing #{log
-               print-messages
+   :outgoing #{output/log
+               output/print-messages
                connection/send-message}})
 
 (defn connect
