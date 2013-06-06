@@ -2,8 +2,8 @@
   "A simple IRC bot."
   (:gen-class)
   (:require [pgbot.connection :as connection]
-            [pgbot.messages :use [parse compose]]
-            [pgbot.events :use [trigger-event]]
+            [pgbot.messages :refer [parse compose]]
+            [pgbot.events :refer [trigger-event]]
             [pgbot.git-listener :as git-listener]
             [pgbot.output :as output]))
 
