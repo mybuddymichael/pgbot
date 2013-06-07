@@ -43,4 +43,6 @@
   [connection & messages]
   (doseq [m messages]
     (when (= (m :type) "PING")
-      (trigger-event connection :outgoing {:type "PONG" :content (m :content)}))))
+      (trigger-event connection
+                     :outgoing
+                     {:type "PONG" :content (m :content)}))))
