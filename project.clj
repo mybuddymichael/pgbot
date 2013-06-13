@@ -6,4 +6,6 @@
                  [compojure "1.1.5"]
                  [ring/ring-jetty-adapter "1.1.8"]]
   :main pgbot.core
-  :profiles {:dev {:dependencies [[org.clojure/tools.namespace "0.2.3"]]}})
+  :profiles {:dev {:source-paths ["dev"]
+                   :repl-options {:init-ns user}
+                   :dependencies [[org.clojure/tools.namespace "0.2.3"]]}})
