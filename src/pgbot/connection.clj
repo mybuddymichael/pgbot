@@ -1,6 +1,6 @@
 (ns pgbot.connection
-  (:require [pgbot.messages :use [parse compose]]
-            [pgbot.events :use [trigger-event]]))
+  (:require [pgbot.messages :refer [parse compose]]
+            [pgbot.events :refer [trigger-event]]))
 
 (defn create
   "Opens a connection to a server. Returns a map containing information

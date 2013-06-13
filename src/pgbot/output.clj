@@ -1,5 +1,5 @@
 (ns pgbot.output
-  (:require [pgbot.messages :use [compose]]))
+  (:require [pgbot.messages :refer [compose]]))
 
 (defn print-messages
   [_ & messages]
