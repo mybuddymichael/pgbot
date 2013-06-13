@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+# Sends a POST request to a listening server with commit info.
+
+set -e
+
+user_name=$(git log -1 --pretty=%cn)
+repo=$(basename "$(git rev-parse --show-toplevel)")
+branch=$(git symbolic-ref HEAD 2> /dev/null | sed 's/refs\/heads\///g')
+commit_message=$(git log -1 --pretty=%s)
+sha=$(git log -1 --pretty=%h)
+
+# Exit if rebasing.
+if [ -z $branch ]; then
+  exit 0
+fi
+
+(curl -sS \
+  --data-urlencode user-name="$user_name" \
+  --data-urlencode repo="$repo" \
+  --data-urlencode branch="$branch" \
+  --data-urlencode commit-message="$commit_message" \
+  --data-urlencode sha="$sha" \
+  http://localhost:9191 &) \
+  > /dev/null
