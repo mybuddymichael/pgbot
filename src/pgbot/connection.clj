@@ -3,16 +3,13 @@
             [pgbot.events :refer [trigger-event]]))
 
 (defn create
-  "Opens a connection to a server. Returns a map containing information
-   about the connection."
-  [host port nick channel & [events]]
-  (let [socket (java.net.Socket. host (Integer. port))]
-    {:socket socket
-     :in (clojure.java.io/reader socket)
-     :out (clojure.java.io/writer socket)
-     :nick nick
-     :channel channel
-     :events events}))
+  "Generate a map containing information about the IRC connection."
+  [host port nick channel]
+  {:socket nil
+   :in nil
+   :out nil
+   :nick nick
+   :channel channel})
 
 (defn register
   "Sends a 'handshake' message to register the connection."
