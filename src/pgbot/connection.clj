@@ -3,7 +3,7 @@
             [pgbot.events :refer [trigger-event]]))
 
 (defn create
-  "Generate a map containing information about the IRC connection."
+  "Generates a map containing information about the IRC connection."
   [host port nick channel]
   {:host host
    :post port
