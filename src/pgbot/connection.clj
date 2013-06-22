@@ -26,6 +26,10 @@
            :in (clojure.java.io/reader socket)
            :out (clojure.java.io/writer socket))))
 
+(defn stop [{:keys [socket] :as connection}]
+  (.close socket)
+  connection)
+
 (defn register
   "Sends a 'handshake' message to register the connection."
   [connection]
