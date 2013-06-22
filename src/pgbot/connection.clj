@@ -6,7 +6,7 @@
   "Generates a map containing information about the IRC connection."
   [host port nick channel]
   {:host host
-   :post port
+   :port port
    :in nil
    :socket nil
    :out nil
