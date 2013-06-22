@@ -5,8 +5,10 @@
 (defn create
   "Generate a map containing information about the IRC connection."
   [host port nick channel]
-  {:socket nil
+  {:host host
+   :post port
    :in nil
+   :socket nil
    :out nil
    :nick nick
    :channel channel})
