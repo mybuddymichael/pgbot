@@ -4,6 +4,6 @@
 
 (defn create [])
 
-(defn start [])
+(defn start [system])
 
-(defn stop [])
+(defn stop [system])
