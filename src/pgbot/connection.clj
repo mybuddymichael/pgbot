@@ -25,7 +25,8 @@
         connection (assoc connection
                           :socket socket
                           :in (clojure.java.io/reader socket)
-                          :out (clojure.java.io/writer socket))]))
+                          :out (clojure.java.io/writer socket))]
+    connection))
 
 (defn stop [{:keys [socket] :as connection}]
   (.close socket)
