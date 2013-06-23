@@ -21,11 +21,11 @@
           (or (try (java.net.Socket. host port)
                    (catch java.net.UnknownHostException _ nil))
               (recur host port)))
-        socket (open-socket host port)]
-    (assoc connection
-           :socket socket
-           :in (clojure.java.io/reader socket)
-           :out (clojure.java.io/writer socket))))
+        socket (open-socket host port)
+        connection (assoc connection
+                          :socket socket
+                          :in (clojure.java.io/reader socket)
+                          :out (clojure.java.io/writer socket))]))
 
 (defn stop [{:keys [socket] :as connection}]
   (.close socket)
