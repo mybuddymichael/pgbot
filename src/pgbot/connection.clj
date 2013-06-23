@@ -13,7 +13,7 @@
    :nick nick
    :channel channel})
 
-(defn start [{:keys [host port] :as connection}]
+(defn start [{:keys [host port channel] :as connection}]
   "Takes a connection and runs side effects to open it. If it cannot
    establish a connection it will continue trying until it succeeds."
   (let [open-socket
