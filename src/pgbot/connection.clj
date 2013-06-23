@@ -2,6 +2,15 @@
   (:require [pgbot.messages :refer [parse compose]]
             [pgbot.events :refer [trigger-event]]))
 
+(defn- register
+  "Sends a 'handshake' message to register the connection."
+  [connection]
+  (let [nick (connection :nick)]
+    (trigger-event connection
+                   :outgoing
+                   {:type "NICK" :destination nick}
+                   {:type "USER" :destination (str nick " i * " nick)})))
+
 (defn create
   "Generates a map containing information about the IRC connection."
   [host port nick channel]
@@ -31,15 +40,6 @@
 (defn stop [{:keys [socket] :as connection}]
   (.close socket)
   connection)
-
-(defn register
-  "Sends a 'handshake' message to register the connection."
-  [connection]
-  (let [nick (connection :nick)]
-    (trigger-event connection
-                   :outgoing
-                   (parse (str "NICK " nick))
-                   (parse (str "USER " nick " i * " nick)))))
 
 (defn get-line
   "Grabs a single line from the connection, parsing it into a message
