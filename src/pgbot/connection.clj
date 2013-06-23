@@ -35,6 +35,8 @@
                           :socket socket
                           :in (clojure.java.io/reader socket)
                           :out (clojure.java.io/writer socket))]
+    (register connection)
+    (trigger-event connection :outgoing {:type "JOIN" :destination channel})
     connection))
 
 (defn stop [{:keys [socket] :as connection}]
