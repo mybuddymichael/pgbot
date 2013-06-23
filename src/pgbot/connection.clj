@@ -16,11 +16,12 @@
 (defn start [{:keys [host port] :as connection}]
   "Takes a connection and runs side effects to open it. If it cannot
    establish a connection it will continue trying until it succeeds."
-  (let [socket (atom nil)
-        _ (while (not @socket)
-            (try (reset! socket (java.net.Socket. host port))
-              (catch java.io.IOException _)))
-        socket @socket]
+  (let [open-socket
+        (fn [host port]
+          (or (try (java.net.Socket. host port)
+                   (catch java.net.UnknownHostException _ nil))
+              (recur host port)))
+        socket (open-socket host port)]
     (assoc connection
            :socket socket
            :in (clojure.java.io/reader socket)
