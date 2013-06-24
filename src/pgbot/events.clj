@@ -1,6 +1,6 @@
 (ns pgbot.events)
 
-(def events (atom nil))
+(def events (atom {}))
 
 (defn trigger
   "Triggers the specified event, passing in the connection map and data
