@@ -11,6 +11,13 @@
                    {:type "NICK" :destination nick}
                    {:type "USER" :destination (str nick " i * " nick)})))
 
+(defn- get-line
+  "Grabs a single line from the connection, parsing it into a message
+   map, or returning nil if the socket is closed."
+  [connection]
+  (try (->> (connection :in) .readLine parse)
+    (catch java.net.SocketException _ nil)))
+
 (defn create
   "Generates a map containing information about the IRC connection."
   [host port nick channel]
@@ -42,13 +49,6 @@
 (defn stop [{:keys [socket] :as connection}]
   (.close socket)
   connection)
-
-(defn get-line
-  "Grabs a single line from the connection, parsing it into a message
-   map, or returning nil if the socket is closed."
-  [connection]
-  (try (->> (connection :in) .readLine parse)
-    (catch java.net.SocketException _ nil)))
 
 (defn send-message
   "Sends one or more messages through a connection's writer."
