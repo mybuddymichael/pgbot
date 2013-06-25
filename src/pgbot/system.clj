@@ -2,10 +2,25 @@
   (:require (pgbot connection
                    logger)))
 
-(def plugin-namespaces #{})
+(defn create
+  "Creates and returns a new instance of pgbot."
+  [& {:keys [host port nick channel]
+                 :or {host "irc.freenode.net"
+                      port 6667
+                      nick "pgbottest"
+                      channel "##pgbottest"}}]
+  {:connection (pgbot.connection/create host port nick channel)})
 
-(defn create [])
+(defn start [system]
+  "Runs various side effects to start up pgbot. Returns the started
+   application."
+  (->> (system :connection)
+       pgbot.logger/start
+       pgbot.connection/start
+       (assoc system :connection)))
 
-(defn start [system])
-
-(defn stop [system])
+(defn stop [system]
+  "Runs various side effects to shut down pgbot. Returns the stopped
+   application."
+  (pgbot.connection/stop (system :connection))
+  system)
