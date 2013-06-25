@@ -1,5 +1,6 @@
 (ns pgbot.core
   "A simple IRC bot."
-  (:gen-class))
+  (:gen-class)
+  (:require (pgbot system)))
 
 (defn -main [host port nick channel git-listener-port])
