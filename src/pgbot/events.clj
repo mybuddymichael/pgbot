@@ -18,5 +18,5 @@
   "Triggers the specified event, passing in the connection map and data
    to the event's action functions."
   [connection event & data]
-  (doseq [f (event (:events connection))]
+  (doseq [f (event (connection :events))]
     (apply f connection (flatten data))))
