@@ -2,12 +2,12 @@
   (:require (pgbot [messages :refer [compose]]
                    [events :as events])))
 
-(defn print-messages
+(defn- print-messages
   [_ & messages]
   (doseq [m messages]
     (println (compose m))))
 
-(defn log
+(defn- log
   "Log a string to a preferred output."
   [_ & messages]
   (doseq [m messages]
