@@ -62,6 +62,8 @@
                           :socket socket
                           :in (clojure.java.io/reader socket)
                           :out (clojure.java.io/writer socket))]
+    (pgbot.events/register [:incoming] [ping-pong])
+    (pgbot.events/register [:outgoing] [send-message])
     (register connection)
     (trigger-event connection :outgoing {:type "JOIN" :destination channel})
     connection))
