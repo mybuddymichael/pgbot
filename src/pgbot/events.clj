@@ -1,11 +1,18 @@
 (ns pgbot.events)
 
 (defn register
-  "Takes a list of functions and adds them to the set of events to be
-   fired when the specified events are triggered."
-  [es fs]
-  (doseq [e es f fs]
-    (swap! events assoc e (conj (@events e #{}) f))))
+  "Takes a list of event keywords and a list of functions and assigns
+   the functions to be called for each event. It returns the connection
+   with an updated events map.
+
+   (register [:incoming :outgoing] [#(println \"messages\")])"
+  [connection es fs]
+  (assoc connection :events
+         (reduce (fn [event-map [e f]]
+                   (assoc event-map e
+                          (conj (event-map e #{}) f)))
+                 (connection :events)
+                 (for [e es f fs] [e f]))))
 
 (defn trigger
   "Triggers the specified event, passing in the connection map and data
