@@ -1,7 +1,5 @@
 (ns pgbot.events)
 
-(def events (atom {}))
-
 (defn register
   "Takes a list of functions and adds them to the set of events to be
    fired when the specified events are triggered."
