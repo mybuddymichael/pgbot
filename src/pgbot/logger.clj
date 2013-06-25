@@ -15,5 +15,5 @@
           (str (java.util.Date.) " : " (compose m) "\n")
           :append true)))
 
-(defn start [_]
+(defn start []
   (events/register [:incoming :outgoing] [print-messages log]))
