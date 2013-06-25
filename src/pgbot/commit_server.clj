@@ -1,5 +1,5 @@
-(ns pgbot.git-listener
-  (:require [pgbot.events :refer [trigger-event]]
+(ns pgbot.commit-server
+  (:require pgbot.events
             [compojure.core :refer [routes POST]]
             [compojure.handler :refer [api]]
             [ring.adapter.jetty :refer [run-jetty]]))
@@ -11,10 +11,12 @@
                 (let [message
                       (str user-name " in " repo "/" branch ": \""
                            commit-message"\" (" sha ")")]
-                  (trigger-event connection :outgoing
-                                 {:type "PRIVMSG"
-                                  :destination (:channel connection)
-                                  :content message}))
+                  (pgbot.events/trigger
+                    connection
+                    :outgoing
+                    {:type "PRIVMSG"
+                     :destination (:channel connection)
+                     :content message}))
                 {:body nil}))
         handler (api app-routes)]
     (run-jetty handler {:port (Integer. port) :join? false})))
