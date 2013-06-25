@@ -1,4 +1,6 @@
-(ns pgbot.system)
+(ns pgbot.system
+  (:require (pgbot connection
+                   logger)))
 
 (def plugin-namespaces #{})
 
