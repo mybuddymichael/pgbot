@@ -6,13 +6,13 @@
    with an updated events map.
 
    (register [:incoming :outgoing] [#(println \"messages\")])"
-  [connection es fs]
+  [connection events functions]
   (assoc connection :events
          (reduce (fn [event-map [e f]]
                    (assoc event-map e
                           (conj (event-map e #{}) f)))
                  (connection :events)
-                 (for [e es f fs] [e f]))))
+                 (for [e events f functions] [e f]))))
 
 (defn trigger
   "Triggers the specified event, passing in the connection map and data
