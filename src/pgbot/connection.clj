@@ -46,7 +46,8 @@
    :socket nil
    :out nil
    :nick nick
-   :channel channel})
+   :channel channel
+   :events {})
 
 (defn start
   "Takes a connection and runs side effects to open it. If it cannot
