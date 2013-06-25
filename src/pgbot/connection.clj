@@ -48,9 +48,10 @@
    :nick nick
    :channel channel})
 
-(defn start [{:keys [host port channel] :as connection}]
+(defn start
   "Takes a connection and runs side effects to open it. If it cannot
    establish a connection it will continue trying until it succeeds."
+  [{:keys [host port channel] :as connection}]
   (let [open-socket
         (fn [host port]
           (or (try (java.net.Socket. host port)
