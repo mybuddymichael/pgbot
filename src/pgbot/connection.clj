@@ -47,7 +47,8 @@
    :out nil
    :nick nick
    :channel channel
-   :events {})
+   :events {}
+   :line-loop nil})
 
 (defn start
   "Takes a connection and runs side effects to open it. If it cannot
@@ -69,7 +70,13 @@
     (pgbot.events/trigger connection
                           :outgoing
                           {:type "JOIN" :destination channel})
-    connection))
+    (assoc connection
+           :line-loop
+           (future
+             (loop [line (get-line connection)]
+               (when line
+                 (pgbot.events/trigger connection :incoming line)
+                 (recur (get-line connection))))))))
 
 (defn stop [{:keys [socket] :as connection}]
   (.close socket)
