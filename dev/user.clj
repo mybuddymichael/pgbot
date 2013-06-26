@@ -1,6 +1,7 @@
 (ns user
   (:require [clojure.tools.namespace.repl :refer [refresh refresh-all]]
             [clojure.repl :refer :all]
+            [clojure.test :refer [run-tests]]
             (pgbot system debug)))
 
 (def system nil)
