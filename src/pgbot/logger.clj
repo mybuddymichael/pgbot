@@ -1,6 +1,6 @@
 (ns pgbot.logger
   (:require (pgbot [messages :refer [compose]]
-                   [events :as events])))
+                   events)))
 
 (defn- print-messages
   [_ & messages]
@@ -15,5 +15,5 @@
           (str (java.util.Date.) " : " (compose m) "\n")
           :append true)))
 
-(defn start []
-  (events/register [:incoming :outgoing] [print-messages log]))
+(defn start [connection]
+  (pgbot.events/register connection [:incoming :outgoing] [print-messages log]))
