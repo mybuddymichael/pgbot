@@ -60,12 +60,14 @@
                    (catch java.net.UnknownHostException _ nil))
               (recur host port)))
         socket (open-socket host port)
-        connection (assoc connection
-                          :socket socket
-                          :in (clojure.java.io/reader socket)
-                          :out (clojure.java.io/writer socket))]
-    (pgbot.events/register [:incoming] [ping-pong])
-    (pgbot.events/register [:outgoing] [send-message])
+        connection
+        (-> connection
+            (assoc
+              :socket socket
+              :in (clojure.java.io/reader socket)
+              :out (clojure.java.io/writer socket))
+            (pgbot.events/register [:incoming] [ping-pong])
+            (pgbot.events/register [:outgoing] [send-message]))]
     (register connection)
     (pgbot.events/trigger connection
                           :outgoing
