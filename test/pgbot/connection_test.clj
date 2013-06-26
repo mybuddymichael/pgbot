@@ -1,1 +1,2 @@
-(ns pgbot.connection-test)
+(ns pgbot.connection-test
+  (:require (pgbot test-helpers)))
