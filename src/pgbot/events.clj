@@ -15,8 +15,9 @@
                  (for [e events f functions] [e f]))))
 
 (defn trigger
-  "Triggers the specified event, passing in the connection map and data
-   to the event's assigned functions, potentially running side effects."
+  "Triggers the specified event, calling as a side effect each assigned
+   function. The connection map and the data is passed to each
+   function."
   [connection event & data]
   (doseq [f (event (connection :events))]
     (apply f connection (flatten data))))
