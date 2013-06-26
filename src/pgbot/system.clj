@@ -5,10 +5,10 @@
 (defn create
   "Creates and returns a new instance of pgbot."
   [& {:keys [host port nick channel]
-                 :or {host "irc.freenode.net"
-                      port 6667
-                      nick "pgbottest"
-                      channel "##pgbottest"}}]
+      :or {host "irc.freenode.net"
+           port 6667
+           nick "pgbottest"
+           channel "##pgbottest"}}]
   {:connection (pgbot.connection/create host port nick channel)})
 
 (defn start [system]
