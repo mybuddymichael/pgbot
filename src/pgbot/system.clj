@@ -1,6 +1,7 @@
 (ns pgbot.system
   (:require (pgbot connection
-                   logger)))
+                   logger
+                   commit-server)))
 
 (defn create
   "Creates and returns a new instance of pgbot."
