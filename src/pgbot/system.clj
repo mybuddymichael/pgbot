@@ -21,8 +21,7 @@
             pgbot.connection/start)]
     (assoc system
            :connection connection
-           :commit-server
-           (pgbot.commit-server/create-and-start (system :connection)))))
+           :commit-server (pgbot.commit-server/create-and-start connection))))
 
 (defn stop [{:keys [connection commit-server] :as system}]
   "Runs various side effects to shut down pgbot. Returns the stopped
