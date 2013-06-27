@@ -40,15 +40,17 @@
 (defn create
   "Generates a map containing information about the IRC connection."
   [host port nick channel]
-  {:host host
-   :port port
-   :in nil
-   :socket nil
-   :out nil
-   :nick nick
-   :channel channel
-   :events {}
-   :line-loop nil})
+  (-> {:host host
+       :port port
+       :in nil
+       :socket nil
+       :out nil
+       :nick nick
+       :channel channel
+       :events {}
+       :line-loop nil}
+      (pgbot.events/register [:incoming] [ping-pong])
+      (pgbot.events/register [:outgoing] [send-message])))
 
 (defn start
   "Takes a connection and runs side effects to open it. If it cannot
@@ -60,14 +62,10 @@
                    (catch java.net.UnknownHostException _ nil))
               (recur host port)))
         socket (open-socket host port)
-        connection
-        (-> connection
-            (assoc
-              :socket socket
-              :in (clojure.java.io/reader socket)
-              :out (clojure.java.io/writer socket))
-            (pgbot.events/register [:incoming] [ping-pong])
-            (pgbot.events/register [:outgoing] [send-message]))]
+        connection (assoc connection
+                          :socket socket
+                          :in (clojure.java.io/reader socket)
+                          :out (clojure.java.io/writer socket)) ]
     (register connection)
     (pgbot.events/trigger connection
                           :outgoing
