@@ -12,16 +12,21 @@
            channel "##pgbottest"}}]
   {:connection (pgbot.connection/create host port nick channel)})
 
-(defn start [system]
+(defn start [{:keys [connection] :as system}]
   "Runs various side effects to start up pgbot. Returns the started
    application."
-  (->> (system :connection)
-       pgbot.logger/start
-       pgbot.connection/start
-       (assoc system :connection)))
+  (let [connection
+        (-> connection
+            pgbot.logger/start
+            pgbot.connection/start)]
+    (assoc system
+           :connection connection
+           :commit-server
+           (pgbot.commit-server/create-and-start (system :connection)))))
 
-(defn stop [system]
+(defn stop [{:keys [connection commit-server] :as system}]
   "Runs various side effects to shut down pgbot. Returns the stopped
    application."
-  (pgbot.connection/stop (system :connection))
-  system)
+  (assoc system
+         :commit-server (pgbot.commit-server/stop commit-server)
+         :connection (pgbot.connection/stop connection)))
