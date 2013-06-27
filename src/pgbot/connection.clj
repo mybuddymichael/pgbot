@@ -58,7 +58,7 @@
   [{:keys [host port channel] :as connection}]
   (let [open-socket
         (fn [host port]
-          (or (try (java.net.Socket. host port)
+          (or (try (java.net.Socket. host (Integer. port))
                    (catch java.net.UnknownHostException _ nil))
               (recur host port)))
         socket (open-socket host port)
