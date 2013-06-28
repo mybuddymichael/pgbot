@@ -8,7 +8,8 @@
    point it will automatically try to reconnect."
   [host port nick channel commit-server-port]
   (let [system (-> (pgbot.system/create :host host :port port :nick nick
-                                        :channel channel)
+                                        :channel channel
+                                        :commit-server-port commit-server-port)
                    pgbot.system/start)]
     @(get-in system [:connection :line-loop])
     (recur host port nick channel commit-server-port)))

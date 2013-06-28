@@ -26,7 +26,7 @@
            :connection connection
            :commit-server
            (pgbot.commit-server/create-and-start connection
-                                                 :commit-server-port
+                                                 :port
                                                  commit-server-port))))
 
 (defn stop
