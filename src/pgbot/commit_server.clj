@@ -21,8 +21,8 @@
            {:body nil}))))
 
 (defn create-and-start
-  "Runs side effects to create and start a new Jetty Server listens for
-   git commits. Returns the new Server."
+  "Runs side effects to create and start a new Jetty Server that listens
+   for git commits. Returns the new Server."
   [connection & {:keys [port] :or {port 8080}}]
   (run-jetty (create-handler connection) {:port (Integer. port) :join? false}))
 
