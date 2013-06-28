@@ -6,9 +6,9 @@
 (defn -main
   "Start pgbot. This will block until the connection closes, at which
    point it will automatically try to reconnect."
-  [host port nick channel]
+  [host port nick channel commit-server-port]
   (let [system (-> (pgbot.system/create :host host :port port :nick nick
                                         :channel channel)
                    pgbot.system/start)]
     @(get-in system [:connection :line-loop])
-    (recur host port nick channel)))
+    (recur host port nick channel commit-server-port)))
