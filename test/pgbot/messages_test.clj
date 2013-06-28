@@ -1,6 +1,6 @@
 (ns pgbot.messages-test
-  (:require [clojure.test :use [is]]
-            [pgbot.test-helpers :use [deftest* deftest-*]]
+  (:require [clojure.test :refer [is]]
+            [pgbot.test-helpers :refer [deftest*]]
             pgbot.messages))
 
 (deftest* "parse returns a map with message parts"
