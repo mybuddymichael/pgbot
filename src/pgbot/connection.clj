@@ -42,8 +42,8 @@
   [host port nick channel]
   (-> {:host host
        :port port
-       :in nil
        :socket nil
+       :in nil
        :out nil
        :nick nick
        :channel channel
