@@ -44,8 +44,10 @@
   (-> {:host host
        :port port
        :socket nil
-       :in nil
-       :out nil
+       :reader nil
+       :writer nil
+       :in (chan)
+       :out (chan)
        :nick nick
        :channel channel
        :events {}
