@@ -41,17 +41,9 @@
 (defn create
   "Generates a map containing information about the IRC connection."
   [host port nick channel]
-  (-> {:host host
-       :port port
-       :socket nil
+  (-> {:socket nil
        :reader nil
-       :writer nil
-       :in (chan)
-       :out (chan)
-       :nick nick
-       :channel channel
-       :events {}
-       :line-loop nil}
+       :writer nil}
       (pgbot.events/register [:incoming] [ping-pong])
       (pgbot.events/register [:outgoing] [send-message])))
 
