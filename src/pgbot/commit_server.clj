@@ -5,22 +5,6 @@
             [compojure.handler :refer [api]]
             [ring.adapter.jetty :refer [run-jetty]]))
 
-(defn- create-handler
-  "Generates a Ring handler to post commits to the connection."
-  [connection]
-  (api (routes
-         (POST "/" [user-name commit-message repo branch sha]
-           (let [message
-                 (str user-name " in " repo "/" branch ": \""
-                      commit-message"\" (" sha ")")]
-             (pgbot.events/trigger
-               connection
-               :outgoing
-               {:type "PRIVMSG"
-                :destination (:channel connection)
-                :content message}))
-           {:body nil}))))
-
 (defn create
   "Creates and returns a stopped Jetty Server instance."
   [listening-port out irc-channel]
