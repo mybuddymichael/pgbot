@@ -13,12 +13,7 @@
 
 (defn create
   "Creates and returns a new instance of pgbot."
-  [& {:keys [host port nick channel commit-server-port]
-      :or {host "irc.freenode.net"
-           port 6667
-           nick "pgbottest"
-           channel "##pgbottest"
-           commit-server-port 8080}}]
+  [& {:keys [host port nick channel commit-server-port]}]
   (let [connection (pgbot.connection/create host port nick channel)]
     {:connection connection
      :commit-server (pgbot.commit-server/create commit-server-port
