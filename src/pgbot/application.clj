@@ -1,4 +1,4 @@
-(ns pgbot.system
+(ns pgbot.application
   (:require (pgbot connection
                    logger
                    commit-server)))
@@ -20,19 +20,19 @@
 (defn start
   "Runs various side effects to start up pgbot. Returns the started
    application."
-  [{:keys [connection commit-server] :as system}]
+  [{:keys [connection commit-server] :as application}]
   (let [connection
         (-> connection
             pgbot.logger/start
             pgbot.connection/start)]
-    (assoc system
+    (assoc application
            :connection connection
            :commit-server (pgbot.commit-server/start commit-server))))
 
 (defn stop
   "Runs various side effects to shut down pgbot. Returns the stopped
    application."
-  [{:keys [connection commit-server] :as system}]
-  (assoc system
+  [{:keys [connection commit-server] :as application}]
+  (assoc application
          :commit-server (pgbot.commit-server/stop commit-server)
          :connection (pgbot.connection/stop connection)))
