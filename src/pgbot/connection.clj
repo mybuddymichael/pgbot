@@ -62,12 +62,18 @@
     (send-message connection
                   {:type "JOIN" :destination channel})
     (assoc connection
-           :line-loop
-           (future
+           :in-loop
+           (go
              (loop [line (get-line connection)]
                (when line
-                 (pgbot.events/trigger connection :incoming line)
-                 (recur (get-line connection))))))))
+                 (>! in (parse line))
+                 (recur (get-line connection)))))
+           :out-loop
+           (go
+             (loop [message (<! out)]
+               (when message
+                 (send-message connection message)
+                 (recur (<! out))))))))
 
 (defn stop [{:keys [socket] :as connection}]
   (.close socket)
