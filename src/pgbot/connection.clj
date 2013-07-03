@@ -2,16 +2,6 @@
   (:require (pgbot [messages :refer [parse compose]]
                    events)))
 
-(defn- register
-  "Sends a 'handshake' message to register the connection."
-  [connection]
-  (let [nick (connection :nick)]
-    (pgbot.events/trigger
-      connection
-      :outgoing
-      {:type "NICK" :destination nick}
-      {:type "USER" :destination (str nick " i * " nick)})))
-
 (defn- get-line
   "Grabs a single line from the connection, parsing it into a message
    map, or returning nil if the socket is closed."
@@ -59,10 +49,11 @@
                           :socket socket
                           :in (clojure.java.io/reader socket)
                           :out (clojure.java.io/writer socket)) ]
-    (register connection)
-    (pgbot.events/trigger connection
-                          :outgoing
-                          {:type "JOIN" :destination channel})
+    (send-message connection
+                  {:type "NICK" :destination nick}
+                  {:type "USER" :destination (str nick " i * " nick)})
+    (send-message connection
+                  {:type "JOIN" :destination channel})
     (assoc connection
            :line-loop
            (future
