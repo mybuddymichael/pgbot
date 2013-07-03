@@ -41,9 +41,9 @@
   "Creates and returns a map for holding the physical connection to the
    IRC server."
   []
-  (-> {:socket nil
-       :reader nil
-       :writer nil}))
+  {:socket nil
+   :reader nil
+   :writer nil})
 
 (defn start
   "Takes a connection and runs side effects to open it. If it cannot
