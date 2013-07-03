@@ -43,8 +43,10 @@
    :out (chan)})
 
 (defn start
-  "Takes a connection and runs side effects to open it. If it cannot
-   establish a connection it will continue trying until it succeeds."
+  "Runs side effects to open a connection to an IRC server. If it cannot
+   establish a connection it will keep trying until it succeeds. It
+   starts placing incoming messages into the in channel and taking
+   outgoing message off the out channel."
   [{:keys [host port nick channel in out] :as connection}]
   (let [open-socket
         (fn [host port]
