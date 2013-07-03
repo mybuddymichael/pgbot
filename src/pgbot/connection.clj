@@ -38,8 +38,9 @@
         {:type "PONG" :content (m :content)}))))
 
 (defn create
-  "Generates a map containing information about the IRC connection."
-  [host port nick channel]
+  "Creates and returns a map for holding the physical connection to the
+   IRC server."
+  []
   (-> {:socket nil
        :reader nil
        :writer nil}))
