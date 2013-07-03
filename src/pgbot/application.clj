@@ -11,12 +11,6 @@
         commit-server-port (Integer. commit-server-port)
         connection (pgbot.connection/create host port nick channel)]
     {:connection connection
-     :host host
-     :port port
-     :nick nick
-     :channel channel
-     :in (chan)
-     :out (chan)
      :commit-server (pgbot.commit-server/create commit-server-port
                                                 (connection :out)
                                                 (connection :channel))}))
