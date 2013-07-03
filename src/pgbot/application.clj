@@ -1,7 +1,8 @@
 (ns pgbot.application
   (:require (pgbot connection
                    logger
-                   commit-server)
+                   commit-server
+                   ping-pong)
             [clojure.core.async :refer [chan]]))
 
 (defn create
@@ -9,11 +10,15 @@
   [& {:keys [host port nick channel commit-server-port]}]
   (let [port (Integer. port)
         commit-server-port (Integer. commit-server-port)
-        connection (pgbot.connection/create host port nick channel)]
+        {:keys [out channel] :as connection} (pgbot.connection/create host
+                                                                      port
+                                                                      nick
+                                                                      channel)]
     {:connection connection
+     :ping-pong (pgbot.ping-pong/create out)
      :commit-server (pgbot.commit-server/create commit-server-port
-                                                (connection :out)
-                                                (connection :channel))}))
+                                                out
+                                                channel)}))
 
 (defn create-dev
   "Creates and returns a new pgbot instance suitable for development."
