@@ -14,7 +14,9 @@
 (defn create
   "Creates and returns a new instance of pgbot."
   [& {:keys [host port nick channel commit-server-port]}]
-  (let [connection (pgbot.connection/create host port nick channel)]
+  (let [port (Integer. port)
+        commit-server-port (Integer. commit-server-port)
+        connection (pgbot.connection/create host port nick channel)]
     {:connection connection
      :commit-server (pgbot.commit-server/create commit-server-port
                                                 (connection :out)
