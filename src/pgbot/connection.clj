@@ -6,13 +6,13 @@
   "Grabs a single line from the connection, parsing it into a message
    map, or returning nil if the socket is closed."
   [connection]
-  (try (->> (connection :in) .readLine parse)
+  (try (->> (connection :reader) .readLine parse)
     (catch java.io.IOException _ nil)))
 
 (defn- send-message
   "Sends one or more messages through a connection's writer."
   [connection & messages]
-  (binding [*out* (connection :out)]
+  (binding [*out* (connection :writer)]
     (doseq [m messages]
       (println (compose m)))))
 
@@ -47,8 +47,8 @@
         socket (open-socket host port)
         connection (assoc connection
                           :socket socket
-                          :in (clojure.java.io/reader socket)
-                          :out (clojure.java.io/writer socket)) ]
+                          :reader (clojure.java.io/reader socket)
+                          :writer (clojure.java.io/writer socket))]
     (send-message connection
                   {:type "NICK" :destination nick}
                   {:type "USER" :destination (str nick " i * " nick)})
