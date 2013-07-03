@@ -1,7 +1,6 @@
 (ns pgbot.connection
   (:require (pgbot [messages :refer [parse compose]]
-                   events)
-            [clojure.core.async :refer [chan]]))
+                   events)))
 
 (defn- register
   "Sends a 'handshake' message to register the connection."
