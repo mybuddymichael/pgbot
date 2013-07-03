@@ -3,6 +3,14 @@
                    logger
                    commit-server)))
 
+(defn create-dev
+  "Creates and returns a new pgbot instance suitable for development."
+  (create :host "irc.freenode.net"
+          :port 6667
+          :nick "pgbottest"
+          :channel "##pgbottest"
+          :commit-server-port 8080))
+
 (defn create
   "Creates and returns a new instance of pgbot."
   [& {:keys [host port nick channel commit-server-port]
