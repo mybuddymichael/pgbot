@@ -1,7 +1,8 @@
 (ns pgbot.application
   (:require (pgbot connection
                    logger
-                   commit-server)))
+                   commit-server)
+            [clojure.core.async :refer [chan]]))
 
 (defn create-dev
   "Creates and returns a new pgbot instance suitable for development."
