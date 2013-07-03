@@ -42,9 +42,7 @@
   [host port nick channel]
   (-> {:socket nil
        :reader nil
-       :writer nil}
-      (pgbot.events/register [:incoming] [ping-pong])
-      (pgbot.events/register [:outgoing] [send-message])))
+       :writer nil}))
 
 (defn start
   "Takes a connection and runs side effects to open it. If it cannot
