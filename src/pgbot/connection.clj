@@ -31,10 +31,16 @@
 (defn create
   "Creates and returns a map for holding the physical connection to the
    IRC server."
-  []
+  [host port nick channel]
   {:socket nil
    :reader nil
-   :writer nil})
+   :writer nil
+   :host host
+   :port port
+   :nick nick
+   :channel channel
+   :in (chan)
+   :out (chan)})
 
 (defn start
   "Takes a connection and runs side effects to open it. If it cannot
