@@ -17,17 +17,6 @@
     (doseq [m messages]
       (println (compose m)))))
 
-(defn- ping-pong
-  "Triggers an outgoing event with a PONG string if the incoming message
-   is a PING."
-  [connection & messages]
-  (doseq [m messages]
-    (when (= (m :type) "PING")
-      (pgbot.events/trigger
-        connection
-        :outgoing
-        {:type "PONG" :content (m :content)}))))
-
 (defn create
   "Creates and returns a map for holding the physical connection to the
    IRC server."
