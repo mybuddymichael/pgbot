@@ -4,15 +4,6 @@
                    commit-server)
             [clojure.core.async :refer [chan]]))
 
-(defn create-dev
-  "Creates and returns a new pgbot instance suitable for development."
-  [& _]
-  (create :host "irc.freenode.net"
-          :port 6667
-          :nick "pgbottest"
-          :channel "##pgbottest"
-          :commit-server-port 8080))
-
 (defn create
   "Creates and returns a new instance of pgbot."
   [& {:keys [host port nick channel commit-server-port]}]
@@ -29,6 +20,15 @@
      :commit-server (pgbot.commit-server/create commit-server-port
                                                 (connection :out)
                                                 (connection :channel))}))
+
+(defn create-dev
+  "Creates and returns a new pgbot instance suitable for development."
+  [& _]
+  (create :host "irc.freenode.net"
+          :port 6667
+          :nick "pgbottest"
+          :channel "##pgbottest"
+          :commit-server-port 8080))
 
 (defn start
   "Runs various side effects to start up pgbot. Returns the started
