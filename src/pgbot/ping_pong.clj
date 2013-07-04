@@ -29,4 +29,4 @@
   [{:keys [loop] :as ping-pong}]
   (assoc ping-pong
          :loop
-         (close! (loop))))
+         (close! loop)))
