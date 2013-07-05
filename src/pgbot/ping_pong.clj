@@ -17,10 +17,10 @@
   (assoc ping-pong
          :loop
          (go
-           (loop [message (<! in)]
-             (when (= (message :type) "PING")
+           (loop [{:keys [type content]} (<! in)]
+             (when (= type "PING")
                (>! out {:type "PONG"
-                        :content (message :content)}))
+                        :content content}))
              (recur (<! in))))))
 
 (defn stop
