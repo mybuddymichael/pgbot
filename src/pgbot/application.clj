@@ -10,8 +10,8 @@
   [& {:keys [host port nick channel commit-server-port]}]
   (let [port (Integer. port)
         commit-server-port (Integer. commit-server-port)
-        {:keys [out channel] :as connection}
-        (pgbot.connection/create host port nick channel)]
+        {:keys [out channel] :as connection} (pgbot.connection/create
+                                               host port nick channel)]
     {:connection connection
      :ping-pong (pgbot.ping-pong/create out)
      :commit-server (pgbot.commit-server/create
