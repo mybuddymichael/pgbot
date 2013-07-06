@@ -29,19 +29,21 @@
 (defn start
   "Runs various side effects to start up pgbot. Returns the started
    application."
-  [{:keys [connection commit-server] :as application}]
+  [{:keys [connection commit-server ping-pong] :as application}]
   (let [connection
         (-> connection
             pgbot.logger/start
             pgbot.connection/start)]
     (assoc application
            :connection connection
-           :commit-server (pgbot.commit-server/start commit-server))))
+           :commit-server (pgbot.commit-server/start commit-server)
+           :ping-pong (pgbot.ping-pong/stop ping-pong))))
 
 (defn stop
   "Runs various side effects to shut down pgbot. Returns the stopped
    application."
-  [{:keys [connection commit-server] :as application}]
+  [{:keys [connection commit-server ping-pong] :as application}]
   (assoc application
          :commit-server (pgbot.commit-server/stop commit-server)
-         :connection (pgbot.connection/stop connection)))
+         :connection (pgbot.connection/stop connection)
+         :ping-pong (pgbot.ping-pong/stop ping-pong)))
