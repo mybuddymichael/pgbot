@@ -9,7 +9,7 @@
 (defn create
   "Creates and stores a new application instance."
   []
-  (alter-var-root #'application (constantly (pgbot.application/create))))
+  (alter-var-root #'application (constantly (pgbot.application/create-dev))))
 
 (defn start
   "Starts the current application."
