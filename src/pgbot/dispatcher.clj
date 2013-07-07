@@ -1,5 +1,5 @@
 (ns pgbot.dispatcher
-  (require [clojure.core.async :refer [chan go <! >! >!!]]))
+  (require [clojure.core.async :refer [chan go put! >!!]]))
 
 (defn create [in channels]
   {:in in
@@ -11,7 +11,7 @@
     (loop [[message channel] (alts! [stop in] :priority true)]
       (when (not= channel stop)
         (doseq [c channels]
-          (go (>! c message)))
+          (put! c message))
         (recur (alts! [stop in] :priority true)))))
   dispatcher)
 
