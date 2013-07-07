@@ -1,19 +1,25 @@
 (ns pgbot.logger
   (:require (pgbot [messages :refer [compose]]
-                   events)))
+                   events)
+            [clojure.core.async :refer [alts! chan go <!]]))
 
-(defn- print-messages
-  [_ & messages]
-  (doseq [m messages]
-    (println (compose m))))
+(defn create []
+  {:in (chan)
+   :stop (chan)})
 
-(defn- log
+(defn start
   "Log a string to a preferred output."
-  [_ & messages]
-  (doseq [m messages]
-    (spit "/tmp/pgbot.log"
-          (str (java.util.Date.) " : " (compose m) "\n")
-          :append true)))
+  [{:keys [in stop] :as logger}]
+  (go
+    (loop [[message chan] (alts! [stop in] :priority true)]
+      (when (not= chan stop)
+        (spit "/tmp/pgbot.log"
+              (str (java.util.Date.) " : " (compose message) "\n")
+              :append true))
+      (recur (alts! [stop in] :priority true))))
+  logger)
 
-(defn start [connection]
-  (pgbot.events/register connection [:incoming :outgoing] [print-messages log]))
+(defn stop
+  [{:keys [stop] :as logger}]
+  (>!! stop true)
+  logger)
