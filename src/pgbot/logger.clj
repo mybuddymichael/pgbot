@@ -1,7 +1,7 @@
 (ns pgbot.logger
   (:require (pgbot [messages :refer [compose]]
                    events)
-            [clojure.core.async :refer [alts! chan go <!]]))
+            [clojure.core.async :refer [alts! chan go <! >!!]]))
 
 (defn create []
   {:in (chan)
