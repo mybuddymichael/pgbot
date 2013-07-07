@@ -27,8 +27,8 @@
    :port port
    :nick nick
    :channel channel
-   :in (chan)
-   :out (chan)
+   :in nil
+   :out nil
    :in-loop nil
    :out-loop nil})
 
@@ -44,10 +44,14 @@
                    (catch java.net.UnknownHostException _ nil))
               (recur host port)))
         socket (open-socket host port)
+        in (chan)
+        out (chan)
         connection (assoc connection
                           :socket socket
                           :reader (clojure.java.io/reader socket)
-                          :writer (clojure.java.io/writer socket))]
+                          :writer (clojure.java.io/writer socket)
+                          :in in
+                          :out out)]
     (send-message connection
                   {:type "NICK" :destination nick}
                   {:type "USER" :destination (str nick " i * " nick)})
