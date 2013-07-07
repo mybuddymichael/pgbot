@@ -71,6 +71,7 @@
                  (send-message connection message)
                  (recur (<! out))))))))
 
-(defn stop [{:keys [socket] :as connection}]
+(defn stop [{:keys [socket out] :as connection}]
   (.close socket)
+  (close! out)
   connection)
