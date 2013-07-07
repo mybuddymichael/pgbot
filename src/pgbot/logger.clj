@@ -8,7 +8,7 @@
    :stop (chan)})
 
 (defn start
-  "Log a string to a preferred output."
+  "Log a string to a file."
   [{:keys [in stop] :as logger}]
   (go
     (loop [[message chan] (alts! [stop in] :priority true)]
