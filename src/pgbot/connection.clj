@@ -29,7 +29,9 @@
    :nick nick
    :channel channel
    :in (chan)
-   :out (chan)})
+   :out (chan)
+   :in-loop nil
+   :out-loop nil})
 
 (defn start
   "Runs side effects to open a connection to an IRC server. If it cannot
