@@ -12,4 +12,5 @@
                                         :commit-server-port commit-server-port)
                    pgbot.system/start)]
     @(get-in system [:connection :line-loop])
+    (pgbot.system/stop system)
     (recur host port nick channel commit-server-port)))
