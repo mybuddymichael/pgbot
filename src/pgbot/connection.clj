@@ -62,6 +62,7 @@
                    (catch java.net.UnknownHostException _ nil))
               (recur host port)))
         socket (open-socket host port)
+        _ (.setSoTimeout socket 300000)
         connection (assoc connection
                           :socket socket
                           :in (clojure.java.io/reader socket)
