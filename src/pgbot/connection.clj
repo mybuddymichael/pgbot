@@ -44,6 +44,7 @@
                    (catch java.net.UnknownHostException _ nil))
               (recur host port)))
         socket (open-socket host port)
+        _ (.setSoTimeout socket 300000)
         in (chan)
         out (chan)
         connection (assoc connection
