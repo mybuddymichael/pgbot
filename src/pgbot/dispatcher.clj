@@ -7,12 +7,11 @@
    :stop (chan)})
 
 (defn start [{:keys [in channels stop] :as dispatcher}]
-  (go
-    (loop [[message channel] (alts! [stop in] :priority true)]
-      (when (not= channel stop)
-        (doseq [c channels]
-          (put! c message))
-        (recur (alts! [stop in] :priority true)))))
+  (go (loop [[message channel] (alts! [stop in] :priority true)]
+        (when (not= channel stop)
+          (doseq [c channels]
+            (put! c message))
+          (recur (alts! [stop in] :priority true)))))
   dispatcher)
 
 (defn stop [{:keys [stop] :as dispatcher}]
