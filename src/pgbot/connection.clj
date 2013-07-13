@@ -65,11 +65,13 @@
                  (doseq [c in-chans] (put! c (parse line)))
                  (recur (get-line connection)))))
            :out-loop
-           (go
-             (loop [message (<! out)]
-               (when message
-                 (send-message connection message)
-                 (recur (<! out))))))))
+           (thread
+             (let [alts-fn #(alts!! (flatten [stop out-chans]) :priority true)]
+               (loop [[message chan] (alts-fn)]
+                 (when (not= chan stop)
+                   (send-message connection message)
+                   (doseq [c out-listeners] (put! c message))
+                   (recur (alts-fn)))))))))
 
 (defn stop [{:keys [socket stop] :as connection}]
   (.close socket)
