@@ -1,6 +1,6 @@
 (ns pgbot.commit-server
   (:require pgbot.events
-            [clojure.core.async :refer [chan go >!]]
+            [clojure.core.async :refer [chan go put!]]
             [compojure.core :refer [routes POST]]
             [compojure.handler :refer [api]]
             [ring.adapter.jetty :refer [run-jetty]]))
