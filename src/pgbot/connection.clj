@@ -1,7 +1,7 @@
 (ns pgbot.connection
   (:require (pgbot [messages :refer [parse compose]]
                    events)
-            [clojure.core.async :refer [chan go >! <! close!]]))
+            [clojure.core.async :refer [chan thread put! alts!! close!]]))
 
 (defn- get-line
   "Grabs a single line from the connection, parsing it into a message
