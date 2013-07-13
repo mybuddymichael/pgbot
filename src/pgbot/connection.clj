@@ -39,7 +39,8 @@
    establish a connection it will keep trying until it succeeds. It
    starts placing incoming messages into the in channel and taking
    outgoing message off the out channel."
-  [{:keys [host port nick channel in-chans out-chans stop] :as connection}]
+  [{:keys [host port nick channel in-chans out-chans out-listeners stop]
+    :as connection}]
   (let [open-socket
         (fn [host port]
           (or (try (java.net.Socket. host port)
