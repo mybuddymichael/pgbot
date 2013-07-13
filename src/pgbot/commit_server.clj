@@ -16,10 +16,9 @@
                           (let [message
                                 (str user-name " in " repo "/" branch ": \""
                                      commit-message"\" (" sha ")")]
-                            (go
-                              (>! out {:type "PRIVMSG"
+                            (put! out {:type "PRIVMSG"
                                        :destination irc-channel
-                                       :content message})))
+                                       :content message}))
                           {:body nil})))
                  {:port listening-port :join false})]
     (.stop server)
