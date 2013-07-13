@@ -58,7 +58,7 @@
                   {:type "JOIN" :destination channel})
     (assoc connection
            :in-loop
-           (go
+           (thread
              (loop [line (get-line connection)]
                (when line
                  (>! in (parse line))
