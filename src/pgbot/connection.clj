@@ -47,14 +47,10 @@
               (recur host port)))
         socket (open-socket host port)
         _ (.setSoTimeout socket 300000)
-        in (chan)
-        out (chan)
         connection (assoc connection
                           :socket socket
                           :reader (clojure.java.io/reader socket)
-                          :writer (clojure.java.io/writer socket)
-                          :in in
-                          :out out)]
+                          :writer (clojure.java.io/writer socket))]
     (send-message connection
                   {:type "NICK" :destination nick}
                   {:type "USER" :destination (str nick " i * " nick)})
