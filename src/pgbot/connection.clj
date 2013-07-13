@@ -61,7 +61,8 @@
            (thread
              (loop [line (get-line connection)]
                (when line
-                 (>! in (parse line))
+                 (doseq [c in-chans]
+                   (put! c (parse line)))
                  (recur (get-line connection)))))
            :out-loop
            (go
