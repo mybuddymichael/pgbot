@@ -19,7 +19,7 @@
 (defn create
   "Creates and returns a map for holding the physical connection to the
    IRC server."
-  [host port nick channel]
+  [host port nick channel in-chans out-chans out-listeners]
   {:socket nil
    :reader nil
    :writer nil
