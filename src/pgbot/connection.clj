@@ -27,10 +27,12 @@
    :port port
    :nick nick
    :channel channel
-   :in nil
-   :out nil
    :in-loop nil
-   :out-loop nil})
+   :out-loop nil
+   :in-chans in-chans
+   :out-chans out-chans
+   :out-listeners out-listeners
+   :stop (chan)})
 
 (defn start
   "Runs side effects to open a connection to an IRC server. If it cannot
