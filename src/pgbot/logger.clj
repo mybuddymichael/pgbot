@@ -1,7 +1,7 @@
 (ns pgbot.logger
   (:require (pgbot [messages :refer [compose]]
                    events)
-            [clojure.core.async :refer [alts! chan go <! >!!]]))
+            [clojure.core.async :refer [alts! chan go <! close!]]))
 
 (defn create []
   {:in (chan)
@@ -23,5 +23,5 @@
 (defn stop
   "Stops and returns the logger system."
   [{:keys [stop] :as logger}]
-  (>!! stop true)
+  (close! stop)
   logger)

@@ -1,5 +1,5 @@
 (ns pgbot.ping-pong
-  (:require [clojure.core.async :refer [chan go <! >! >!! alts!]]))
+  (:require [clojure.core.async :refer [chan go <! >! close! alts!]]))
 
 (defn create
   "Creates and returns a system to check for ping messages from the IRC
@@ -26,5 +26,5 @@
   "Runs side effects to stop the ping-pong system. Returns the stopped
    system."
   [{:keys [stop] :as ping-pong}]
-  (>!! stop true)
+  (close! stop)
   ping-pong)
