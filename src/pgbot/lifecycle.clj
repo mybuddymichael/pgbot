@@ -1,6 +1,6 @@
-(ns pgbot.lifecycle
-  "A protocol for starting and stopping systems.")
+(ns pgbot.lifecycle)
 
 (defprotocol Lifecycle
-  (start [system] "Runs side effects to start the system.")
-  (stop [system] "Runs side effects to stop the sytem."))
+  "A protocol for starting and stopping systems."
+  (start [system] "Runs side effects to start the system. Returns the system.")
+  (stop [system] "Runs side effects to stop the sytem. Returns the system."))
