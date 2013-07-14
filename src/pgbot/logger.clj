@@ -1,27 +1,24 @@
 (ns pgbot.logger
-  (:require (pgbot [messages :refer [compose]]
-                   events)
+  (:require (pgbot [lifecycle :refer [Lifecycle]]
+                   [messages :refer [compose]])
             [clojure.core.async :refer [alts! chan go <! close!]]))
 
-(defn create []
-  {:in (chan)
-   :stop (chan)})
+(defrecord Logger [out-listener stop])
 
-(defn start
-  "Runs side effects to begin pulling in messages from its channel.
-   Messages are logged to a file. Returns the logger system."
-  [{:keys [in stop] :as logger}]
-  (go
-    (loop [[message chan] (alts! [stop in] :priority true)]
-      (when (not= chan stop)
-        (spit "/tmp/pgbot.log"
-              (str (java.util.Date.) " : " (compose message) "\n")
-              :append true))
-      (recur (alts! [stop in] :priority true))))
-  logger)
+(extend-type Logger
+  Lifecycle
+  (start [{:keys [out-listener stop] :as Logger}]
+    (go (loop [[message chan] (alts! [stop out-listener] :priority true)]
+          (when (not= chan stop)
+            (println (compose message))
+            (spit "/tmp/pgbot.log"
+                  (str (java.util.Date.) " : " (compose message) "\n")
+                  :append true))
+          (recur (alts! [stop out-listener] :priority true))))
+    Logger)
+  (stop [{:keys [stop] :as Logger}]
+    (close! stop)
+    Logger))
 
-(defn stop
-  "Stops and returns the logger system."
-  [{:keys [stop] :as logger}]
-  (close! stop)
-  logger)
+(defn ->Logger []
+  (Logger. (chan) (chan)))
