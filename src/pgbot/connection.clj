@@ -1,6 +1,5 @@
 (ns pgbot.connection
-  (:require (pgbot [messages :refer [parse compose]]
-                   events)
+  (:require (pgbot [messages :refer [parse compose]])
             [clojure.core.async :refer [chan thread put! alts!! close!]]))
 
 (defn- get-line
