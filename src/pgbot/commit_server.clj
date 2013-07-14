@@ -31,6 +31,6 @@
                                        :destination irc-channel
                                        :content message}))
                           {:body nil})))
-                 {:port listening-port :join false})]
+                 {:port listening-port :join? false})]
     (.stop server)
     (CommitServer. server out)))
