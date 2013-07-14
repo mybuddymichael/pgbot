@@ -1,11 +1,22 @@
 (ns pgbot.commit-server
-  (:require pgbot.events
+  (:require (pgbot [lifecycle :refer [Lifecycle]])
             [clojure.core.async :refer [chan go put!]]
             [compojure.core :refer [routes POST]]
             [compojure.handler :refer [api]]
             [ring.adapter.jetty :refer [run-jetty]]))
 
-(defn create
+(defrecord CommitServer [server out])
+
+(extend-type CommitServer
+  Lifecycle
+  (start [{:keys [server] :as CommitServer}]
+    (.start server)
+    CommitServer)
+  (stop [{:keys [server] :as CommitServer}]
+    (.stop server)
+    CommitServer))
+
+(defn ->CommitServer
   "Creates a stopped Jetty Server and returns a map containing the
    Server and its output channel."
   [listening-port irc-channel]
@@ -22,18 +33,4 @@
                           {:body nil})))
                  {:port listening-port :join false})]
     (.stop server)
-    {:server server
-     :out out}))
-
-(defn start
-  "Runs side effects to start the Jetty Server that listens for git
-   commits. Returns the started server."
-  [{:keys [server] :as commit-server}]
-  (.start server)
-  commit-server)
-
-(defn stop
-  "Runs side effects to stop the commit server."
-  [{:keys [server] :as commit-server}]
-  (.stop server)
-  commit-server)
+    (CommitServer. server out)))
