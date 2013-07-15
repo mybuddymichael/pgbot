@@ -9,10 +9,10 @@
   (start [{:keys [in out stop] :as ping-pong}]
     (go
       (loop [[message chan] (alts! [stop in] :priority true)]
-        (when (and (not= chan stop)
-                   (= (message :type) "PING"))
-          (>! out {:type "PONG"
-                   :content (message :content)})
+        (when (not= chan stop)
+          (when (= (message :type) "PING")
+            (>! out {:type "PONG"
+                     :content (message :content)}))
           (recur (alts! [stop in] :priority true)))))
     ping-pong)
   (stop [{:keys [stop] :as ping-pong}]
