@@ -3,9 +3,7 @@
                    connection
                    commit-server
                    ping-pong
-                   dispatcher
-                   logger)
-            [clojure.core.async :refer [chan]]))
+                   logger)))
 
 (defn create
   "Creates and returns a new instance of pgbot."
