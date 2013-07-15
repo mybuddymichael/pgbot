@@ -38,8 +38,8 @@
    application."
   [{:keys [connection subsystems] :as application}]
   (-> application
-      (assoc :connection connection)
-      (update-in [:subsystems] (partial map lifecycle/start))))
+      (assoc :connection (pgbot.connection/start connection))
+      (update-in [:subsystems] (comp doall (partial map lifecycle/start)))))
 
 (defn stop
   "Runs various side effects to shut down pgbot. Returns the stopped
@@ -47,4 +47,4 @@
   [{:keys [connection commit-server ping-pong dispatcher] :as application}]
   (-> application
       (assoc :connection (pgbot.connection/stop connection))
-      (update-in [:subsystems] (partial map lifecycle/stop))))
+      (update-in [:subsystems] (comp doall (partial map lifecycle/stop)))))
