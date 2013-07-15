@@ -1,19 +1,25 @@
 (ns pgbot.logger
-  (:require (pgbot [messages :refer [compose]]
-                   events)))
+  (:require (pgbot [lifecycle :refer [Lifecycle]]
+                   [messages :refer [compose]])
+            [clojure.core.async :refer [alts! chan go <! close!]]))
 
-(defn- print-messages
-  [_ & messages]
-  (doseq [m messages]
-    (println (compose m))))
+(defrecord Logger [in out-listener stop])
 
-(defn- log
-  "Log a string to a preferred output."
-  [_ & messages]
-  (doseq [m messages]
-    (spit "/tmp/pgbot.log"
-          (str (java.util.Date.) " : " (compose m) "\n")
-          :append true)))
+(extend-type Logger
+  Lifecycle
+  (start [{:keys [in out-listener stop] :as Logger}]
+    (go
+      (loop [[message chan] (alts! [stop in out-listener] :priority true)]
+        (when (not= chan stop)
+          (println (compose message))
+          (spit "/tmp/pgbot.log"
+                (str (java.util.Date.) " : " (compose message) "\n")
+                :append true)
+          (recur (alts! [stop in out-listener] :priority true)))))
+    Logger)
+  (stop [{:keys [stop] :as Logger}]
+    (close! stop)
+    Logger))
 
-(defn start [connection]
-  (pgbot.events/register connection [:incoming :outgoing] [print-messages log]))
+(defn ->Logger []
+  (Logger. (chan) (chan) (chan)))

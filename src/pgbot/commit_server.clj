@@ -1,33 +1,36 @@
 (ns pgbot.commit-server
-  (:require pgbot.events
+  (:require (pgbot [lifecycle :refer [Lifecycle]])
+            [clojure.core.async :refer [chan go put!]]
             [compojure.core :refer [routes POST]]
             [compojure.handler :refer [api]]
             [ring.adapter.jetty :refer [run-jetty]]))
 
-(defn- create-handler
-  "Generates a Ring handler to post commits to the connection."
-  [connection]
-  (api (routes
-         (POST "/" [user-name commit-message repo branch sha]
-           (let [message
-                 (str user-name " in " repo "/" branch ": \""
-                      commit-message"\" (" sha ")")]
-             (pgbot.events/trigger
-               connection
-               :outgoing
-               {:type "PRIVMSG"
-                :destination (:channel connection)
-                :content message}))
-           {:body nil}))))
+(defrecord CommitServer [server out])
 
-(defn create-and-start
-  "Runs side effects to create and start a new Jetty Server that listens
-   for git commits. Returns the new Server."
-  [connection & {:keys [port] :or {port 8080}}]
-  (run-jetty (create-handler connection) {:port (Integer. port) :join? false}))
+(extend-type CommitServer
+  Lifecycle
+  (start [{:keys [server] :as CommitServer}]
+    (.start server)
+    CommitServer)
+  (stop [{:keys [server] :as CommitServer}]
+    (.stop server)
+    CommitServer))
 
-(defn stop
-  "Runs side effects to stop the commit server."
-  [server]
-  (.stop server)
-  server)
+(defn ->CommitServer
+  "Creates a stopped Jetty Server and returns a map containing the
+   Server and its output channel."
+  [listening-port irc-channel]
+  (let [out (chan)
+        server (run-jetty
+                 (api (routes
+                        (POST "/" [user-name commit-message repo branch sha]
+                          (let [message
+                                (str user-name " in " repo "/" branch ": \""
+                                     commit-message"\" (" sha ")")]
+                            (put! out {:type "PRIVMSG"
+                                       :destination irc-channel
+                                       :content message}))
+                          {:body nil})))
+                 {:port listening-port :join? false})]
+    (.stop server)
+    (CommitServer. server out)))

@@ -2,24 +2,24 @@
   (:require [clojure.tools.namespace.repl :refer [refresh refresh-all]]
             [clojure.repl :refer :all]
             [clojure.test :refer [run-tests]]
-            (pgbot system debug)))
+            (pgbot application debug)))
 
-(def system nil)
+(def application nil)
 
 (defn create
   "Creates and stores a new application instance."
   []
-  (alter-var-root #'system (constantly (pgbot.system/create))))
+  (alter-var-root #'application (constantly (pgbot.application/create-dev))))
 
 (defn start
   "Starts the current application."
   []
-  (alter-var-root #'system pgbot.system/start))
+  (alter-var-root #'application pgbot.application/start))
 
 (defn stop
   "Shuts down the application and releases resources."
   []
-  (alter-var-root #'system (fn [s] (when s (pgbot.system/stop s)))))
+  (alter-var-root #'application (fn [s] (when s (pgbot.application/stop s)))))
 
 (defn go
   "Creates, stores, and starts a new application."

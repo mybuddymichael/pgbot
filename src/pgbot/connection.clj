@@ -1,87 +1,80 @@
 (ns pgbot.connection
-  (:require (pgbot [messages :refer [parse compose]]
-                   events)))
-
-(defn- register
-  "Sends a 'handshake' message to register the connection."
-  [connection]
-  (let [nick (connection :nick)]
-    (pgbot.events/trigger
-      connection
-      :outgoing
-      {:type "NICK" :destination nick}
-      {:type "USER" :destination (str nick " i * " nick)})))
+  (:require (pgbot [messages :refer [parse compose]])
+            [clojure.core.async :refer [chan thread go >! alts!! close!]]))
 
 (defn- get-line
   "Grabs a single line from the connection, parsing it into a message
    map, or returning nil if the socket is closed."
   [connection]
-  (try (let [line (.readLine (connection :in))]
-         (if line
-           (parse line)
-           nil))
+  (try (let [line (.readLine (connection :reader))]
+         (if line (parse line) nil))
     (catch java.io.IOException _ nil)))
 
 (defn- send-message
   "Sends one or more messages through a connection's writer."
   [connection & messages]
-  (binding [*out* (connection :out)]
-    (doseq [m messages]
-      (println (compose m)))))
-
-(defn- ping-pong
-  "Triggers an outgoing event with a PONG string if the incoming message
-   is a PING."
-  [connection & messages]
-  (doseq [m messages]
-    (when (= (m :type) "PING")
-      (pgbot.events/trigger
-        connection
-        :outgoing
-        {:type "PONG" :content (m :content)}))))
+  (binding [*out* (connection :writer)]
+    (doseq [message messages]
+      (println (compose message)))))
 
 (defn create
-  "Generates a map containing information about the IRC connection."
-  [host port nick channel]
-  (-> {:host host
-       :port port
-       :in nil
-       :socket nil
-       :out nil
-       :nick nick
-       :channel channel
-       :events {}
-       :line-loop nil}
-      (pgbot.events/register [:incoming] [ping-pong])
-      (pgbot.events/register [:outgoing] [send-message])))
+  "Creates and returns a map for holding the physical connection to the
+   IRC server."
+  [host port nick channel in-chans out-chans out-listeners]
+  {:socket nil
+   :reader nil
+   :writer nil
+   :host host
+   :port port
+   :nick nick
+   :channel channel
+   :in-loop nil
+   :out-loop nil
+   :in-chans in-chans
+   :out-chans out-chans
+   :out-listeners out-listeners
+   :stop (chan)})
 
 (defn start
-  "Takes a connection and runs side effects to open it. If it cannot
-   establish a connection it will continue trying until it succeeds."
-  [{:keys [host port channel] :as connection}]
+  "Runs side effects to open a connection to an IRC server. If it cannot
+   establish a connection it will keep trying until it succeeds. It
+   starts placing incoming messages into the in channel and taking
+   outgoing message off the out channel."
+  [{:keys [host port nick channel in-chans out-chans out-listeners stop]
+    :as connection}]
   (let [open-socket
         (fn [host port]
-          (or (try (java.net.Socket. host (Integer. port))
+          (or (try (java.net.Socket. host port)
                    (catch java.net.UnknownHostException _ nil))
               (recur host port)))
         socket (open-socket host port)
         _ (.setSoTimeout socket 300000)
         connection (assoc connection
                           :socket socket
-                          :in (clojure.java.io/reader socket)
-                          :out (clojure.java.io/writer socket)) ]
-    (register connection)
-    (pgbot.events/trigger connection
-                          :outgoing
-                          {:type "JOIN" :destination channel})
+                          :reader (clojure.java.io/reader socket)
+                          :writer (clojure.java.io/writer socket))]
+    (send-message connection
+                  {:type "NICK" :destination nick}
+                  {:type "USER" :destination (str nick " i * " nick)})
+    (send-message connection
+                  {:type "JOIN" :destination channel})
     (assoc connection
-           :line-loop
-           (future
+           :in-loop
+           (thread
              (loop [line (get-line connection)]
                (when line
-                 (pgbot.events/trigger connection :incoming line)
-                 (recur (get-line connection))))))))
+                 (doseq [c in-chans] (go (>! c line)))
+                 (recur (get-line connection)))))
+           :out-loop
+           (thread
+             (let [alts-fn #(alts!! (flatten [stop out-chans]) :priority true)]
+               (loop [[message chan] (alts-fn)]
+                 (when (not= chan stop)
+                   (send-message connection message)
+                   (doseq [c out-listeners] (go (>! c message)))
+                   (recur (alts-fn)))))))))
 
-(defn stop [{:keys [socket] :as connection}]
+(defn stop [{:keys [socket stop] :as connection}]
   (.close socket)
+  (close! stop)
   connection)
