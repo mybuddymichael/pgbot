@@ -11,7 +11,6 @@
     (go
       (loop [[message chan] (alts! [stop in out-listener] :priority true)]
         (when (not= chan stop)
-          (println (compose message))
           (spit "/tmp/pgbot.log"
                 (str (java.util.Date.) " : " (compose message) "\n")
                 :append true)
