@@ -63,7 +63,7 @@
            (thread
              (loop [line (get-line connection)]
                (when line
-                 (doseq [c in-chans] (put! c line))
+                 (doseq [c in-chans] (go (>! c line)))
                  (recur (get-line connection)))))
            :out-loop
            (thread
@@ -71,7 +71,7 @@
                (loop [[message chan] (alts-fn)]
                  (when (not= chan stop)
                    (send-message connection message)
-                   (doseq [c out-listeners] (put! c message))
+                   (doseq [c out-listeners] (go (>! c message)))
                    (recur (alts-fn)))))))))
 
 (defn stop [{:keys [socket stop] :as connection}]
