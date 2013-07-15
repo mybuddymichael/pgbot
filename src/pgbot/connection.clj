@@ -12,9 +12,10 @@
 
 (defn- send-message
   "Sends one or more messages through a connection's writer."
-  [connection message]
+  [connection & messages]
   (binding [*out* (connection :writer)]
-    (println (compose message))))
+    (doseq [message messages]
+      (println (compose message)))))
 
 (defn create
   "Creates and returns a map for holding the physical connection to the
