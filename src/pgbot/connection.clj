@@ -6,7 +6,8 @@
   "Grabs a single line from the connection, parsing it into a message
    map, or returning nil if the socket is closed."
   [connection]
-  (try (->> (connection :reader) .readLine parse)
+  (try (let [line (.readLine (connection :reader))]
+         (if line (parse line) nil))
     (catch java.io.IOException _ nil)))
 
 (defn- send-message
