@@ -44,7 +44,7 @@
 (defn stop
   "Runs various side effects to shut down pgbot. Returns the stopped
    application."
-  [{:keys [connection commit-server ping-pong dispatcher] :as application}]
+  [{:keys [connection subsystems] :as application}]
   (-> application
       (assoc :connection (pgbot.connection/stop connection))
       (update-in [:subsystems] (comp doall (partial map lifecycle/stop)))))
