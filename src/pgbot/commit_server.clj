@@ -9,12 +9,12 @@
 
 (extend-type CommitServer
   Lifecycle
-  (start [{:keys [server] :as CommitServer}]
+  (start [{:keys [server] :as commit-server}]
     (.start server)
-    CommitServer)
-  (stop [{:keys [server] :as CommitServer}]
+    commit-server)
+  (stop [{:keys [server] :as commit-server}]
     (.stop server)
-    CommitServer))
+    commit-server))
 
 (defn ->CommitServer
   "Creates a stopped Jetty Server and returns a map containing the

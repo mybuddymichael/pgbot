@@ -7,7 +7,7 @@
 
 (extend-type Logger
   Lifecycle
-  (start [{:keys [in out-listener stop] :as Logger}]
+  (start [{:keys [in out-listener stop] :as logger}]
     (go
       (loop [[message chan] (alts! [stop in out-listener] :priority true)]
         (when (not= chan stop)
@@ -15,10 +15,10 @@
                 (str (java.util.Date.) " : " (compose message) "\n")
                 :append true)
           (recur (alts! [stop in out-listener] :priority true)))))
-    Logger)
-  (stop [{:keys [stop] :as Logger}]
+    logger)
+  (stop [{:keys [stop] :as logger}]
     (close! stop)
-    Logger))
+    logger))
 
 (defn ->Logger []
   (Logger. (chan) (chan) (chan)))
