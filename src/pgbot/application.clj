@@ -22,15 +22,6 @@
     {:connection connection
      :subsystems subsystems}))
 
-(defn create-dev
-  "Creates and returns a new pgbot instance suitable for development."
-  [& _]
-  (create {:host "irc.freenode.net"
-           :port 6667
-           :nick "pgbottest"
-           :channel "##pgbottest"
-           :commit-server-port 8080}))
-
 (defn start
   "Runs various side effects to start up pgbot. Returns the started
    application."

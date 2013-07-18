@@ -9,7 +9,12 @@
 (defn create
   "Creates and stores a new application instance."
   []
-  (alter-var-root #'application (constantly (pgbot.application/create-dev))))
+  (alter-var-root #'application (constantly (pgbot.application/create
+                                              {:host "irc.freenode.net"
+                                               :port 6667
+                                               :nick "pgbottest"
+                                               :channel "##pgbottest"
+                                               :commit-server-port 8080}))))
 
 (defn start
   "Starts the current application."
