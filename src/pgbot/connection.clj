@@ -1,6 +1,6 @@
 (ns pgbot.connection
   (:require (pgbot [messages :refer [parse compose]])
-            [clojure.core.async :refer [chan thread go >! alts!! close!]]))
+            [clojure.core.async :refer [chan thread put! alts!! close!]]))
 
 (defn- get-line
   "Grabs a single line from the connection, parsing it into a message
@@ -63,7 +63,7 @@
            (thread
              (loop [line (get-line connection)]
                (when line
-                 (doseq [c in-chans] (go (>! c line)))
+                 (doseq [c in-chans] (put! c line))
                  (recur (get-line connection)))))
            :out-loop
            (thread
@@ -71,7 +71,7 @@
                (loop [[message chan] (alts-fn)]
                  (when (not= chan stop)
                    (send-message connection message)
-                   (doseq [c out-listeners] (go (>! c message)))
+                   (doseq [c out-listeners] (put! c message))
                    (recur (alts-fn)))))))))
 
 (defn stop [{:keys [socket stop] :as connection}]
