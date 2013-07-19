@@ -74,7 +74,8 @@
                    (doseq [c out-listeners] (put! c message))
                    (recur (alts-fn)))))))))
 
-(defn stop [{:keys [socket stop] :as connection}]
-  (.close socket)
+(defn stop [{:keys [socket reader writer stop] :as connection}]
+  (doseq [s [socket reader writer]]
+    (.close s))
   (close! stop)
   connection)
