@@ -1,5 +1,6 @@
 (ns pgbot.messages
-  "Functions for parsing and composing IRC lines.")
+  "Functions for parsing and composing IRC lines."
+  (:require [clojure.core.typed :as t]))
 
 (defn parse
   "Takes a message string and returns a map of the message properties."
