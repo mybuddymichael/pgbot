@@ -2,6 +2,13 @@
   "Functions for parsing and composing IRC lines."
   (:require [clojure.core.typed :as t]))
 
+(t/ann-record Message [prefix := (U String nil)
+                       type := (U String nil)
+                       destination := (U String nil)
+                       content := (U String nil)])
+
+(defrecord Message [prefix type destination content])
+
 (defn parse
   "Takes a message string and returns a map of the message properties."
   [message]
