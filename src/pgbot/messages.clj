@@ -20,8 +20,9 @@
                    :destination destination
                    :content content})))
 
+(t/ann compose [Message -> String])
 (defn compose
-  "Takes a message map and returns a reconstructed message string."
+  "Takes a Message and returns a reconstructed line."
   [{:keys [prefix type destination content]}]
   (let [prefix (when prefix (str ":" prefix " "))
         type (if destination (str type " ") type)
