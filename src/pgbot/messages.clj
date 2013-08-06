@@ -9,15 +9,16 @@
 
 (defrecord Message [prefix type destination content])
 
+(t/ann parse [String -> Message])
 (defn parse
-  "Takes a message string and returns a map of the message properties."
-  [message]
+  "Takes a line and returns a Message."
+  [line]
   (let [[[_ prefix type destination content]]
-        (re-seq #"^(?:[:](\S+) )?(\S+)(?: (?!:)(.+?))?(?: [:](.+))?$" message)]
-    {:prefix prefix
-     :type type
-     :destination destination
-     :content content}))
+        (re-seq #"^(?:[:](\S+) )?(\S+)(?: (?!:)(.+?))?(?: [:](.+))?$" line)]
+    (map->Message {:prefix prefix
+                   :type type
+                   :destination destination
+                   :content content})))
 
 (defn compose
   "Takes a message map and returns a reconstructed message string."
