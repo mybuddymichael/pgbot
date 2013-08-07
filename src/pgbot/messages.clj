@@ -15,10 +15,10 @@
   [line]
   (let [[[_ prefix type destination content]]
         (re-seq #"^(?:[:](\S+) )?(\S+)(?: (?!:)(.+?))?(?: [:](.+))?$" line)]
-    (map->Message {:prefix prefix
-                   :type type
-                   :destination destination
-                   :content content})))
+    (map->Message {:prefix (some-> prefix str)
+                   :type (some-> type str)
+                   :destination (some-> destination str)
+                   :content (some-> content str)})))
 
 (t/ann compose [Message -> String])
 (defn compose
