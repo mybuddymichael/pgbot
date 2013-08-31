@@ -6,6 +6,8 @@
                  [core.async "0.1.0-SNAPSHOT"]
                  [compojure "1.1.5"]
                  [ring/ring-jetty-adapter "1.1.8"]]
+  :repositories {"sonatype-oss-public"
+                 "https://oss.sonatype.org/content/groups/public/"}
   :main pgbot.core
   :profiles {:dev {:source-paths ["dev"]
                    :repl-options {:init-ns user}
