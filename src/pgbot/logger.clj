@@ -1,12 +1,12 @@
 (ns pgbot.logger
-  (:require (pgbot [lifecycle :refer [Lifecycle]]
+  (:require (pgbot [process :refer [PProcess]]
                    [messages :refer [compose]])
             [clojure.core.async :refer [alts! chan go <! close!]]))
 
 (defrecord Logger [in out-listener stop])
 
 (extend-type Logger
-  Lifecycle
+  PProcess
   (start [{:keys [in out-listener stop] :as logger}]
     (go
       (loop [[message chan] (alts! [stop in out-listener] :priority true)]
