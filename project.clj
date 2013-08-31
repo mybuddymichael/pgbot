@@ -5,7 +5,8 @@
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [core.async "0.1.0-SNAPSHOT"]
                  [compojure "1.1.5"]
-                 [ring/ring-jetty-adapter "1.1.8"]]
+                 [ring/ring-jetty-adapter "1.1.8"]
+                 [org.clojure/core.typed "0.2.0"]]
   :repositories {"sonatype-oss-public"
                  "https://oss.sonatype.org/content/groups/public/"}
   :main pgbot.core
