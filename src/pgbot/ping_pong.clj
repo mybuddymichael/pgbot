@@ -1,22 +1,34 @@
 (ns pgbot.ping-pong
-  (:require (pgbot [lifecycle :refer [Lifecycle]])
-            [clojure.core.async :refer [chan go <! >! close! alts!]]))
+  (:require (pgbot [process :refer [PProcess]]
+                   [messages :refer [map->Message]])
+            [clojure.core.typed :as t]
+            [clojure.core.typed.async :refer [Chan chan> go>]]
+            [clojure.core.async :refer [<! >! close! alts!]]))
 
-(defrecord PingPong [in out stop])
+(t/typed-deps clojure.core.typed.async)
+
+(t/ann-record PingPong [in := (Chan pgbot.messages.Message)
+                        out := (Chan pgbot.messages.Message)
+                        kill := (Chan Any)])
+
+(defrecord PingPong [in out kill])
 
 (extend-type PingPong
-  Lifecycle
-  (start [{:keys [in out stop] :as ping-pong}]
-    (go
-      (loop [[message chan] (alts! [stop in] :priority true)]
-        (when (not= chan stop)
+  PProcess
+  (start [{:keys [in out kill] :as ping-pong}]
+    (go>
+      (loop [[message chan] (alts! [kill in] :priority true)]
+        (when (not= chan kill)
           (when (= (message :type) "PING")
-            (>! out {:type "PONG"
-                     :content (message :content)}))
-          (recur (alts! [stop in] :priority true)))))
+            (>! out (map->Message {:type "PONG"
+                                   :content (message :content)})))
+          (recur (alts! [kill in] :priority true)))))
     ping-pong)
-  (stop [{:keys [stop] :as ping-pong}]
-    (close! stop)
+  (stop [{:keys [kill] :as ping-pong}]
+    (close! kill)
     ping-pong))
 
-(defn ->PingPong [] (PingPong. (chan) (chan) (chan)))
+(defn ->PingPong []
+  (PingPong. (chan> pgbot.messages.Message)
+             (chan> pgbot.messages.Message)
+             (chan> Any)))
