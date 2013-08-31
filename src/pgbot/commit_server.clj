@@ -1,5 +1,5 @@
 (ns pgbot.commit-server
-  (:require (pgbot [lifecycle :refer [Lifecycle]])
+  (:require (pgbot [process :refer [PProcess]])
             [clojure.core.async :refer [chan go put!]]
             [compojure.core :refer [routes POST]]
             [compojure.handler :refer [api]]
@@ -8,7 +8,7 @@
 (defrecord CommitServer [server out])
 
 (extend-type CommitServer
-  Lifecycle
+  PProcess
   (start [{:keys [server] :as commit-server}]
     (.start server)
     commit-server)
