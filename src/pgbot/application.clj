@@ -1,5 +1,5 @@
 (ns pgbot.application
-  (:require (pgbot [lifecycle :as lifecycle]
+  (:require (pgbot [process :as process]
                    connection
                    commit-server
                    ping-pong
@@ -28,7 +28,7 @@
   [{:keys [connection subsystems] :as application}]
   (-> application
       (assoc :connection (pgbot.connection/start connection))
-      (update-in [:subsystems] (comp doall (partial map lifecycle/start)))))
+      (update-in [:subsystems] (comp doall (partial map process/start)))))
 
 (defn stop
   "Runs various side effects to shut down pgbot. Returns the stopped
@@ -36,4 +36,4 @@
   [{:keys [connection subsystems] :as application}]
   (-> application
       (assoc :connection (pgbot.connection/stop connection))
-      (update-in [:subsystems] (comp doall (partial map lifecycle/stop)))))
+      (update-in [:subsystems] (comp doall (partial map process/stop)))))
