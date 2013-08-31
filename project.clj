@@ -6,7 +6,7 @@
                  [core.async "0.1.0-SNAPSHOT"]
                  [compojure "1.1.5"]
                  [ring/ring-jetty-adapter "1.1.8"]
-                 [org.clojure/core.typed "0.2.0"]]
+                 [org.clojure/core.typed "0.2.1"]]
   :repositories {"sonatype-oss-public"
                  "https://oss.sonatype.org/content/groups/public/"}
   :main pgbot.core
