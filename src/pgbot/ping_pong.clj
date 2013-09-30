@@ -3,7 +3,8 @@
                    [messages :refer [map->Message]])
             [clojure.core.typed :as t]
             [clojure.core.typed.async :refer [Chan chan> go>]]
-            [clojure.core.async :refer [<! >! close! alts!]]))
+            [clojure.core.async :refer [<! >! close! alts!]])
+  (:import pgbot.messages.Message))
 
 (t/typed-deps clojure.core.typed.async)
 
