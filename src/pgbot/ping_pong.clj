@@ -10,6 +10,10 @@
 
 (t/ann-record PingPong [in := (Chan pgbot.messages.Message)
                         out := (Chan pgbot.messages.Message)
+(t/ann-record PingPong [in := (Chan Message)
+                        out := (Chan Message)
+(t/ann-record PingPong [in := (Chan Message)
+                        out := (Chan Message)
                         kill := (Chan Any)])
 
 (defrecord PingPong [in out kill])
@@ -30,6 +34,6 @@
     ping-pong))
 
 (defn ->PingPong []
-  (PingPong. (chan> pgbot.messages.Message)
-             (chan> pgbot.messages.Message)
+  (PingPong. (chan> Message)
+             (chan> Message)
              (chan> Any)))
