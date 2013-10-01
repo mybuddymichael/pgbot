@@ -8,10 +8,15 @@
 
 (t/typed-deps clojure.core.typed.async)
 
-(t/ann-record PingPong [in := (Chan pgbot.messages.Message)
-                        out := (Chan pgbot.messages.Message)
-(t/ann-record PingPong [in := (Chan Message)
-                        out := (Chan Message)
+(t/ann get-pong
+       [Message -> (t/Nilable Message)])
+(defn get-pong [m]
+  (when (= (:type m) "PING")
+    (map->Message {:type "PONG"
+                   :content (:content m)
+                   :destination nil
+                   :prefix nil})))
+
 (t/ann-record PingPong [in := (Chan Message)
                         out := (Chan Message)
                         kill := (Chan Any)])
@@ -24,9 +29,8 @@
     (go>
       (loop [[message chan] (alts! [kill in] :priority true)]
         (when (not= chan kill)
-          (when (= (message :type) "PING")
-            (>! out (map->Message {:type "PONG"
-                                   :content (message :content)})))
+          (when-let [pong-message (get-pong message)]
+            (>! out pong-message))
           (recur (alts! [kill in] :priority true)))))
     ping-pong)
   (stop [{:keys [kill] :as ping-pong}]
