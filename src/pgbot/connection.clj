@@ -7,6 +7,21 @@
 
 (t/typed-deps clojure.core.typed.async)
 
+(t/def-alias Connection
+  (HMap :mandatory {:socket (t/Option java.net.Socket)
+                    :reader (t/Option java.io.Reader)
+                    :writer (t/Option java.io.Writer)
+                    :host String
+                    :port Integer
+                    :nick String
+                    :channel String
+                    :in-loop (t/Option (Chan Any))
+                    :out-loop (t/Option (Chan Any))
+                    :in-chans (t/Seq (Chan Message))
+                    :out-chans (t/Seq (Chan Message))
+                    :out-listeners (t/Seq (Chan Message))
+                    :kill (Chan Any)}))
+
 (defn- get-line
   "Grabs a single line from the connection, parsing it into a message
    map, or returning nil if the socket is closed."
