@@ -5,6 +5,8 @@
             [clojure.core.async :refer [chan thread put! alts!! close!]])
   (:import pgbot.messages.Message))
 
+(t/typed-deps clojure.core.typed.async)
+
 (defn- get-line
   "Grabs a single line from the connection, parsing it into a message
    map, or returning nil if the socket is closed."
