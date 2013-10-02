@@ -22,6 +22,7 @@
                     :out-listeners (t/Seq (Chan Message))
                     :kill (Chan Any)}))
 
+(t/ann get-line [Connection -> (t/Nilable String)])
 (defn- get-line
   "Grabs a single line from the connection, parsing it into a message
    map, or returning nil if the socket is closed."
@@ -30,6 +31,7 @@
          (if line (parse line) nil))
     (catch java.io.IOException _ nil)))
 
+(t/ann send-message [Connection Message * -> nil])
 (defn- send-message
   "Sends one or more messages through a connection's writer."
   [connection & messages]
@@ -37,6 +39,8 @@
     (doseq [message messages]
       (println (compose message)))))
 
+(t/ann create [String Integer String String (t/Seq Message) (t/Seq Message)
+               (t/Seq Message) -> Connection])
 (defn create
   "Creates and returns a map for holding the physical connection to the
    IRC server."
@@ -55,6 +59,7 @@
    :out-listeners out-listeners
    :stop (chan)})
 
+(t/ann start [Connection -> Connection])
 (defn start
   "Runs side effects to open a connection to an IRC server. If it cannot
    establish a connection it will keep trying until it succeeds. It
@@ -94,6 +99,7 @@
                    (doseq [c out-listeners] (put! c message))
                    (recur (alts-fn)))))))))
 
+(t/ann stop [Connection -> Connection])
 (defn stop [{:keys [socket reader writer stop] :as connection}]
   (doseq [s [socket reader writer]]
     (.close s))
