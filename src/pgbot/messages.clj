@@ -2,12 +2,11 @@
   "Functions for parsing and composing IRC lines."
   (:require [clojure.core.typed :as t]))
 
-(t/ann-record Message [prefix := (U String nil)
-                       type := (U String nil)
-                       destination := (U String nil)
-                       content := (U String nil)])
-
-(defrecord Message [prefix type destination content])
+(t/def-alias Message
+  (HMap :mandatory {:type (U String nil)
+                    :destination (U String nil)}
+        :optional {:prefix (U String nil)
+                   :content (U String nil)}))
 
 (t/ann parse [String -> Message])
 (defn parse
@@ -15,10 +14,10 @@
   [line]
   (let [[[_ prefix type destination content]]
         (re-seq #"^(?:[:](\S+) )?(\S+)(?: (?!:)(.+?))?(?: [:](.+))?$" line)]
-    (map->Message {:prefix (some-> prefix str)
-                   :type (some-> type str)
-                   :destination (some-> destination str)
-                   :content (some-> content str)})))
+    {:prefix (some-> prefix str)
+     :type (some-> type str)
+     :destination (some-> destination str)
+     :content (some-> content str)}))
 
 (t/ann compose [Message -> String])
 (defn compose
