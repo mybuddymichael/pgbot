@@ -3,7 +3,9 @@
                    connection
                    commit-server
                    ping-pong
-                   logger)))
+                   logger)
+            [clojure.core.typed :as t])
+  (:import pgbot.process.PProcess))
 
 (defn create
   "Creates and returns a new instance of pgbot."
