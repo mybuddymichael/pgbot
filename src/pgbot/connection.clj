@@ -33,10 +33,10 @@
          (if line (parse line) nil))
     (catch java.io.IOException _ nil)))
 
-(t/ann send-message [Connection Message * -> nil])
-(defn- send-message
+(t/ann send-message! [java.io.BufferedWriter Message * -> nil])
+(defn- send-message!
   "Sends one or more messages through a connection's writer."
-  [connection & messages]
+  [writer & messages]
   (binding [*out* (connection :writer)]
     (doseq [message messages]
       (println (compose message)))))
