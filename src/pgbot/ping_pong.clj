@@ -1,10 +1,9 @@
 (ns pgbot.ping-pong
   (:require (pgbot [process :refer [PProcess]]
-                   [messages :refer [map->Message]])
+                   [messages :refer [Message]])
             [clojure.core.typed :as t]
             [clojure.core.typed.async :refer [Chan chan> go>]]
-            [clojure.core.async :refer [<! >! close! alts!]])
-  (:import pgbot.messages.Message))
+            [clojure.core.async :refer [<! >! close! alts!]]))
 
 (t/typed-deps clojure.core.typed.async)
 
@@ -12,10 +11,9 @@
        [Message -> (t/Nilable Message)])
 (defn get-pong [m]
   (when (= (:type m) "PING")
-    (map->Message {:type "PONG"
-                   :content (:content m)
-                   :destination nil
-                   :prefix nil})))
+    {:type "PONG"
+     :destination nil
+     :content (:content m)}))
 
 (t/ann-record PingPong [in := (Chan Message)
                         out := (Chan Message)
