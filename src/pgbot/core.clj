@@ -2,8 +2,10 @@
   "A simple IRC bot."
   (:gen-class)
   (:require (pgbot application)
+            [clojure.core.typed :as t]
             [clojure.core.async :refer [<!!]]))
 
+(t/ann -main [String String String String String -> nil])
 (defn -main
   "Start pgbot. This will block until the connection closes, at which
    point it will automatically try to reconnect."
