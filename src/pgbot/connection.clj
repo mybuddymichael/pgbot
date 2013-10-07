@@ -107,8 +107,10 @@
                    (recur (alts-fn))))))))))
 
 (t/ann stop [Connection -> Connection])
-(defn stop [{:keys [socket reader writer stop] :as connection}]
-  (doseq [s [socket reader writer]]
-    (.close s))
-  (close! stop)
+(defn stop [{:keys [socket reader writer kill] :as connection}]
+  (when (and socket reader writer)
+    (.close ^java.net.Socket socket)
+    (.close ^java.io.BufferedReader reader)
+    (.close ^java.io.BufferedWriter writer))
+  (close! kill)
   connection)
