@@ -24,12 +24,12 @@
                     :out-listeners (t/Seq (Chan Message))
                     :kill (Chan Any)}))
 
-(t/ann get-line [Connection -> (t/Nilable String)])
+(t/ann get-line [java.io.BufferedReader -> (t/Nilable Message)])
 (defn- get-line
   "Grabs a single line from the connection, parsing it into a message
    map, or returning nil if the socket is closed."
-  [connection]
-  (try (let [line (.readLine (connection :reader))]
+  [reader]
+  (try (let [line (.readLine ^java.io.BufferedReader reader)]
          (if line (parse line) nil))
     (catch java.io.IOException _ nil)))
 
