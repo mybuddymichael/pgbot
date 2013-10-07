@@ -61,7 +61,7 @@
    :out-listeners out-listeners
    :kill (chan)})
 
-(t/ann start [Connection -> Connection])
+(t/ann ^:no-check start [Connection -> Connection])
 (defn start
   "Runs side effects to open a connection to an IRC server. If it cannot
    establish a connection it will keep trying until it succeeds. It
