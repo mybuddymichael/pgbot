@@ -1,14 +1,14 @@
 (ns pgbot.logger
   (:require (pgbot [process :refer [PProcess]]
-                   [messages :refer [compose]])
+                   [messages :refer [compose Message]])
             [clojure.core.typed :as t]
             [clojure.core.typed.async :as a :refer [Chan chan> go>]]
             [clojure.core.async :refer [alts! go <! close!]]))
 
 (t/typed-deps clojure.core.typed.async)
 
-(t/ann-record Logger [in := (Chan pgbot.messages.Message)
-                      out-listener := (Chan pgbot.messages.Message)
+(t/ann-record Logger [in := (Chan Message)
+                      out-listener := (Chan Message)
                       kill := (Chan Any)])
 
 (defrecord Logger [in out-listener kill])
@@ -29,6 +29,6 @@
     logger))
 
 (defn ->Logger []
-  (Logger. (chan> pgbot.messages.Message)
-           (chan> pgbot.messages.Message)
+  (Logger. (chan> Message)
+           (chan> Message)
            (chan> Any)))
