@@ -67,39 +67,44 @@
    establish a connection it will keep trying until it succeeds. It
    starts placing incoming messages into the in channel and taking
    outgoing message off the out channel."
-  [{:keys [host port nick channel in-chans out-chans out-listeners stop]
+  [{:keys [reader writer host port nick channel in-chans out-chans
+           out-listeners stop]
     :as connection}]
   (let [open-socket
-        (fn [host port]
-          (or (try (java.net.Socket. host port)
+        (t/fn> [host :- String
+                port :- Integer]
+          (or (try (java.net.Socket. ^String host ^Long port)
                    (catch java.net.UnknownHostException _ nil))
               (recur host port)))
         socket (open-socket host port)
-        _ (.setSoTimeout socket 300000)
+        _ (.setSoTimeout ^java.net.Socket socket 300000)
         connection (assoc connection
                           :socket socket
                           :reader (clojure.java.io/reader socket)
                           :writer (clojure.java.io/writer socket))]
-    (send-message connection
-                  {:type "NICK" :destination nick}
-                  {:type "USER" :destination (str nick " i * " nick)})
-    (send-message connection
-                  {:type "JOIN" :destination channel})
+    (send-message! (:writer connection)
+                   {:type "NICK" :destination nick}
+                   {:type "USER" :destination (str nick " i * " nick)})
+    (send-message! (:writer connection)
+                   {:type "JOIN" :destination channel})
     (assoc connection
            :in-loop
            (thread
-             (loop [line (get-line connection)]
+             (t/loop> [line :- (t/Nilable Message)
+                       (get-line (:reader connection))]
                (when line
-                 (doseq [c in-chans] (put! c line))
-                 (recur (get-line connection)))))
+                 (t/doseq> [c :- (Chan Message) in-chans]
+                   (put! c line))
+                 (recur (get-line (:reader connection))))))
            :out-loop
            (thread
+             (t/tc-ignore
              (let [alts-fn #(alts!! (flatten [stop out-chans]) :priority true)]
                (loop [[message chan] (alts-fn)]
                  (when (not= chan stop)
-                   (send-message connection message)
+                   (send-message! writer message)
                    (doseq [c out-listeners] (put! c message))
-                   (recur (alts-fn)))))))))
+                   (recur (alts-fn))))))))))
 
 (t/ann stop [Connection -> Connection])
 (defn stop [{:keys [socket reader writer stop] :as connection}]
