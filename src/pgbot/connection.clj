@@ -59,7 +59,7 @@
    :in-chans in-chans
    :out-chans out-chans
    :out-listeners out-listeners
-   :stop (chan)})
+   :kill (chan)})
 
 (t/ann start [Connection -> Connection])
 (defn start
