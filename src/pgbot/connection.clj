@@ -37,8 +37,8 @@
 (defn- send-message!
   "Sends one or more messages through a connection's writer."
   [writer & messages]
-  (binding [*out* (connection :writer)]
-    (doseq [message messages]
+  (binding [*out* writer]
+    (t/doseq> [message :- Message messages]
       (println (compose message)))))
 
 (t/ann create [String Integer String String (t/Seq Message) (t/Seq Message)
