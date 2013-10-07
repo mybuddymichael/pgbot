@@ -7,6 +7,10 @@
             [clojure.core.typed :as t])
   (:import pgbot.process.PProcess))
 
+(t/def-alias application
+  (HMap :mandatory {:connection Any
+                    :subsystems (t/Seq PProcess)}))
+
 (defn create
   "Creates and returns a new instance of pgbot."
   [{:keys [host port nick channel commit-server-port]}]
