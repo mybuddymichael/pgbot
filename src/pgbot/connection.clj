@@ -10,9 +10,9 @@
 (t/ann ^:no-check clojure.java.io/writer [Any -> java.io.BufferedWriter])
 
 (t/def-alias Connection
-  (HMap :mandatory {:socket (t/Option java.net.Socket)
-                    :reader (t/Option java.io.Reader)
-                    :writer (t/Option java.io.Writer)
+  (HMap :mandatory {:socket (t/Nilable java.net.Socket)
+                    :reader (t/Nilable java.io.BufferedReader)
+                    :writer (t/Nilable java.io.BufferedWriter)
                     :host String
                     :port Integer
                     :nick String
