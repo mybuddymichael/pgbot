@@ -11,11 +11,17 @@
   (HMap :mandatory {:connection Any
                     :subsystems (t/Seq PProcess)}))
 
+(t/ann create [(HMap :mandatory {:host String
+                                 :port String
+                                 :nick String
+                                 :channel String
+                                 :commit-server-port String})
+               -> application])
 (defn create
   "Creates and returns a new instance of pgbot."
   [{:keys [host port nick channel commit-server-port]}]
-  (let [port (Integer. port)
-        commit-server-port (Integer. commit-server-port)
+  (let [port (Integer. ^String port)
+        commit-server-port (Integer. ^String commit-server-port)
         subsystems [(pgbot.commit-server/->CommitServer commit-server-port
                                                         channel)
                     (pgbot.ping-pong/->PingPong)
@@ -28,7 +34,8 @@
     {:connection connection
      :subsystems subsystems}))
 
-(defn start
+(t/tc-ignore
+ (defn start
   "Runs various side effects to start up pgbot. Returns the started
    application."
   [{:keys [connection subsystems] :as application}]
@@ -43,3 +50,4 @@
   (-> application
       (assoc :connection (pgbot.connection/stop connection))
       (update-in [:subsystems] (comp doall (partial map process/stop)))))
+)
