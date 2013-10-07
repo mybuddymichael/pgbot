@@ -6,6 +6,9 @@
 
 (t/typed-deps clojure.core.typed.async)
 
+(t/ann ^:no-check clojure.java.io/reader [Any -> java.io.BufferedReader])
+(t/ann ^:no-check clojure.java.io/writer [Any -> java.io.BufferedWriter])
+
 (t/def-alias Connection
   (HMap :mandatory {:socket (t/Option java.net.Socket)
                     :reader (t/Option java.io.Reader)
