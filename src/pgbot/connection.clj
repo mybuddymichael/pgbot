@@ -45,7 +45,7 @@
   (let [open-socket
         (fn [host port]
           (or (try (java.net.Socket. host port)
-                   (catch java.net.UnknownHostException _ nil))
+                   (catch java.io.IOException _ nil))
               (recur host port)))
         socket (open-socket host port)
         _ (.setSoTimeout socket 300000)
