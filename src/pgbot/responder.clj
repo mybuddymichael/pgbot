@@ -1,4 +1,4 @@
-(ns pgbot.ping-pong
+(ns pgbot.responder
   (:require (pgbot [lifecycle :refer [Lifecycle]]
                    [messages :refer [Message]])
             [clojure.core.typed :as t :refer [ann ann-record Map Nilable Seq typed-deps]]
@@ -15,12 +15,12 @@
                          :destination nil
                          :content (:content m)}))})
 
-(ann-record PingPong [in := (Chan Message)
+(ann-record Responder [in := (Chan Message)
                       out := (Chan Message)
                       kill := (Chan Any)])
-(defrecord PingPong [in out kill]
+(defrecord Responder [in out kill]
   Lifecycle
-  (start [{:keys [in out kill] :as ping-pong}]
+  (start [{:keys [in out kill] :as responder}]
     (go>
       (loop [[message chan] (alts! [kill in] :priority true)]
         (when (not= chan kill)
@@ -28,12 +28,12 @@
             (filter identity rs)
             (doseq [r rs] (>! out r)))
           (recur (alts! [kill in] :priority true)))))
-    ping-pong)
-  (stop [{:keys [kill] :as ping-pong}]
+    responder)
+  (stop [{:keys [kill] :as responder}]
     (close! kill)
-    ping-pong))
+    responder))
 
-(defn ->PingPong []
-  (PingPong. (chan> Message)
-             (chan> Message)
-             (chan> Any)))
+(defn ->Responder []
+  (Responder. (chan> Message)
+              (chan> Message)
+              (chan> Any)))
