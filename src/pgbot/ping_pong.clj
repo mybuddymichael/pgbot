@@ -1,5 +1,5 @@
 (ns pgbot.ping-pong
-  (:require (pgbot [process :refer [PProcess]]
+  (:require (pgbot [lifecycle :refer [Lifecycle]]
                    [messages :refer [Message]])
             [clojure.core.typed :as t]
             [clojure.core.typed.async :refer [Chan chan> go>]]
@@ -20,7 +20,7 @@
                         kill := (Chan Any)])
 (defrecord PingPong [in out kill])
 (extend-type PingPong
-  PProcess
+  Lifecycle
   (start [{:keys [in out kill] :as ping-pong}]
     (go>
       (loop [[message chan] (alts! [kill in] :priority true)]
