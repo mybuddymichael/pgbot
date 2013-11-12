@@ -31,8 +31,8 @@
     {:connection connection
      :subsystems subsystems}))
 
-(t/tc-ignore
- (defn start
+
+(defn start
   "Runs various side effects to start up pgbot. Returns the started
    application."
   [{:keys [connection subsystems] :as application}]
@@ -47,4 +47,3 @@
   (-> application
       (assoc :connection (pgbot.connection/stop connection))
       (update-in [:subsystems] (comp doall (partial map lifecycle/stop)))))
-)
