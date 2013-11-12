@@ -36,6 +36,7 @@
     (close! kill)
     responder))
 
+(ann ->Responder [-> Responder])
 (defn ->Responder []
   (Responder. (chan> Message)
               (chan> Message)
