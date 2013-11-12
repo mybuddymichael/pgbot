@@ -1,7 +1,8 @@
 (ns pgbot.commit-server
-  (:require (pgbot [lifecycle :refer [Lifecycle]])
+  (:require (pgbot [lifecycle :refer [Lifecycle]]
+                   [messages :refer [Message]])
             [clojure.core.async :refer [chan go put!]]
-            [clojure.core.typed :as t]
+            [clojure.core.typed :as t :refer [ann Int]]
             [clojure.core.typed.async :refer [Chan]]
             [compojure.core :refer [routes POST]]
             [compojure.handler :refer [api]]
@@ -9,7 +10,7 @@
   (:import org.eclipse.jetty.server.Server))
 
 (t/ann-record CommitServer [server :- Server
-                            out :- (Chan Any)])
+                            out :- (Chan Message)])
 (defrecord CommitServer [server out])
 
 (extend-type CommitServer
