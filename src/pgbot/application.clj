@@ -1,15 +1,15 @@
 (ns pgbot.application
-  (:require (pgbot [process :as process]
+  (:require (pgbot [lifecycle :as lifecycle]
                    connection
                    commit-server
                    ping-pong
                    logger)
             [clojure.core.typed :as t])
-  (:import pgbot.process.PProcess))
+  (:import pgbot.lifecycle.Lifecycle))
 
 (t/def-alias application
   (HMap :mandatory {:connection Any
-                    :subsystems (t/Seq PProcess)}))
+                    :subsystems (t/Seq Lifecycle)}))
 
 (t/ann create [(HMap :mandatory {:host String
                                  :port String
@@ -41,7 +41,7 @@
   [{:keys [connection subsystems] :as application}]
   (-> application
       (assoc :connection (pgbot.connection/start connection))
-      (update-in [:subsystems] (comp doall (partial map process/start)))))
+      (update-in [:subsystems] (comp doall (partial map lifecycle/start)))))
 
 (defn stop
   "Runs various side effects to shut down pgbot. Returns the stopped
@@ -49,5 +49,5 @@
   [{:keys [connection subsystems] :as application}]
   (-> application
       (assoc :connection (pgbot.connection/stop connection))
-      (update-in [:subsystems] (comp doall (partial map process/stop)))))
+      (update-in [:subsystems] (comp doall (partial map lifecycle/stop)))))
 )
