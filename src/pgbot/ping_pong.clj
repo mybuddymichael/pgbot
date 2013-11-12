@@ -17,8 +17,7 @@
 (t/ann-record PingPong [in := (Chan Message)
                         out := (Chan Message)
                         kill := (Chan Any)])
-(defrecord PingPong [in out kill])
-(extend-type PingPong
+(defrecord PingPong [in out kill]
   Lifecycle
   (start [{:keys [in out kill] :as ping-pong}]
     (go>
