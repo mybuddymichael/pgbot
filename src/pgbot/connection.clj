@@ -42,7 +42,7 @@
       (println (compose message)))))
 
 (t/ann create [String Integer String String (t/Seq (Chan Message))
-               (t/Seq (Chan Message)) (t/Seq (Chan Message)) -> Connection])
+               (t/Seq (Chan Message)) -> Connection])
 (defn create
   "Creates and returns a map for holding the physical connection to the
    IRC server."
