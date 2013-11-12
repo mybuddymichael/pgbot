@@ -7,8 +7,7 @@
 
 (t/typed-deps clojure.core.typed.async)
 
-(t/ann get-pong
-       [Message -> (t/Nilable Message)])
+(t/ann get-pong [Message -> (t/Nilable Message)])
 (defn get-pong [m]
   (when (= (:type m) "PING")
     {:type "PONG"
