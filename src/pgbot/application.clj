@@ -8,7 +8,7 @@
 
 (t/def-alias application
   (HMap :mandatory {:connection Any
-                    :subsystems (t/Seq Lifecycle)}))
+                    :subsystems (t/Vec Lifecycle)}))
 
 (t/ann create [(HMap :mandatory {:host String
                                  :port String
