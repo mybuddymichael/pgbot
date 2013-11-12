@@ -1,7 +1,7 @@
 (ns pgbot.ping-pong
   (:require (pgbot [lifecycle :refer [Lifecycle]]
                    [messages :refer [Message]])
-            [clojure.core.typed :as t]
+            [clojure.core.typed :as t :refer [ann ann-record Map Nilable Seq typed-deps]]
             [clojure.core.typed.async :refer [Chan chan> go>]]
             [clojure.core.async :refer [<! >! close! alts!]]))
 
