@@ -22,6 +22,7 @@
     (.stop ^Server server)
     commit-server))
 
+(ann ->CommitServer [Int String -> CommitServer])
 (defn ->CommitServer
   "Creates a stopped Jetty Server and returns a map containing the
    Server and its output channel."
