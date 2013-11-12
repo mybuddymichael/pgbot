@@ -1,11 +1,10 @@
 (ns pgbot.application
-  (:require (pgbot [lifecycle :as lifecycle]
+  (:require (pgbot [lifecycle :as lifecycle :refer [Lifecycle]]
                    connection
                    commit-server
                    responder
                    logger)
-            [clojure.core.typed :as t])
-  (:import pgbot.lifecycle.Lifecycle))
+            [clojure.core.typed :as t]))
 
 (t/def-alias application
   (HMap :mandatory {:connection Any
