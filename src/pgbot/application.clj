@@ -24,8 +24,7 @@
         commit-server-port (Integer. ^String commit-server-port)
         subsystems [(pgbot.commit-server/->CommitServer commit-server-port
                                                         channel)
-                    (pgbot.ping-pong/->PingPong)
-                    (pgbot.logger/->Logger)]
+                    (pgbot.ping-pong/->PingPong)]
         in-chans (->> subsystems (map :in) (filter identity))
         out-chans (->> subsystems (map :out) (filter identity))
         out-listeners (->> subsystems (map :out-listener) (filter identity))
