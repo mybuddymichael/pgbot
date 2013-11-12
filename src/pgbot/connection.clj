@@ -21,7 +21,6 @@
                     :out-loop (t/Nilable (Chan Any))
                     :in-chans (t/Seq (Chan Message))
                     :out-chans (t/Seq (Chan Message))
-                    :out-listeners (t/Seq (Chan Message))
                     :kill (Chan Any)}))
 
 (t/ann get-line [java.io.BufferedReader -> (t/Nilable Message)])
