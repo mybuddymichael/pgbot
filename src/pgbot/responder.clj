@@ -10,6 +10,9 @@
 
 (ann responses (Map Keyword [Message -> (Nilable Message)]))
 (def responses
+  "A Map of Keywords to functions that take an incoming Message and
+   optionally return a response Message if the incoming Message
+   satisfies arbitrary requirements."
   {:ping-pong (fn [m] (when (= (:type m) "PING")
                         {:type "PONG"
                          :destination nil
