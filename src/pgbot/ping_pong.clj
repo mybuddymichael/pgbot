@@ -8,12 +8,12 @@
 
 (t/typed-deps clojure.core.typed.async)
 
-(t/ann get-pong [Message -> (t/Nilable Message)])
-(defn get-pong [m]
-  (when (= (:type m) "PING")
-    {:type "PONG"
-     :destination nil
-     :content (:content m)}))
+(ann responses (Map Keyword [Message -> (Nilable Message)]))
+(def responses
+  {:ping-pong (fn [m] (when (= (:type m) "PING")
+                        {:type "PONG"
+                         :destination nil
+                         :content (:content m)}))})
 
 (t/ann-record PingPong [in := (Chan Message)
                         out := (Chan Message)
