@@ -24,8 +24,9 @@
     (go>
       (loop [[message chan] (alts! [kill in] :priority true)]
         (when (not= chan kill)
-          (when-let [pong-message (get-pong message)]
-            (>! out pong-message))
+          (as-> (map #(apply % [message]) (vals responses)) rs
+            (filter identity rs)
+            (doseq [r rs] (>! out r)))
           (recur (alts! [kill in] :priority true)))))
     ping-pong)
   (stop [{:keys [kill] :as ping-pong}]
