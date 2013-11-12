@@ -4,7 +4,7 @@
             :url "http://www.gnu.org/licenses/lgpl.html"}
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [org.clojure/core.async "0.1.242.0-44b1e3-alpha"]
-                 [compojure "1.1.5"]
+                 [compojure "1.1.6"]
                  [ring/ring-jetty-adapter "1.1.8"]
                  [org.clojure/core.typed "0.2.13"]]
   :repositories {"sonatype-oss-public"
