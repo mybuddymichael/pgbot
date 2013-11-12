@@ -6,7 +6,7 @@
             [clojure.core.async :refer [<! >! close! alts!]])
   (:import [clojure.lang Keyword]))
 
-(t/typed-deps clojure.core.typed.async)
+(typed-deps clojure.core.typed.async)
 
 (ann responses (Map Keyword [Message -> (Nilable Message)]))
 (def responses
@@ -15,9 +15,9 @@
                          :destination nil
                          :content (:content m)}))})
 
-(t/ann-record PingPong [in := (Chan Message)
-                        out := (Chan Message)
-                        kill := (Chan Any)])
+(ann-record PingPong [in := (Chan Message)
+                      out := (Chan Message)
+                      kill := (Chan Any)])
 (defrecord PingPong [in out kill]
   Lifecycle
   (start [{:keys [in out kill] :as ping-pong}]
