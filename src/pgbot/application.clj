@@ -27,9 +27,8 @@
                     (pgbot.responder/->Responder)]
         in-chans (->> subsystems (map :in) (filter identity))
         out-chans (->> subsystems (map :out) (filter identity))
-        out-listeners (->> subsystems (map :out-listener) (filter identity))
         connection (pgbot.connection/create host port nick channel
-                                            in-chans out-chans out-listeners)]
+                                            in-chans out-chans)]
     {:connection connection
      :subsystems subsystems}))
 

@@ -46,7 +46,7 @@
 (defn create
   "Creates and returns a map for holding the physical connection to the
    IRC server."
-  [host port nick channel in-chans out-chans out-listeners]
+  [host port nick channel in-chans out-chans]
   {:socket nil
    :reader nil
    :writer nil
@@ -58,7 +58,6 @@
    :out-loop nil
    :in-chans in-chans
    :out-chans out-chans
-   :out-listeners out-listeners
    :kill (chan)})
 
 (t/ann ^:no-check start [Connection -> Connection])
@@ -67,8 +66,7 @@
    establish a connection it will keep trying until it succeeds. It
    starts placing incoming messages into the in channel and taking
    outgoing message off the out channel."
-  [{:keys [reader writer host port nick channel in-chans out-chans
-           out-listeners stop]
+  [{:keys [reader writer host port nick channel in-chans out-chans stop]
     :as connection}]
   (let [open-socket
         (t/fn> [host :- String
@@ -103,7 +101,6 @@
                (loop [[message chan] (alts-fn)]
                  (when (not= chan stop)
                    (send-message! writer message)
-                   (doseq [c out-listeners] (put! c message))
                    (recur (alts-fn))))))))))
 
 (t/ann stop [Connection -> Connection])
