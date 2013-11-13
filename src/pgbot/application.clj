@@ -38,8 +38,11 @@
    application."
   [{:keys [connection subsystems] :as application}]
   (-> application
-      (assoc :connection (pgbot.connection/start connection))
-      (update-in [:subsystems] (comp doall (partial map lifecycle/start)))))
+      (assoc :connection (pgbot.connection/start connection)
+             :subsystems (map lifecycle/start subsystems))
+      :subsystems
+      (t/ann-form (t/Seqable Any))
+      doall))
 
 (ann stop [Application -> Application])
 (defn stop
