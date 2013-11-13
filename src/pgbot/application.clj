@@ -1,6 +1,6 @@
 (ns pgbot.application
   (:require (pgbot [lifecycle :as lifecycle :refer [Lifecycle]]
-                   connection
+                   [connection :refer [Connection]]
                    commit-server
                    responder)
             [clojure.core.typed :as t :refer [ann]]))
