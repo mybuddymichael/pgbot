@@ -3,13 +3,13 @@
                    connection
                    commit-server
                    responder)
-            [clojure.core.typed :as t]))
+            [clojure.core.typed :as t :refer [ann]]))
 
 (t/def-alias Application
   (HMap :mandatory {:connection Any
                     :subsystems (t/Vec Lifecycle)}))
 
-(t/ann create [(HMap :mandatory {:host String
+(ann create [(HMap :mandatory {:host String
                                  :port String
                                  :nick String
                                  :channel String
