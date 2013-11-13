@@ -6,8 +6,8 @@
             [clojure.core.typed :as t :refer [ann def-alias Vec]])
   (:import (clojure.lang Keyword)))
 
-(t/def-alias Application
-  (HMap :mandatory {:connection Any
+(def-alias Application
+  (HMap :mandatory {:connection Connection
                     :subsystems (t/Vec Lifecycle)}))
 
 (ann create [(HMap :mandatory {:host String
