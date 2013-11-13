@@ -3,7 +3,8 @@
                    [connection :refer [Connection]]
                    commit-server
                    responder)
-            [clojure.core.typed :as t :refer [ann]]))
+            [clojure.core.typed :as t :refer [ann def-alias Vec]])
+  (:import (clojure.lang Keyword)))
 
 (t/def-alias Application
   (HMap :mandatory {:connection Any
