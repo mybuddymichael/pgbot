@@ -2,8 +2,7 @@
   (:require (pgbot [lifecycle :as lifecycle :refer [Lifecycle]]
                    connection
                    commit-server
-                   responder
-                   logger)
+                   responder)
             [clojure.core.typed :as t]))
 
 (t/def-alias application
