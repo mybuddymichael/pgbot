@@ -59,7 +59,7 @@
    :out-chans out-chans
    :kill (chan)})
 
-(t/ann ^:no-check start [Connection -> Connection])
+(t/ann start [Connection -> Connection])
 (defn start
   "Runs side effects to open a connection to an IRC server. If it cannot
    establish a connection it will keep trying until it succeeds. It
