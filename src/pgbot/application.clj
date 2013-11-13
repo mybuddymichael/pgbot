@@ -5,7 +5,7 @@
                    responder)
             [clojure.core.typed :as t]))
 
-(t/def-alias application
+(t/def-alias Application
   (HMap :mandatory {:connection Any
                     :subsystems (t/Vec Lifecycle)}))
 
@@ -14,7 +14,7 @@
                                  :nick String
                                  :channel String
                                  :commit-server-port String})
-               -> application])
+             -> Application])
 (defn create
   "Creates and returns a new instance of pgbot."
   [{:keys [host port nick channel commit-server-port]}]
@@ -31,6 +31,7 @@
      :subsystems subsystems}))
 
 
+(ann start [Application -> Application])
 (defn start
   "Runs various side effects to start up pgbot. Returns the started
    application."
@@ -39,6 +40,7 @@
       (assoc :connection (pgbot.connection/start connection))
       (update-in [:subsystems] (comp doall (partial map lifecycle/start)))))
 
+(ann stop [Application -> Application])
 (defn stop
   "Runs various side effects to shut down pgbot. Returns the stopped
    application."
