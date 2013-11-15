@@ -19,8 +19,8 @@
                          :content (:content m)}))})
 
 (ann-record Responder [in := (Chan Message)
-                      out := (Chan Message)
-                      kill := (Chan Any)])
+                       out := (Chan Message)
+                       kill := (Chan Any)])
 (defrecord Responder [in out kill]
   Lifecycle
   (start [{:keys [in out kill] :as responder}]
