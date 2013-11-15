@@ -88,11 +88,11 @@
                    {:type "JOIN" :destination channel})
     (thread
       (loop> [line :- (t/Nilable Message)
-                (get-line (:reader connection))]
-               (when line
-                 (t/doseq> [c :- (Chan Message) in-chans]
-                   (put! c line))
-                 (recur (get-line (:reader connection))))))
+              (get-line (:reader connection))]
+        (when line
+          (t/doseq> [c :- (Chan Message) in-chans]
+            (put! c line))
+          (recur (get-line (:reader connection))))))
     (thread
       (t/tc-ignore
         (let [alts-fn #(alts!! (flatten [stop out-chans]) :priority true)]
