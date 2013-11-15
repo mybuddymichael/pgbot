@@ -27,8 +27,8 @@
                     :out-chans (Seq (Chan Message))
                     :kill (Chan Any)}))
 
-(ann get-line [java.io.BufferedReader -> (Nilable Message)])
-(defn ^:private get-line
+(ann get-line! [java.io.BufferedReader -> (Nilable Message)])
+(defn ^:private get-line!
   "Grabs a single line from the connection, parsing it into a message
    map, or returning nil if the socket is closed."
   [reader]
@@ -88,11 +88,11 @@
                    {:type "JOIN" :destination channel})
     (thread
       (loop> [line :- (Nilable Message)
-              (get-line (:reader connection))]
+              (get-line! (:reader connection))]
         (when line
           (doseq> [c :- (Chan Message) in-chans]
             (put! c line))
-          (recur (get-line (:reader connection))))))
+          (recur (get-line! (:reader connection))))))
     (thread
       (t/tc-ignore
         (let [alts-fn #(alts!! (flatten [stop out-chans]) :priority true)]
