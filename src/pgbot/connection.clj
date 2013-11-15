@@ -9,6 +9,12 @@
 (t/ann ^:no-check clojure.java.io/reader [Any -> java.io.BufferedReader])
 (t/ann ^:no-check clojure.java.io/writer [Any -> java.io.BufferedWriter])
 
+(t/ann ^:no-check clojure.core.async/put!
+  (All [a]
+       (Fn [(Chan a) a -> nil]
+           [(Chan a) a [Any * -> Any] -> nil]
+           [(Chan a) a [Any * -> Any] boolean -> nil])))
+
 (t/def-alias Connection
   (HMap :mandatory {:socket (t/Nilable java.net.Socket)
                     :reader (t/Nilable java.io.BufferedReader)
