@@ -1,6 +1,7 @@
 (ns pgbot.connection
   (:require (pgbot [messages :refer [parse compose Message]])
-            [clojure.core.typed :as t]
+            [clojure.core.typed :as t
+             :refer [ann def-alias fn> loop> Nilable Seq typed-deps]]
             [clojure.core.typed.async :refer [Chan chan>]]
             [clojure.core.async :refer [chan thread put! alts!! close!]]))
 
