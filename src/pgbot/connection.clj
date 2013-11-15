@@ -23,8 +23,6 @@
                     :port Integer
                     :nick String
                     :channel String
-                    :in-loop (t/Nilable (Chan Any))
-                    :out-loop (t/Nilable (Chan Any))
                     :in-chans (t/Seq (Chan Message))
                     :out-chans (t/Seq (Chan Message))
                     :kill (Chan Any)}))
@@ -59,8 +57,6 @@
    :port port
    :nick nick
    :channel channel
-   :in-loop nil
-   :out-loop nil
    :in-chans in-chans
    :out-chans out-chans
    :kill (chan)})
@@ -90,23 +86,21 @@
                    {:type "USER" :destination (str nick " i * " nick)})
     (send-message! (:writer connection)
                    {:type "JOIN" :destination channel})
-    (assoc connection
-           :in-loop
-           (thread
-             (t/loop> [line :- (t/Nilable Message)
-                       (get-line (:reader connection))]
+    (thread
+      (loop> [line :- (t/Nilable Message)
+                (get-line (:reader connection))]
                (when line
                  (t/doseq> [c :- (Chan Message) in-chans]
                    (put! c line))
                  (recur (get-line (:reader connection))))))
-           :out-loop
-           (thread
-             (t/tc-ignore
-             (let [alts-fn #(alts!! (flatten [stop out-chans]) :priority true)]
-               (loop [[message chan] (alts-fn)]
-                 (when (not= chan stop)
-                   (send-message! writer message)
-                   (recur (alts-fn))))))))))
+    (thread
+      (t/tc-ignore
+        (let [alts-fn #(alts!! (flatten [stop out-chans]) :priority true)]
+          (loop [[message chan] (alts-fn)]
+            (when (not= chan stop)
+              (send-message! writer message)
+              (recur (alts-fn)))))))
+    connection))
 
 (t/ann stop [Connection -> Connection])
 (defn stop [{:keys [socket reader writer kill] :as connection}]
