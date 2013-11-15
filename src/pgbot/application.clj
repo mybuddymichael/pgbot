@@ -4,11 +4,14 @@
                    commit-server
                    responder)
             [clojure.core.typed :as t :refer [ann def-alias Vec]])
-  (:import (clojure.lang Keyword)))
+  (:import (clojure.lang Keyword)
+           pgbot.responder.Responder
+           pgbot.commit_server.CommitServer))
 
 (def-alias Application
   (HMap :mandatory {:connection Connection
-                    :subsystems (t/Vec Lifecycle)}))
+                    :responder Responder
+                    :commit-server CommitServer}))
 
 (ann create [(HMap :mandatory {:host String
                                  :port String
@@ -21,34 +24,34 @@
   [{:keys [host port nick channel commit-server-port]}]
   (let [port (Integer. ^String port)
         commit-server-port (Integer. ^String commit-server-port)
-        subsystems [(pgbot.commit-server/->CommitServer commit-server-port
-                                                        channel)
-                    (pgbot.responder/->Responder)]
-        in-chans (->> subsystems (map :in) (filter identity))
-        out-chans (->> subsystems (map :out) (filter identity))
+        commit-server (pgbot.commit-server/->CommitServer commit-server-port
+                                                          channel)
+        responder (pgbot.responder/->Responder)
+        in-chans [(:in responder)]
+        out-chans [(:out responder) (:out commit-server)]
         connection (pgbot.connection/create host port nick channel
                                             in-chans out-chans)]
     {:connection connection
-     :subsystems subsystems}))
+     :responder responder
+     :commit-server commit-server}))
 
 
-(ann start [Application -> Application])
+(ann ^:no-check start [Application -> Application])
 (defn start
   "Runs various side effects to start up pgbot. Returns the started
    application."
-  [{:keys [connection subsystems] :as application}]
-  (-> application
-      (assoc :connection (pgbot.connection/start connection)
-             :subsystems (map lifecycle/start subsystems))
-      :subsystems
-      (t/ann-form (t/Seqable Any))
-      doall))
+  [{:keys [connection responder commit-server] :as application}]
+  (assoc application
+         :connection (pgbot.connection/start connection)
+         :responder (lifecycle/start responder)
+         :commit-server (lifecycle/start commit-server)))
 
-(ann stop [Application -> Application])
+(ann ^:no-check stop [Application -> Application])
 (defn stop
   "Runs various side effects to shut down pgbot. Returns the stopped
    application."
-  [{:keys [connection subsystems] :as application}]
-  (-> application
-      (assoc :connection (pgbot.connection/stop connection))
-      (update-in [:subsystems] (comp doall (partial map lifecycle/stop)))))
+  [{:keys [connection responder commit-server] :as application}]
+  (assoc application
+         :connection (pgbot.connection/stop connection)
+         :responder (lifecycle/stop responder)
+         :commit-server (lifecycle/stop commit-server)))
