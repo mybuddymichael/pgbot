@@ -1,33 +1,33 @@
 (ns pgbot.connection
   (:require (pgbot [messages :refer [parse compose Message]])
             [clojure.core.typed :as t
-             :refer [ann def-alias fn> loop> Nilable Seq typed-deps]]
+             :refer [ann def-alias doseq> fn> loop> Nilable Seq typed-deps]]
             [clojure.core.typed.async :refer [Chan chan>]]
             [clojure.core.async :refer [chan thread put! alts!! close!]]))
 
-(t/typed-deps clojure.core.typed.async)
+(typed-deps clojure.core.typed.async)
 
-(t/ann ^:no-check clojure.java.io/reader [Any -> java.io.BufferedReader])
-(t/ann ^:no-check clojure.java.io/writer [Any -> java.io.BufferedWriter])
+(ann ^:no-check clojure.java.io/reader [Any -> java.io.BufferedReader])
+(ann ^:no-check clojure.java.io/writer [Any -> java.io.BufferedWriter])
 
-(t/ann ^:no-check clojure.core.async/put!
+(ann ^:no-check clojure.core.async/put!
   (All [a] (Fn [(Chan a) a -> nil]
                [(Chan a) a [Any * -> Any] -> nil]
                [(Chan a) a [Any * -> Any] Boolean -> nil])))
 
-(t/def-alias Connection
-  (HMap :mandatory {:socket (t/Nilable java.net.Socket)
-                    :reader (t/Nilable java.io.BufferedReader)
-                    :writer (t/Nilable java.io.BufferedWriter)
+(def-alias Connection
+  (HMap :mandatory {:socket (Nilable java.net.Socket)
+                    :reader (Nilable java.io.BufferedReader)
+                    :writer (Nilable java.io.BufferedWriter)
                     :host String
                     :port Integer
                     :nick String
                     :channel String
-                    :in-chans (t/Seq (Chan Message))
-                    :out-chans (t/Seq (Chan Message))
+                    :in-chans (Seq (Chan Message))
+                    :out-chans (Seq (Chan Message))
                     :kill (Chan Any)}))
 
-(t/ann get-line [java.io.BufferedReader -> (t/Nilable Message)])
+(ann get-line [java.io.BufferedReader -> (Nilable Message)])
 (defn- get-line
   "Grabs a single line from the connection, parsing it into a message
    map, or returning nil if the socket is closed."
@@ -36,16 +36,16 @@
          (if line (parse line) nil))
     (catch java.io.IOException _ nil)))
 
-(t/ann send-message! [java.io.BufferedWriter Message * -> nil])
+(ann send-message! [java.io.BufferedWriter Message * -> nil])
 (defn- send-message!
   "Sends one or more messages through a connection's writer."
   [writer & messages]
   (binding [*out* writer]
-    (t/doseq> [message :- Message messages]
+    (doseq> [message :- Message messages]
       (println (compose message)))))
 
-(t/ann create [String Integer String String (t/Seq (Chan Message))
-               (t/Seq (Chan Message)) -> Connection])
+(ann create [String Integer String String (Seq (Chan Message))
+             (Seq (Chan Message)) -> Connection])
 (defn create
   "Creates and returns a map for holding the physical connection to the
    IRC server."
@@ -61,7 +61,7 @@
    :out-chans out-chans
    :kill (chan)})
 
-(t/ann start [Connection -> Connection])
+(ann start [Connection -> Connection])
 (defn start
   "Runs side effects to open a connection to an IRC server. If it cannot
    establish a connection it will keep trying until it succeeds. It
@@ -70,8 +70,8 @@
   [{:keys [reader writer host port nick channel in-chans out-chans stop]
     :as connection}]
   (let [open-socket
-        (t/fn> [host :- String
-                port :- Integer]
+        (fn> [host :- String
+              port :- Integer]
           (or (try (java.net.Socket. ^String host ^Long port)
                    (catch java.net.UnknownHostException _ nil))
               (recur host port)))
@@ -87,10 +87,10 @@
     (send-message! (:writer connection)
                    {:type "JOIN" :destination channel})
     (thread
-      (loop> [line :- (t/Nilable Message)
+      (loop> [line :- (Nilable Message)
               (get-line (:reader connection))]
         (when line
-          (t/doseq> [c :- (Chan Message) in-chans]
+          (doseq> [c :- (Chan Message) in-chans]
             (put! c line))
           (recur (get-line (:reader connection))))))
     (thread
@@ -102,7 +102,7 @@
               (recur (alts-fn)))))))
     connection))
 
-(t/ann stop [Connection -> Connection])
+(ann stop [Connection -> Connection])
 (defn stop [{:keys [socket reader writer kill] :as connection}]
   (when (and socket reader writer)
     (.close ^java.net.Socket socket)
