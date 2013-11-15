@@ -28,7 +28,7 @@
                     :kill (Chan Any)}))
 
 (ann get-line [java.io.BufferedReader -> (Nilable Message)])
-(defn- get-line
+(defn ^:private get-line
   "Grabs a single line from the connection, parsing it into a message
    map, or returning nil if the socket is closed."
   [reader]
@@ -37,7 +37,7 @@
     (catch java.io.IOException _ nil)))
 
 (ann send-message! [java.io.BufferedWriter Message * -> nil])
-(defn- send-message!
+(defn ^:private send-message!
   "Sends one or more messages through a connection's writer."
   [writer & messages]
   (binding [*out* writer]
