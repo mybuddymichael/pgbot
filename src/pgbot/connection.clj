@@ -13,7 +13,7 @@
   (All [a]
        (Fn [(Chan a) a -> nil]
            [(Chan a) a [Any * -> Any] -> nil]
-           [(Chan a) a [Any * -> Any] boolean -> nil])))
+           [(Chan a) a [Any * -> Any] Boolean -> nil])))
 
 (t/def-alias Connection
   (HMap :mandatory {:socket (t/Nilable java.net.Socket)
