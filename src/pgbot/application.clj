@@ -14,10 +14,10 @@
                     :commit-server CommitServer}))
 
 (ann create [(HMap :mandatory {:host String
-                                 :port String
-                                 :nick String
-                                 :channel String
-                                 :commit-server-port String})
+                               :port String
+                               :nick String
+                               :channel String
+                               :commit-server-port String})
              -> Application])
 (defn create
   "Creates and returns a new instance of pgbot."
