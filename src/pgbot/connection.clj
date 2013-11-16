@@ -1,7 +1,7 @@
 (ns pgbot.connection
   (:require (pgbot [messages :refer [parse compose Message]])
             [clojure.core.typed :as t
-             :refer [ann def-alias doseq> fn> loop> Nilable Seq typed-deps]]
+             :refer [ann def-alias doseq> fn> loop> Nilable Seqable typed-deps]]
             [clojure.core.typed.async :refer [Chan chan>]]
             [clojure.core.async :refer [chan thread put! alts!! close!]]))
 
@@ -23,8 +23,8 @@
                     :port Integer
                     :nick String
                     :channel String
-                    :in-chans (Seq (Chan Message))
-                    :out-chans (Seq (Chan Message))
+                    :in-chans (Seqable (Chan Message))
+                    :out-chans (Seqable (Chan Message))
                     :kill (Chan Any)}))
 
 (ann get-line! [java.io.BufferedReader -> (Nilable Message)])
@@ -44,8 +44,8 @@
     (doseq> [message :- Message messages]
       (println (compose message)))))
 
-(ann create [String Integer String String (Seq (Chan Message))
-             (Seq (Chan Message)) -> Connection])
+(ann create [String Integer String String (Seqable (Chan Message))
+             (Seqable (Chan Message)) -> Connection])
 (defn create
   "Creates and returns a map for holding the physical connection to the
    IRC server."
