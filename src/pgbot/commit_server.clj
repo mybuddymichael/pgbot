@@ -11,9 +11,7 @@
 
 (t/ann-record CommitServer [server :- Server
                             out :- (Chan Message)])
-(defrecord CommitServer [server out])
-
-(extend-type CommitServer
+(defrecord CommitServer [server out]
   Lifecycle
   (start [{:keys [server] :as commit-server}]
     (.start ^Server server)
