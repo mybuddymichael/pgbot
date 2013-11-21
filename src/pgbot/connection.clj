@@ -1,9 +1,9 @@
 (ns pgbot.connection
   (:require (pgbot [messages :refer [parse compose Message]])
             [clojure.core.typed :as t
-             :refer [ann def-alias doseq> fn> loop> Nilable Seqable typed-deps]]
+             :refer [ann def-alias doseq> fn> loop> Nilable Seq typed-deps]]
             [clojure.core.typed.async :refer [Chan chan>]]
-            [clojure.core.async :refer [chan thread put! alts!! close!]]))
+            [clojure.core.async :refer [<!! chan thread put! close!]]))
 
 (typed-deps clojure.core.typed.async)
 
@@ -23,18 +23,18 @@
                     :port Integer
                     :nick String
                     :channel String
-                    :in-chans (Seqable (Chan Message))
-                    :out-chans (Seqable (Chan Message))
-                    :kill (Chan Any)}))
+                    :in (Chan Message)
+                    :out (Chan Message)
+                    :kill (Chan Nothing)}))
 
-(ann get-line! [java.io.BufferedReader -> (Nilable Message)])
-(defn ^:private get-line!
-  "Grabs a single line from the connection, parsing it into a message
-   map, or returning nil if the socket is closed."
-  [reader]
-  (try (let [line (.readLine ^java.io.BufferedReader reader)]
-         (if line (parse line) nil))
-    (catch java.io.IOException _ nil)))
+(ann message-seq [java.io.BufferedReader -> (Nilable (Seq Message))])
+(defn ^:private message-seq
+  "Like line-seq, but it catches IOExceptions from the socket,
+   in which case it will return nil. Lines are parsed into Message maps."
+  [^java.io.BufferedReader reader]
+  (when-let [line (try (.readLine reader)
+                    (catch java.io.IOException _ nil))]
+    (cons (parse line) (lazy-seq (message-seq reader)))))
 
 (ann send-message! [java.io.BufferedWriter Message * -> nil])
 (defn ^:private send-message!
@@ -44,12 +44,11 @@
     (doseq> [message :- Message messages]
       (println (compose message)))))
 
-(ann create [String Integer String String (Seqable (Chan Message))
-             (Seqable (Chan Message)) -> Connection])
+(ann create [String Integer String String -> Connection])
 (defn create
   "Creates and returns a map for holding the physical connection to the
    IRC server."
-  [host port nick channel in-chans out-chans]
+  [host port nick channel]
   {:socket nil
    :reader nil
    :writer nil
@@ -57,9 +56,9 @@
    :port port
    :nick nick
    :channel channel
-   :in-chans in-chans
-   :out-chans out-chans
-   :kill (chan)})
+   :in (chan> Message)
+   :out (chan> Message)
+   :kill (chan> Nothing)})
 
 (ann start [Connection -> Connection])
 (defn start
@@ -67,7 +66,7 @@
    establish a connection it will keep trying until it succeeds. It
    starts placing incoming messages into the in channel and taking
    outgoing message off the out channel."
-  [{:keys [reader writer host port nick channel in-chans out-chans stop]
+  [{:keys [reader writer host port nick channel in out stop]
     :as connection}]
   (let [open-socket
         (fn> [host :- String
@@ -87,19 +86,18 @@
     (send-message! (:writer connection)
                    {:type "JOIN" :destination channel})
     (thread
-      (loop> [line :- (Nilable Message)
-              (get-line! (:reader connection))]
-        (when line
-          (doseq> [c :- (Chan Message) in-chans]
-            (put! c line))
-          (recur (get-line! (:reader connection))))))
+      (loop> [messages :- (Nilable (Seq Message))
+              (message-seq (:reader connection))]
+          (if-let [message (first messages)]
+            (do (put! in message)
+              (recur (rest messages)))
+            (close! in))))
     (thread
-      (t/tc-ignore
-        (let [alts-fn #(alts!! (flatten [stop out-chans]) :priority true)]
-          (loop [[message chan] (alts-fn)]
-            (when (not= chan stop)
-              (send-message! writer message)
-              (recur (alts-fn)))))))
+      (loop> [message :- (Nilable Message)
+              (<!! out)]
+        (when message
+          (send-message! (:writer connection) message)
+          (recur (<!! out)))))
     connection))
 
 (ann stop [Connection -> Connection])
