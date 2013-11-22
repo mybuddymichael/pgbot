@@ -9,7 +9,6 @@
 
 (t/typed-deps clojure.core.typed.async)
 
-(t/tc-ignore
 (ann-record Dispatcher [incoming :- (Chan Message)
                         outgoing :- (Chan Message)
                         in-chans :- (Seqable (Chan Message))
@@ -17,7 +16,8 @@
                         kill :- (Chan Nothing)])
 (defrecord Dispatcher [incoming outgoing in-chans out-chans kill]
   Lifecycle
-  (start [{:keys [in-chans out-chans stop] :as dispatcher}]
+  (start [dispatcher]
+    (t/tc-ignore
     (async/thread
       (let [alts-fn #(async/alts!! [kill incoming] :priority true)]
         (loop [[message chan] (alts-fn)]
@@ -33,8 +33,9 @@
             (async/put! outgoing message)
             (info "Outgoing message" (:uuid message) "placed on outgoing.")
             (recur (alts-fn))))))
+    (info "Dispatcher started."))
     dispatcher)
-  (stop [{:keys [kill] :as dispatcher}]
+  (stop [dispatcher]
     (async/close! kill)
     dispatcher))
 
