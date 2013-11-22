@@ -2,6 +2,7 @@
   (:require [clojure.core.async :as async]
             [clojure.core.typed :as t :refer [ann def-alias Nilable Seqable]]
             [clojure.core.typed.async :refer [Chan]]
+            [taoensso.timbre :refer [info]]
             (pgbot [lifecycle :as lifecycle :refer [Lifecycle]]
                    [commit-server :as commit-server]
                    [connection :as connection :refer [Connection]]
@@ -51,6 +52,7 @@
    application."
   [{:keys [connection responder commit-server dispatcher]
     :as application}]
+  (info "Starting subsystems.")
   (assoc application
          :connection (pgbot.connection/start connection)
          :responder (lifecycle/start responder)
@@ -62,6 +64,7 @@
   "Runs various side effects to shut down pgbot. Returns the stopped
    application."
   [{:keys [connection responder commit-server dispatcher] :as application}]
+  (info "Stopping subsystems.")
   (assoc application
          :connection (pgbot.connection/stop connection)
          :responder (lifecycle/stop responder)
