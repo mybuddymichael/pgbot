@@ -19,7 +19,7 @@
 
 (ann-record Responder [in := (Chan Message)
                        out := (Chan Message)
-                       kill := (Chan Any)])
+                       kill := (Chan Nothing)])
 (defrecord Responder [in out kill]
   Lifecycle
   (start [{:keys [in out kill] :as responder}]
@@ -43,4 +43,4 @@
 (defn ->Responder []
   (Responder. (chan> Message)
               (chan> Message)
-              (chan> Any)))
+              (chan> Nothing)))
