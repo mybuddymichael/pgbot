@@ -14,9 +14,7 @@
    optionally return a response Message if the incoming Message
    satisfies arbitrary requirements."
   {:ping-pong (fn [m] (when (= (:type m) "PING")
-                        {:type "PONG"
-                         :destination nil
-                         :content (:content m)}))})
+                        (messages/parse (str "PONG :" (:content m)))))})
 
 (ann-record Responder [in := (Chan Message)
                        out := (Chan Message)
