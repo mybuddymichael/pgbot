@@ -43,7 +43,8 @@
   [writer & messages]
   (binding [*out* writer]
     (doseq> [message :- Message messages]
-      (info "Sending message" (:uuid message) "to the writer.")
+      (t/tc-ignore
+        (info "Sending outgoing message" (:uuid message) "to the writer."))
       (println (compose message)))))
 
 (ann create [String Integer String String -> Connection])
@@ -92,7 +93,7 @@
               (message-seq (:reader connection))]
           (if-let [message (first messages)]
             (do (put! in message)
-              (info "Incoming message" (:uuid message) "put! on in.")
+              (t/tc-ignore (info "Incoming message" (:uuid message) "put! on in."))
               (recur (rest messages)))
             (close! in))))
     (thread
