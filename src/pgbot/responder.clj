@@ -22,7 +22,7 @@
                        kill := (Chan Nothing)])
 (defrecord Responder [in out kill]
   Lifecycle
-  (start [{:keys [in out kill] :as responder}]
+  (start [responder]
     (go>
       (loop [[message chan] (alts! [kill in] :priority true)]
         (when (not= chan kill)
@@ -35,7 +35,7 @@
           (recur (alts! [kill in] :priority true)))))
     (t/tc-ignore (info "Responder started."))
     responder)
-  (stop [{:keys [kill] :as responder}]
+  (stop [responder]
     (close! kill)
     responder))
 
