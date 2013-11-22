@@ -102,6 +102,7 @@
         (when message
           (send-message! (:writer connection) message)
           (recur (<!! out)))))
+    (t/tc-ignore (info "Connection started."))
     connection))
 
 (ann stop [Connection -> Connection])
