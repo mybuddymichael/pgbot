@@ -4,6 +4,8 @@
             [taoensso.timbre :refer [info]])
   (:import java.util.UUID))
 
+(t/non-nil-return java.util.UUID/randomUUID :all)
+
 (t/def-alias Message
   (HMap :mandatory {:type (U String nil)
                     :destination (U String nil)
