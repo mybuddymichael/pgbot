@@ -15,21 +15,21 @@
                         in-chans :- (Seqable (Chan Message))
                         out-chans :- (Seqable (Chan Message))
                         kill :- (Chan Nothing)])
-(defrecord Dispatcher [incoming outgoing in-chans out-chans stop]
+(defrecord Dispatcher [incoming outgoing in-chans out-chans kill]
   Lifecycle
   (start [{:keys [in-chans out-chans stop] :as dispatcher}]
     (async/thread
-      (let [alts-fn #(async/alts!! [stop incoming] :priority true)]
+      (let [alts-fn #(async/alts!! [kill incoming] :priority true)]
         (loop [[message chan] (alts-fn)]
-          (when (not= chan stop)
+          (when (not= chan kill)
             (doseq> [c :- (Chan Message), in-chans]
               (async/put! c message))
             (info "Incoming message" (:uuid message) "placed on in-chans.")
             (recur (alts-fn))))))
     (async/thread
-      (let [alts-fn #(async/alts!! (flatten [stop out-chans]) :priority true)]
+      (let [alts-fn #(async/alts!! (flatten [kill out-chans]) :priority true)]
         (loop [[message chan] (alts-fn)]
-          (when (not= chan stop)
+          (when (not= chan kill)
             (async/put! outgoing message)
             (info "Outgoing message" (:uuid message) "placed on outgoing.")
             (recur (alts-fn))))))
