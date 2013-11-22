@@ -3,7 +3,8 @@
                    [messages :refer [Message]])
             [clojure.core.typed :as t :refer [ann ann-record Map Nilable Seq typed-deps]]
             [clojure.core.typed.async :refer [Chan chan> go>]]
-            [clojure.core.async :refer [<! >! close! alts!]])
+            [clojure.core.async :refer [<! >! close! alts!]]
+            [taoensso.timbre :refer [info]])
   (:import [clojure.lang Keyword]))
 
 (typed-deps clojure.core.typed.async)
@@ -25,10 +26,14 @@
     (go>
       (loop [[message chan] (alts! [kill in] :priority true)]
         (when (not= chan kill)
+          (info "Calling responder functions on incoming message" (:uuid message))
           (as-> (map #(apply % [message]) (vals responses)) rs
             (filter identity rs)
-            (doseq [r rs] (>! out r)))
+            (doseq [r rs]
+              (>! out r)
+              (info "Outgoing message" (:uuid r) "placed on out.")))
           (recur (alts! [kill in] :priority true)))))
+    (t/tc-ignore (info "Responder started."))
     responder)
   (stop [{:keys [kill] :as responder}]
     (close! kill)
