@@ -1,18 +1,40 @@
 (ns pgbot.messages
-  "Functions for parsing and composing IRC lines.")
+  "Functions for parsing and composing IRC lines."
+  (:require [clojure.core.typed :as t]
+            [taoensso.timbre :refer [info]])
+  (:import java.util.UUID))
 
+(t/non-nil-return java.util.UUID/randomUUID :all)
+
+(t/def-alias Message
+  (HMap :mandatory {:prefix (U String nil)
+                    :user (U String nil)
+                    :uri (U String nil)
+                    :type (U String nil)
+                    :destination (U String nil)
+                    :content (U String nil)
+                    :uuid UUID}))
+
+(t/ann parse [String -> Message])
 (defn parse
-  "Takes a message string and returns a map of the message properties."
-  [message]
-  (let [[[_ prefix type destination content]]
-        (re-seq #"^(?:[:](\S+) )?(\S+)(?: (?!:)(.+?))?(?: [:](.+))?$" message)]
-    {:prefix prefix
-     :type type
-     :destination destination
-     :content content}))
+  "Takes a line and returns a Message."
+  [line]
+  (let [[[_ prefix user uri type destination content]]
+        (re-seq #"^(?:[:](([^!]+)![^@]*@(\S+)) )?(\S+)(?: (?!:)(.+?))?(?: [:](.+))?$"
+                line)
+        message {:prefix (some-> prefix str)
+                 :user (some-> user str)
+                 :uri (some-> uri str)
+                 :type (some-> type str)
+                 :destination (some-> destination str)
+                 :content (some-> content str)
+                 :uuid (UUID/randomUUID)}]
+    (t/tc-ignore (info "Parsed message" (:uuid message)))
+    message))
 
+(t/ann compose [Message -> String])
 (defn compose
-  "Takes a message map and returns a reconstructed message string."
+  "Takes a Message and returns a reconstructed line."
   [{:keys [prefix type destination content]}]
   (let [prefix (when prefix (str ":" prefix " "))
         type (if destination (str type " ") type)

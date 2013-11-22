@@ -1,21 +1,26 @@
 (ns pgbot.commit-server
-  (:require (pgbot [lifecycle :refer [Lifecycle]])
+  (:require (pgbot [lifecycle :refer [Lifecycle]]
+                   [messages :refer [Message]])
             [clojure.core.async :refer [chan go put!]]
+            [clojure.core.typed :as t :refer [ann Int]]
+            [clojure.core.typed.async :refer [Chan]]
             [compojure.core :refer [routes POST]]
             [compojure.handler :refer [api]]
-            [ring.adapter.jetty :refer [run-jetty]]))
+            [ring.adapter.jetty :refer [run-jetty]])
+  (:import org.eclipse.jetty.server.Server))
 
-(defrecord CommitServer [server out])
-
-(extend-type CommitServer
+(t/ann-record CommitServer [server :- Server
+                            out :- (Chan Message)])
+(defrecord CommitServer [server out]
   Lifecycle
   (start [{:keys [server] :as commit-server}]
-    (.start server)
+    (.start ^Server server)
     commit-server)
   (stop [{:keys [server] :as commit-server}]
-    (.stop server)
+    (.stop ^Server server)
     commit-server))
 
+(ann ->CommitServer [Int String -> CommitServer])
 (defn ->CommitServer
   "Creates a stopped Jetty Server and returns a map containing the
    Server and its output channel."
@@ -29,8 +34,8 @@
                                      commit-message"\" (" sha ")")]
                             (put! out {:type "PRIVMSG"
                                        :destination irc-channel
-                                       :content message}))
-                          {:body nil})))
+                                       :content message})
+                          {:body nil}))))
                  {:port listening-port :join? false})]
     (.stop server)
     (CommitServer. server out)))

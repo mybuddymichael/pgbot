@@ -7,7 +7,7 @@
 (deftest* "start begins placing incoming messages on in channels"
   (let [in-chans [(chan)]
         c (-> (connection/create "irc.freenode.net" 6667 "pgbottest"
-                                 "##pgbottest" in-chans [] [])
+                                 "##pgbottest" in-chans [])
               (connection/start))]
     (is (<!! (first in-chans)))
     (connection/stop c)))
