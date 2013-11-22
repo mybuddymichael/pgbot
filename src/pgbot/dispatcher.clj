@@ -39,10 +39,10 @@
     (async/close! kill)
     dispatcher))
 
-(ann map->Dispatcher [(HMap :mandatory {:incoming (Chan Message)
-                                        :outgoing (Chan Message)
-                                        :in-chans (Seqable (Chan Message))
-                                        :out-chans (Seqable (Chan Message))})
-                      -> Dispatcher])
-(defn map->Dispatcher [{:keys [incoming outgoing in-chans out-chans]}]
-  (Dispatcher. incoming outgoing in-chans out-chans (typed.async/chan> Nothing))))
+(ann create [(HMap :mandatory {:incoming (Chan Message)
+                               :outgoing (Chan Message)
+                               :in-chans (Seqable (Chan Message))
+                               :out-chans (Seqable (Chan Message))})
+             -> Dispatcher])
+(defn create [{:keys [incoming outgoing in-chans out-chans]}]
+  (Dispatcher. incoming outgoing in-chans out-chans (typed.async/chan> Nothing)))

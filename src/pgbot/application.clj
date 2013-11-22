@@ -37,10 +37,10 @@
         in-chans [(:in responder)]
         out-chans [(:out responder) (:out commit-server)]
         connection (connection/create host port nick channel)
-        dispatcher (dispatcher/map->Dispatcher {:incoming (:in connection)
-                                                :outgoing (:out connection)
-                                                :in-chans in-chans
-                                                :out-chans out-chans})]
+        dispatcher (dispatcher/create {:incoming (:in connection)
+                                       :outgoing (:out connection)
+                                       :in-chans in-chans
+                                       :out-chans out-chans})]
     {:connection connection
      :responder responder
      :commit-server commit-server
