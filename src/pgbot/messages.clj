@@ -6,10 +6,10 @@
 
 (t/def-alias Message
   (HMap :mandatory {:type (U String nil)
-                    :destination (U String nil)}
+                    :destination (U String nil)
+                    :uuid UUID}
         :optional {:prefix (U String nil)
-                   :content (U String nil)
-                   :uuid UUID}))
+                   :content (U String nil)}))
 
 (t/ann parse [String -> Message])
 (defn parse
