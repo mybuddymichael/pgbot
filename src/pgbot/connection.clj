@@ -1,5 +1,5 @@
 (ns pgbot.connection
-  (:require (pgbot [messages :refer [parse compose Message]])
+  (:require (pgbot [messages :as messages :refer [parse compose Message]])
             [clojure.core.typed :as t
              :refer [ann def-alias doseq> fn> loop> Nilable Seq typed-deps]]
             [clojure.core.typed.async :refer [Chan chan>]]
@@ -83,10 +83,10 @@
                           :reader (clojure.java.io/reader socket)
                           :writer (clojure.java.io/writer socket))]
     (send-message! (:writer connection)
-                   {:type "NICK" :destination nick}
-                   {:type "USER" :destination (str nick " i * " nick)})
+                   (messages/parse (str "NICK " nick))
+                   (messages/parse (str "USER " nick " i * " nick)))
     (send-message! (:writer connection)
-                   {:type "JOIN" :destination channel})
+                   (messages/parse (str "JOIN " channel)))
     (thread
       (loop> [messages :- (Nilable (Seq Message))
               (message-seq (:reader connection))]
