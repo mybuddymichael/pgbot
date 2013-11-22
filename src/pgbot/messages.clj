@@ -7,19 +7,24 @@
 (t/non-nil-return java.util.UUID/randomUUID :all)
 
 (t/def-alias Message
-  (HMap :mandatory {:type (U String nil)
+  (HMap :mandatory {:prefix (U String nil)
+                    :user (U String nil)
+                    :uri (U String nil)
+                    :type (U String nil)
                     :destination (U String nil)
-                    :uuid UUID}
-        :optional {:prefix (U String nil)
-                   :content (U String nil)}))
+                    :content (U String nil)
+                    :uuid UUID}))
 
 (t/ann parse [String -> Message])
 (defn parse
   "Takes a line and returns a Message."
   [line]
-  (let [[[_ prefix type destination content]]
-        (re-seq #"^(?:[:](\S+) )?(\S+)(?: (?!:)(.+?))?(?: [:](.+))?$" line)
+  (let [[[_ prefix user uri type destination content]]
+        (re-seq #"^(?:[:](([^!]+)![^@]*@(\S+)) )?(\S+)(?: (?!:)(.+?))?(?: [:](.+))?$"
+                line)
         message {:prefix (some-> prefix str)
+                 :user (some-> user str)
+                 :uri (some-> uri str)
                  :type (some-> type str)
                  :destination (some-> destination str)
                  :content (some-> content str)
