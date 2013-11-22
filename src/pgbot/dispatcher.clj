@@ -3,6 +3,7 @@
   (:require [clojure.core.async :as async]
             [clojure.core.typed :as t :refer [ann ann-record doseq> Seqable]]
             [clojure.core.typed.async :as typed.async :refer [Chan]]
+            [taoensso.timbre :refer [info]]
             (pgbot [lifecycle :refer [Lifecycle]]
                    [messages :refer [Message]])))
 
@@ -23,12 +24,14 @@
           (when (not= chan stop)
             (doseq> [c :- (Chan Message), in-chans]
               (async/put! c message))
+            (info "Incoming message" (:uuid message) "placed on in-chans.")
             (recur (alts-fn))))))
     (async/thread
       (let [alts-fn #(async/alts!! (flatten [stop out-chans]) :priority true)]
         (loop [[message chan] (alts-fn)]
           (when (not= chan stop)
             (async/put! outgoing message)
+            (info "Outgoing message" (:uuid message) "placed on outgoing.")
             (recur (alts-fn))))))
     dispatcher)
   (stop [{:keys [kill] :as dispatcher}]
