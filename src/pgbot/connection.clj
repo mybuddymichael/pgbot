@@ -3,7 +3,8 @@
             [clojure.core.typed :as t
              :refer [ann def-alias doseq> fn> loop> Nilable Seq typed-deps]]
             [clojure.core.typed.async :refer [Chan chan>]]
-            [clojure.core.async :refer [<!! chan thread put! close!]]))
+            [clojure.core.async :refer [<!! chan thread put! close!]]
+            [taoensso.timbre :refer [info]]))
 
 (typed-deps clojure.core.typed.async)
 
@@ -42,6 +43,7 @@
   [writer & messages]
   (binding [*out* writer]
     (doseq> [message :- Message messages]
+      (info "Sending message" (:uuid message) "to the writer.")
       (println (compose message)))))
 
 (ann create [String Integer String String -> Connection])
@@ -90,6 +92,7 @@
               (message-seq (:reader connection))]
           (if-let [message (first messages)]
             (do (put! in message)
+              (info "Incoming message" (:uuid message) "put! on in.")
               (recur (rest messages)))
             (close! in))))
     (thread
