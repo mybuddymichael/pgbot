@@ -22,6 +22,7 @@
                  :destination (some-> destination str)
                  :content (some-> content str)
                  :uuid (UUID/randomUUID)}]
+    (info "Parsed message" (:uuid message))
     message))
 
 (t/ann compose [Message -> String])
