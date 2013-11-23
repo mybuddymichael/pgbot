@@ -21,6 +21,6 @@
                            :commit-server-port commit-server-port})
                         pgbot.application/start)]
     (info "Pgbot started.")
-    (<!! (get-in application [:connection :in-loop]))
+    (<!! (-> application :connection :kill))
     (pgbot.application/stop application)
     (recur host port nick channel commit-server-port)))
