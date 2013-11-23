@@ -69,7 +69,7 @@
    establish a connection it will keep trying until it succeeds. It
    starts placing incoming messages into the in channel and taking
    outgoing message off the out channel."
-  [{:keys [reader writer host port nick channel in out stop]
+  [{:keys [reader writer host port nick channel in out kill]
     :as connection}]
   (let [open-socket
         (fn> [host :- String
@@ -95,7 +95,7 @@
             (do (put! in message)
               (t/tc-ignore (info "Incoming message" (:uuid message) "placed on in."))
               (recur (rest messages)))
-            (close! in))))
+            (close! kill))))
     (thread
       (loop> [message :- (Nilable Message)
               (<!! out)]
