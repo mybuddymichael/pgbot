@@ -93,7 +93,7 @@
               (message-seq (:reader connection))]
           (if-let [message (first messages)]
             (do (put! in message)
-              (t/tc-ignore (info "Incoming message" (:uuid message) "put! on in."))
+              (t/tc-ignore (info "Incoming message" (:uuid message) "placed on in."))
               (recur (rest messages)))
             (close! in))))
     (thread

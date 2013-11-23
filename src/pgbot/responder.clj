@@ -26,7 +26,7 @@
     (go>
       (loop [[message chan] (alts! [kill in] :priority true)]
         (when (not= chan kill)
-          (info "Calling responder functions on incoming message" (:uuid message))
+          (info "Processing incoming message" (:uuid message))
           (as-> (map #(apply % [message]) (vals responses)) rs
             (filter identity rs)
             (doseq [r rs]
