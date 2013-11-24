@@ -29,7 +29,7 @@
                     :kill (Chan Nothing)}))
 
 (ann message-seq [java.io.BufferedReader -> (Nilable (Seq Message))])
-(defn ^:private message-seq
+(defn message-seq
   "Like line-seq, but it catches IOExceptions from the socket,
    in which case it will return nil. Lines are parsed into Message maps."
   [^java.io.BufferedReader reader]
@@ -38,7 +38,7 @@
     (cons (parse line) (lazy-seq (message-seq reader)))))
 
 (ann send-message! [java.io.BufferedWriter Message * -> nil])
-(defn ^:private send-message!
+(defn send-message!
   "Sends one or more messages through a connection's writer."
   [writer & messages]
   (binding [*out* writer]
