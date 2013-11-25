@@ -60,18 +60,16 @@
                    (recur host port)))
           socket (open-socket host port)
           _ (.setSoTimeout ^java.net.Socket socket 300000)
-          connection (assoc connection
-                            :socket socket
-                            :reader (clojure.java.io/reader socket)
-                            :writer (clojure.java.io/writer socket))]
-      (send-message! (:writer connection)
+          reader (clojure.java.io/reader socket)
+          writer (clojure.java.io/writer socket)]
+      (send-message! writer
                      (messages/parse (str "NICK " nick))
                      (messages/parse (str "USER " nick " i * " nick)))
-      (send-message! (:writer connection)
+      (send-message! writer
                      (messages/parse (str "JOIN " channel)))
       (thread
         (loop> [messages :- (Nilable (Seq Message))
-                (message-seq (:reader connection))]
+                (message-seq reader)]
           (if-let [message (first messages)]
             (do (put! in message)
               (t/tc-ignore (info "Incoming message" (:uuid message) "placed on in."))
@@ -81,10 +79,13 @@
         (loop> [message :- (Nilable Message)
                 (<!! out)]
           (when message
-            (send-message! (:writer connection) message)
+            (send-message! writer message)
             (recur (<!! out)))))
       (t/tc-ignore (info "Connection started."))
-      connection))
+      (assoc connection
+             :socket socket
+             :reader reader
+             :writer writer)))
   (stop [connection]
     (when (and socket reader writer)
       (.close ^java.net.Socket socket)
