@@ -98,13 +98,13 @@
   "Creates and returns a map for holding the physical connection to the
    IRC server."
   [host port nick channel]
-  {:socket nil
-   :reader nil
-   :writer nil
-   :host host
-   :port port
-   :nick nick
-   :channel channel
-   :in (chan> Message)
-   :out (chan> Message)
-   :kill (chan> Nothing)})
+  (map->Connection {:socket nil
+                    :reader nil
+                    :writer nil
+                    :host host
+                    :port port
+                    :nick nick
+                    :channel channel
+                    :in (chan> Message)
+                    :out (chan> Message)
+                    :kill (chan> Nothing)}))
