@@ -11,17 +11,31 @@
 
 (typed-deps clojure.core.typed.async)
 
-(def-alias Connection
-  (HMap :mandatory {:socket (Nilable java.net.Socket)
-                    :reader (Nilable java.io.BufferedReader)
-                    :writer (Nilable java.io.BufferedWriter)
-                    :host String
-                    :port Integer
-                    :nick String
-                    :channel String
-                    :in (Chan Message)
-                    :out (Chan Message)
-                    :kill (Chan Nothing)}))
+(ann-record Connection [socket :- (Nilable java.net.Socket)
+                        reader :- (Nilable java.io.BufferedReader)
+                        writer :- (Nilable java.io.BufferedWriter)
+                        host :- String
+                        port :- Integer
+                        nick :- String
+                        channel :- String
+                        in :- (Chan Message)
+                        out :- (Chan Message)
+                        kill :- (Chan Nothing)])
+(defrecord Connection [socket
+                       reader
+                       writer
+                       host
+                       port
+                       nick
+                       channel
+                       in
+                       out
+                       kill]
+  Lifecycle
+  (start [connection]
+    connection)
+  (stop [connection]
+    connection))
 
 (ann message-seq [java.io.BufferedReader -> (Nilable (Seq Message))])
 (defn message-seq
