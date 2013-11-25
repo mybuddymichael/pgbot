@@ -1,10 +1,9 @@
 (ns pgbot.messages
   "Functions for parsing and composing IRC lines."
   (:require [clojure.core.typed :as t]
-            [taoensso.timbre :refer [info]])
+            [taoensso.timbre :refer [info]]
+            (pgbot annotations))
   (:import java.util.UUID))
-
-(t/non-nil-return java.util.UUID/randomUUID :all)
 
 (t/def-alias Message
   (HMap :mandatory {:prefix (U String nil)

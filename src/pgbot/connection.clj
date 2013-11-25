@@ -1,20 +1,13 @@
 (ns pgbot.connection
-  (:require (pgbot [messages :as messages :refer [parse compose Message]])
-            [clojure.core.typed :as t
+  (:require [clojure.core.typed :as t
              :refer [ann def-alias doseq> fn> loop> Nilable Seq typed-deps]]
             [clojure.core.typed.async :refer [Chan chan>]]
             [clojure.core.async :refer [<!! chan thread put! close!]]
-            [taoensso.timbre :refer [info]]))
+            [taoensso.timbre :refer [info]]
+            (pgbot annotations
+                   [messages :as messages :refer [parse compose Message]])))
 
 (typed-deps clojure.core.typed.async)
-
-(ann ^:no-check clojure.java.io/reader [Any -> java.io.BufferedReader])
-(ann ^:no-check clojure.java.io/writer [Any -> java.io.BufferedWriter])
-
-(ann ^:no-check clojure.core.async/put!
-  (All [a] (Fn [(Chan a) a -> nil]
-               [(Chan a) a [Any * -> Any] -> nil]
-               [(Chan a) a [Any * -> Any] Boolean -> nil])))
 
 (def-alias Connection
   (HMap :mandatory {:socket (Nilable java.net.Socket)
