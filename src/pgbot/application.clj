@@ -5,12 +5,13 @@
             [taoensso.timbre :refer [info]]
             (pgbot [lifecycle :as lifecycle :refer [Lifecycle]]
                    [commit-server :as commit-server]
-                   [connection :as connection :refer [Connection]]
+                   [connection :as connection]
                    [dispatcher :as dispatcher]
                    [messages :refer [Message]]
                    [responder :as responder]))
   (:import (clojure.lang Keyword)
            pgbot.commit_server.CommitServer
+           pgbot.connection.Connection
            pgbot.dispatcher.Dispatcher
            pgbot.responder.Responder))
 
@@ -54,7 +55,7 @@
     :as application}]
   (info "Starting subsystems.")
   (assoc application
-         :connection (pgbot.connection/start connection)
+         :connection (lifecycle/start connection)
          :responder (lifecycle/start responder)
          :commit-server (lifecycle/start commit-server)
          :dispatcher (lifecycle/start dispatcher)))
@@ -66,7 +67,7 @@
   [{:keys [connection responder commit-server dispatcher] :as application}]
   (info "Stopping subsystems.")
   (assoc application
-         :connection (pgbot.connection/stop connection)
+         :connection (lifecycle/stop connection)
          :responder (lifecycle/stop responder)
          :commit-server (lifecycle/stop commit-server)
          :dispatcher (lifecycle/stop dispatcher)))
