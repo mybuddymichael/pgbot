@@ -11,6 +11,25 @@
 
 (typed-deps clojure.core.typed.async)
 
+(ann message-seq [java.io.BufferedReader -> (Nilable (Seq Message))])
+(defn message-seq
+  "Like line-seq, but it catches IOExceptions from the socket,
+   in which case it will return nil. Lines are parsed into Message maps."
+  [^java.io.BufferedReader reader]
+  (when-let [line (try (.readLine reader)
+                    (catch java.io.IOException _ nil))]
+    (cons (parse line) (lazy-seq (message-seq reader)))))
+
+(ann send-message! [java.io.BufferedWriter Message * -> nil])
+(defn send-message!
+  "Sends one or more messages through a connection's writer."
+  [writer & messages]
+  (binding [*out* writer]
+    (doseq> [message :- Message messages]
+      (t/tc-ignore
+        (info "Sending outgoing message" (:uuid message) "to the writer."))
+      (println (compose message)))))
+
 (ann-record Connection [socket :- (Nilable java.net.Socket)
                         reader :- (Nilable java.io.BufferedReader)
                         writer :- (Nilable java.io.BufferedWriter)
@@ -73,25 +92,6 @@
       (.close ^java.io.BufferedWriter writer))
     (close! kill)
     connection))
-
-(ann message-seq [java.io.BufferedReader -> (Nilable (Seq Message))])
-(defn message-seq
-  "Like line-seq, but it catches IOExceptions from the socket,
-   in which case it will return nil. Lines are parsed into Message maps."
-  [^java.io.BufferedReader reader]
-  (when-let [line (try (.readLine reader)
-                    (catch java.io.IOException _ nil))]
-    (cons (parse line) (lazy-seq (message-seq reader)))))
-
-(ann send-message! [java.io.BufferedWriter Message * -> nil])
-(defn send-message!
-  "Sends one or more messages through a connection's writer."
-  [writer & messages]
-  (binding [*out* writer]
-    (doseq> [message :- Message messages]
-      (t/tc-ignore
-        (info "Sending outgoing message" (:uuid message) "to the writer."))
-      (println (compose message)))))
 
 (ann create [String Integer String String -> Connection])
 (defn create
