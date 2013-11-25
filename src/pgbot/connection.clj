@@ -6,6 +6,7 @@
             [clojure.core.async :refer [<!! chan thread put! close!]]
             [taoensso.timbre :refer [info]]
             (pgbot annotations
+                   [lifecycle :refer [Lifecycle]]
                    [messages :as messages :refer [parse compose Message]])))
 
 (typed-deps clojure.core.typed.async)
