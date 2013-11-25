@@ -1,32 +1,12 @@
 (ns pgbot.application
   (:require [clojure.core.async :as async]
-            [clojure.core.typed :as t :refer [ann def-alias Nilable Seqable]]
-            [clojure.core.typed.async :refer [Chan]]
             [taoensso.timbre :refer [info]]
             (pgbot [lifecycle :as lifecycle :refer [Lifecycle]]
                    [commit-server :as commit-server]
                    [connection :as connection]
                    [dispatcher :as dispatcher]
-                   [messages :refer [Message]]
-                   [responder :as responder]))
-  (:import (clojure.lang Keyword)
-           pgbot.commit_server.CommitServer
-           pgbot.connection.Connection
-           pgbot.dispatcher.Dispatcher
-           pgbot.responder.Responder))
+                   [responder :as responder])))
 
-(def-alias Application
-  (HMap :mandatory {:connection Connection
-                    :responder Responder
-                    :commit-server CommitServer
-                    :dispatcher Dispatcher}))
-
-(ann create [(HMap :mandatory {:host String
-                               :port String
-                               :nick String
-                               :channel String
-                               :commit-server-port String})
-             -> Application])
 (defn create
   "Creates and returns a new instance of pgbot."
   [{:keys [host port nick channel commit-server-port]}]
@@ -47,12 +27,10 @@
      :commit-server commit-server
      :dispatcher dispatcher}))
 
-(ann ^:no-check start [Application -> Application])
 (defn start
   "Runs various side effects to start up pgbot. Returns the started
    application."
-  [{:keys [connection responder commit-server dispatcher]
-    :as application}]
+  [{:keys [connection responder commit-server dispatcher] :as application}]
   (info "Starting subsystems.")
   (assoc application
          :connection (lifecycle/start connection)
@@ -60,7 +38,6 @@
          :commit-server (lifecycle/start commit-server)
          :dispatcher (lifecycle/start dispatcher)))
 
-(ann ^:no-check stop [Application -> Application])
 (defn stop
   "Runs various side effects to shut down pgbot. Returns the stopped
    application."
