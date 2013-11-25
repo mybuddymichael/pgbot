@@ -1,6 +1,7 @@
 (ns pgbot.connection
   (:require [clojure.core.typed :as t
-             :refer [ann def-alias doseq> fn> loop> Nilable Seq typed-deps]]
+             :refer [ann ann-record def-alias doseq> fn> loop> Nilable Seq
+                     typed-deps]]
             [clojure.core.typed.async :refer [Chan chan>]]
             [clojure.core.async :refer [<!! chan thread put! close!]]
             [taoensso.timbre :refer [info]]
