@@ -33,8 +33,45 @@
                        kill]
   Lifecycle
   (start [connection]
-    connection)
+    (let [open-socket
+          (fn> [host :- String
+                port :- Integer]
+               (or (try (java.net.Socket. ^String host ^Long port)
+                     (catch java.io.IOException  _ nil))
+                   (recur host port)))
+          socket (open-socket host port)
+          _ (.setSoTimeout ^java.net.Socket socket 300000)
+          connection (assoc connection
+                            :socket socket
+                            :reader (clojure.java.io/reader socket)
+                            :writer (clojure.java.io/writer socket))]
+      (send-message! (:writer connection)
+                     (messages/parse (str "NICK " nick))
+                     (messages/parse (str "USER " nick " i * " nick)))
+      (send-message! (:writer connection)
+                     (messages/parse (str "JOIN " channel)))
+      (thread
+        (loop> [messages :- (Nilable (Seq Message))
+                (message-seq (:reader connection))]
+          (if-let [message (first messages)]
+            (do (put! in message)
+              (t/tc-ignore (info "Incoming message" (:uuid message) "placed on in."))
+              (recur (rest messages)))
+            (close! kill))))
+      (thread
+        (loop> [message :- (Nilable Message)
+                (<!! out)]
+          (when message
+            (send-message! (:writer connection) message)
+            (recur (<!! out)))))
+      (t/tc-ignore (info "Connection started."))
+      connection))
   (stop [connection]
+    (when (and socket reader writer)
+      (.close ^java.net.Socket socket)
+      (.close ^java.io.BufferedReader reader)
+      (.close ^java.io.BufferedWriter writer))
+    (close! kill)
     connection))
 
 (ann message-seq [java.io.BufferedReader -> (Nilable (Seq Message))])
@@ -71,54 +108,3 @@
    :in (chan> Message)
    :out (chan> Message)
    :kill (chan> Nothing)})
-
-(ann start [Connection -> Connection])
-(defn start
-  "Runs side effects to open a connection to an IRC server. If it cannot
-   establish a connection it will keep trying until it succeeds. It
-   starts placing incoming messages into the in channel and taking
-   outgoing message off the out channel."
-  [{:keys [reader writer host port nick channel in out kill]
-    :as connection}]
-  (let [open-socket
-        (fn> [host :- String
-              port :- Integer]
-          (or (try (java.net.Socket. ^String host ^Long port)
-                   (catch java.io.IOException  _ nil))
-              (recur host port)))
-        socket (open-socket host port)
-        _ (.setSoTimeout ^java.net.Socket socket 300000)
-        connection (assoc connection
-                          :socket socket
-                          :reader (clojure.java.io/reader socket)
-                          :writer (clojure.java.io/writer socket))]
-    (send-message! (:writer connection)
-                   (messages/parse (str "NICK " nick))
-                   (messages/parse (str "USER " nick " i * " nick)))
-    (send-message! (:writer connection)
-                   (messages/parse (str "JOIN " channel)))
-    (thread
-      (loop> [messages :- (Nilable (Seq Message))
-              (message-seq (:reader connection))]
-          (if-let [message (first messages)]
-            (do (put! in message)
-              (t/tc-ignore (info "Incoming message" (:uuid message) "placed on in."))
-              (recur (rest messages)))
-            (close! kill))))
-    (thread
-      (loop> [message :- (Nilable Message)
-              (<!! out)]
-        (when message
-          (send-message! (:writer connection) message)
-          (recur (<!! out)))))
-    (t/tc-ignore (info "Connection started."))
-    connection))
-
-(ann stop [Connection -> Connection])
-(defn stop [{:keys [socket reader writer kill] :as connection}]
-  (when (and socket reader writer)
-    (.close ^java.net.Socket socket)
-    (.close ^java.io.BufferedReader reader)
-    (.close ^java.io.BufferedWriter writer))
-  (close! kill)
-  connection)
