@@ -1,6 +1,7 @@
 (ns pgbot.connection-test
   (:require (pgbot [test-helpers :refer [deftest*]]
-                   [connection :as connection])
+                   [connection :as connection]
+                   [lifecycle :as lifecycle])
             [clojure.core.async :refer [chan go <!!]]
             [clojure.test :refer [is]]))
 
@@ -8,6 +9,6 @@
   (let [in-chans [(chan)]
         c (-> (connection/create "irc.freenode.net" 6667 "pgbottest"
                                  "##pgbottest" in-chans [])
-              (connection/start))]
+              (lifecycle/start))]
     (is (<!! (first in-chans)))
-    (connection/stop c)))
+    (lifecycle/stop c)))
