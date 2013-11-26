@@ -12,9 +12,8 @@
   [{:keys [host port nick channel commit-server-port]}]
   (let [port (Integer/parseInt port)
         commit-server-port (Integer/parseInt commit-server-port)
-        commit-server (commit-server/->CommitServer commit-server-port
-                                                    channel)
-        responder (responder/->Responder)
+        commit-server (commit-server/create commit-server-port channel)
+        responder (responder/create)
         in-chans [(:in responder)]
         out-chans [(:out responder) (:out commit-server)]
         connection (connection/create host port nick channel)

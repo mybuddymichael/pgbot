@@ -30,5 +30,7 @@
     (async/close! kill)
     responder))
 
-(defn ->Responder []
+(defn create
+  "Initialize a responder."
+  []
   (Responder. (async/chan) (async/chan) (async/chan)))
