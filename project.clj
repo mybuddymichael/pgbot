@@ -1,5 +1,5 @@
 (defproject pgbot "0.5.1"
-  :description "A simple IRC bot, written in Clojure."
+  :description "An IRC bot, written in Clojure."
   :license {:name "MIT"
             :url "http://choosealicense.com/licenses/mit/"}
   :dependencies [[org.clojure/clojure "1.5.1"]
