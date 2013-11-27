@@ -15,7 +15,7 @@
                  :destination (some-> destination str)
                  :content (some-> content str)
                  :uuid (java.util.UUID/randomUUID)}]
-    (info "Parsed message" (:uuid message)) 
+    (info "Parsed message" (:uuid message))
     message))
 
 (defn compose
