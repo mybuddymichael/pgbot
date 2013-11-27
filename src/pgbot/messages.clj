@@ -1,6 +1,6 @@
 (ns pgbot.messages
   "Functions for parsing and composing IRC lines."
-  (:require [taoensso.timbre :refer [info]]))
+  (:require [taoensso.timbre :refer [info debug]]))
 
 (defn parse
   "Takes a line and returns a Message."
@@ -16,6 +16,7 @@
                  :content (some-> content str)
                  :uuid (java.util.UUID/randomUUID)}]
     (info "Parsed message" (:uuid message))
+    (debug message)
     message))
 
 (defn compose
