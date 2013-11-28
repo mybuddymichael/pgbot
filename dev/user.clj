@@ -3,13 +3,9 @@
             [clojure.repl :refer :all]
             [clojure.pprint :refer [pprint]]
             [clojure.test :refer [run-tests]]
-            [clojure.core.typed :as t]
             (pgbot application debug)))
 
 (def application nil)
-
-(defn check []
-  (t/check-ns 'pgbot.core))
 
 (defn create
   "Creates and stores a new application instance."
