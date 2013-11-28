@@ -17,7 +17,6 @@
   [writer & messages]
   (binding [*out* writer]
     (doseq [message messages]
-      (info "Sending outgoing message" (:uuid message) "to the writer.")
       (println (compose message)))))
 
 (defrecord Connection [socket
