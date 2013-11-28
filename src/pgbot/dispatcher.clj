@@ -4,6 +4,14 @@
             [taoensso.timbre :refer [info]]
             (pgbot [lifecycle :refer [Lifecycle]])))
 
+(defn put-to-all-chans!! [x chans]
+  "Puts x on chans, using alts!!. Puts are made as soon as any channel
+   is available. Blocks until all operations are complete. Returns nil."
+  (when (seq chans)
+    (let [put-operations (map vector chans (repeat x))
+          [_ success-chan] (async/alts!! put-operations)]
+      (recur x (remove #{success-chan} chans)))))
+
 (defrecord Dispatcher [incoming
                        outgoing
                        in-chans
@@ -15,8 +23,7 @@
       (let [alts-fn #(async/alts!! [kill incoming] :priority true)]
         (loop [[message chan] (alts-fn)]
           (when (not= chan kill)
-            (doseq [c in-chans]
-              (async/put! c message))
+            (put-to-all-chans!! message in-chans)
             (info "Incoming message" (hash message) "dispatched to all in-chans.")
             (recur (alts-fn))))))
     (async/thread
