@@ -1,5 +1,5 @@
 (ns pgbot.connection
-  (:require [clojure.core.async :refer [<!! chan thread put! close!]]
+  (:require [clojure.core.async :as async]
             [taoensso.timbre :refer [info]]
             (pgbot [lifecycle :refer [Lifecycle]]
                    [messages :as messages :refer [parse compose]])))
@@ -45,19 +45,19 @@
                      (messages/parse (str "USER " nick " i * " nick)))
       (send-message! writer
                      (messages/parse (str "JOIN " channel)))
-      (thread
+      (async/thread
         (loop [messages (message-seq reader)]
           (if-let [message (first messages)]
             (do
-              (put! in message)
+              (async/>!! in message)
               (info "Incoming message" (:uuid message) "placed on in.")
               (recur (rest messages)))
-            (close! kill))))
-      (thread
-        (loop [message (<!! out)]
+            (async/close! kill))))
+      (async/thread
+        (loop [message (async/<!! out)]
           (when message
             (send-message! writer message)
-            (recur (<!! out)))))
+            (recur (async/<!! out)))))
       (info "Connection started.")
       (assoc connection
              :socket socket
@@ -66,7 +66,7 @@
   (stop [connection]
     (doseq [closeable [socket reader writer]]
       (.close closeable))
-    (close! kill)
+    (async/close! kill)
     connection))
 
 (defn create
@@ -80,6 +80,6 @@
                     :port port
                     :nick nick
                     :channel channel
-                    :in (chan)
-                    :out (chan)
-                    :kill (chan)}))
+                    :in (async/chan)
+                    :out (async/chan)
+                    :kill (async/chan)}))
