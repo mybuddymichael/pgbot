@@ -1,6 +1,6 @@
 (ns pgbot.connection
   (:require [clojure.core.async :as async]
-            [taoensso.timbre :refer [info]]
+            [taoensso.timbre :refer [debug info error]]
             (pgbot [lifecycle :refer [Lifecycle]]
                    [messages :as messages :refer [parse compose]])))
 
@@ -49,14 +49,19 @@
         (loop [messages (message-seq reader)]
           (if-let [message (first messages)]
             (do
+              (info "Read incoming message" (hash message))
+              (debug "Message" (hash message) "is" message)
               (async/>!! in message)
               (info "Incoming message" (hash message) "placed on in.")
+              (when (= (:type message) "ERROR")
+                (error "ERROR message received:" message))
               (recur (rest messages)))
             (async/close! kill))))
       (async/thread
         (loop [message (async/<!! out)]
           (when message
             (send-message! writer message)
+            (info "Outgoing message" (hash message) "sent to the writer.")
             (recur (async/<!! out)))))
       (info "Connection started.")
       (assoc connection
@@ -67,6 +72,7 @@
     (doseq [closeable [socket reader writer]]
       (.close closeable))
     (async/close! kill)
+    (info "Connection stopped.")
     connection))
 
 (defn create
