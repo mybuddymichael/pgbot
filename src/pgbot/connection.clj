@@ -9,7 +9,7 @@
    in which case it will return nil. Lines are parsed into Message maps."
   [reader]
   (when-let [line (try (.readLine reader)
-                    (catch java.io.IOException _ nil))]
+                    (catch java.io.IOException _))]
     (cons (parse line) (lazy-seq (message-seq reader)))))
 
 (defn send-message!
