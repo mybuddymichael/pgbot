@@ -30,6 +30,7 @@
     dispatcher)
   (stop [dispatcher]
     (async/close! kill)
+    (info "Dispatcher stopped.")
     dispatcher))
 
 (defn create [{:keys [incoming outgoing in-chans out-chans]}]

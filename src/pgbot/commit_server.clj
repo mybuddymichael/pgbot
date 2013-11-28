@@ -3,16 +3,19 @@
             [clojure.core.async :as async]
             [compojure.core :refer [routes POST]]
             [compojure.handler :refer [api]]
-            [ring.adapter.jetty :refer [run-jetty]])
+            [ring.adapter.jetty :refer [run-jetty]]
+            [taoensso.timbre :refer [info]])
   (:import org.eclipse.jetty.server.Server))
 
 (defrecord CommitServer [server out]
   Lifecycle
   (start [commit-server]
     (.start server)
+    (info "Commit server started.")
     commit-server)
   (stop [commit-server]
     (.stop server)
+    (info "Commit server stopped.")
     commit-server))
 
 (defn create

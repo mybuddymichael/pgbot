@@ -28,6 +28,7 @@
     responder)
   (stop [responder]
     (async/close! kill)
+    (info "Responder stopped.")
     responder))
 
 (defn create
