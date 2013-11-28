@@ -3,7 +3,7 @@
   (:require [taoensso.timbre :refer [info debug]]))
 
 (defn parse
-  "Takes a line and returns a Message."
+  "Takes a line and returns a constructed message map."
   [line]
   (let [[[_ prefix user uri type destination content]]
         (re-seq #"^(?:[:](([^!]+)![^@]*@(\S+)) )?(\S+)(?: (?!:)(.+?))?(?: [:](.+))?$"
