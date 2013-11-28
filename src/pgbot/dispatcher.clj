@@ -17,14 +17,14 @@
           (when (not= chan kill)
             (doseq [c in-chans]
               (async/put! c message))
-            (info "Incoming message" (:uuid message) "dispatched to all in-chans.")
+            (info "Incoming message" (hash message) "dispatched to all in-chans.")
             (recur (alts-fn))))))
     (async/thread
       (let [alts-fn #(async/alts!! (flatten [kill out-chans]) :priority true)]
         (loop [[message chan] (alts-fn)]
           (when (not= chan kill)
             (async/put! outgoing message)
-            (info "Outgoing message" (:uuid message) "dispatched to out.")
+            (info "Outgoing message" (hash message) "dispatched to out.")
             (recur (alts-fn))))))
     (info "Dispatcher started.")
     dispatcher)

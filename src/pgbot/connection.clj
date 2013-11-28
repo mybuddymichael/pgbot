@@ -50,7 +50,7 @@
           (if-let [message (first messages)]
             (do
               (async/>!! in message)
-              (info "Incoming message" (:uuid message) "placed on in.")
+              (info "Incoming message" (hash message) "placed on in.")
               (recur (rest messages)))
             (async/close! kill))))
       (async/thread
