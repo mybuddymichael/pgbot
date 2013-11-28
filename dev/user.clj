@@ -3,6 +3,7 @@
             [clojure.repl :refer :all]
             [clojure.pprint :refer [pprint]]
             [clojure.test :refer [run-tests]]
+            [taoensso.timbre :as timbre]
             (pgbot application debug)))
 
 (def application nil)
