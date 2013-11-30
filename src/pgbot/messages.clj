@@ -1,6 +1,5 @@
 (ns pgbot.messages
-  "Functions for parsing and composing IRC lines."
-  (:require [taoensso.timbre :refer [info]]))
+  "Functions for parsing and composing IRC lines.")
 
 (defn parse
   "Takes a line and returns a constructed message map."
