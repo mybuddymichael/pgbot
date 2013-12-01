@@ -18,6 +18,16 @@
      :content (some-> content str)
      :source source}))
 
+(defn parse-incoming
+  "Uses parse to generate an incoming message map."
+  [line]
+  (parse line {:source :incoming}))
+
+(defn parse-outgoing
+  "Uses parse to generate an outgoing message map."
+  [line]
+  (parse line {:source :outgoing}))
+
 (defn compose
   "Takes a Message and returns a reconstructed line."
   [{:keys [prefix type destination content]}]
