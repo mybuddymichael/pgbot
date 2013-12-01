@@ -7,6 +7,15 @@
                    [dispatcher :as dispatcher]
                    [responder :as responder])))
 
+(defn update
+  "Takes an application map and a lifecycle function applies the
+   function to each component. Returns the updated application."
+  [application lifecycle-fn]
+  (let [components
+        (-> (map (fn [[k v]] [k (lifecycle-fn v)]) application)
+            flatten)]
+    (apply assoc application components)))
+
 (defn create
   "Creates and returns a new instance of pgbot."
   [{:keys [host port nick channel commit-server-port]}]
@@ -29,21 +38,13 @@
 (defn start
   "Runs various side effects to start up pgbot. Returns the started
    application."
-  [{:keys [connection responder commit-server dispatcher] :as application}]
+  [application]
   (info "Starting subsystems.")
-  (assoc application
-         :connection (lifecycle/start connection)
-         :responder (lifecycle/start responder)
-         :commit-server (lifecycle/start commit-server)
-         :dispatcher (lifecycle/start dispatcher)))
+  (update application lifecycle/start))
 
 (defn stop
   "Runs various side effects to shut down pgbot. Returns the stopped
    application."
-  [{:keys [connection responder commit-server dispatcher] :as application}]
+  [application]
   (info "Stopping subsystems.")
-  (assoc application
-         :connection (lifecycle/stop connection)
-         :responder (lifecycle/stop responder)
-         :commit-server (lifecycle/stop commit-server)
-         :dispatcher (lifecycle/stop dispatcher)))
+  (update application lifecycle/stop))
