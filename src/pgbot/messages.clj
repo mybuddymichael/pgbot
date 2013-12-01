@@ -1,9 +1,12 @@
 (ns pgbot.messages
   "Functions for parsing and composing IRC lines.")
 
-(defn parse
-  "Takes a line and returns a constructed message map."
-  [line]
+(defn- parse
+  "Takes a line and a map of options and returns a constructed message
+   map. Options are currently just a :source that is one of either
+   :incoming or :outgoing."
+  [line {:keys [source]}]
+  {:pre [source]}
   (let [[[_ prefix user uri type destination content]]
         (re-seq #"^(?:[:](([^!]+)![^@]*@(\S+)) )?(\S+)(?: (?!:)(.+?))?(?: [:](.+))?$"
                 line)]
@@ -12,7 +15,8 @@
      :uri (some-> uri str)
      :type (some-> type str)
      :destination (some-> destination str)
-     :content (some-> content str)}))
+     :content (some-> content str)
+     :source source}))
 
 (defn compose
   "Takes a Message and returns a reconstructed line."
