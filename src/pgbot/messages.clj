@@ -18,6 +18,14 @@
      :content (some-> content str)
      :source source}))
 
+(defn compose
+  "Takes a Message and returns a reconstructed line."
+  [{:keys [prefix type destination content]}]
+  (let [prefix (when prefix (str ":" prefix " "))
+        type (if destination (str type " ") type)
+        content (when content (str " :" content))]
+    (str prefix type destination content)))
+
 (defn parse-incoming
   "Uses parse to generate an incoming message map."
   [line]
@@ -27,14 +35,6 @@
   "Uses parse to generate an outgoing message map."
   [line]
   (parse line {:source :outgoing}))
-
-(defn compose
-  "Takes a Message and returns a reconstructed line."
-  [{:keys [prefix type destination content]}]
-  (let [prefix (when prefix (str ":" prefix " "))
-        type (if destination (str type " ") type)
-        content (when content (str " :" content))]
-    (str prefix type destination content)))
 
 (defn privmsg
   "Generates an outgoing message map to go to the provided channel or
