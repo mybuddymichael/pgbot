@@ -35,3 +35,9 @@
         type (if destination (str type " ") type)
         content (when content (str " :" content))]
     (str prefix type destination content)))
+
+(defn privmsg
+  "Generates an outgoing message map to go to the provided channel or
+   user with the provided content."
+  [destination content]
+  (parse-outgoing (str "PRIVMSG " destination " :" content)))
