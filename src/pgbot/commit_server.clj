@@ -1,5 +1,6 @@
 (ns pgbot.commit-server
-  (:require (pgbot [lifecycle :refer [Lifecycle]])
+  (:require (pgbot [lifecycle :refer [Lifecycle]]
+                   [messages :as messages])
             [clojure.core.async :as async]
             [compojure.core :refer [routes POST]]
             [compojure.handler :refer [api]]
@@ -28,9 +29,8 @@
                           (let [message
                                 (str user-name " in " repo "/" branch ": \""
                                      commit-message"\" (" sha ")")]
-                            (async/put! out {:type "PRIVMSG"
-                                             :destination irc-channel
-                                             :content message})
+                            (async/put! out (messages/privmsg irc-channel
+                                                              message))
                           {:body nil}))))
                  {:port listening-port :join? false})]
     (.stop server)
