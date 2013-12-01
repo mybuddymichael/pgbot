@@ -19,8 +19,7 @@
     commit-server))
 
 (defn create
-  "Creates a stopped Jetty Server and returns a map containing the
-   Server and its output channel."
+  "Creates a stopped Jetty Server and returns it in a CommitServer."
   [listening-port irc-channel]
   (let [out (async/chan)
         server (run-jetty
