@@ -4,7 +4,7 @@
             [taoensso.timbre :refer [info]]
             (pgbot [lifecycle :refer [Lifecycle]])))
 
-(defn put-to-all-chans!! [x chans]
+(defn put-on-all-chans!! [chans x]
   "Puts x on chans, using alts!!. Puts are made as soon as any channel
    is available. Blocks until all operations are complete. Returns nil."
   (when (seq chans)
