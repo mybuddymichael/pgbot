@@ -23,7 +23,7 @@
       (let [alts-fn #(async/alts!! [kill incoming] :priority true)]
         (loop [[message chan] (alts-fn)]
           (when (not= chan kill)
-            (put-to-all-chans!! message in-chans)
+            (put-on-all-chans!! in-chans message)
             (info "Incoming message" (hash message) "dispatched to all in-chans.")
             (recur (alts-fn))))))
     (async/thread
