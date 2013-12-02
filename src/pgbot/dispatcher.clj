@@ -30,7 +30,7 @@
       (let [alts-fn #(async/alts!! (flatten [kill out-chans]) :priority true)]
         (loop [[message chan] (alts-fn)]
           (when (not= chan kill)
-            (async/>!! outgoing message)
+            (put-on-all-chans!! [outgoing incoming] message)
             (info "Outgoing message" (hash message) "dispatched to out.")
             (recur (alts-fn))))))
     (info "Dispatcher started.")
