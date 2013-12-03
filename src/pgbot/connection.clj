@@ -2,7 +2,7 @@
   (:require [clojure.core.async :as async]
             [taoensso.timbre :refer [debug info error]]
             (pgbot [lifecycle :refer [Lifecycle]]
-                   [messages :as messages])))
+                   [messages :as messages :refer [parse compose]])))
 
 (defn message-seq
   "Like line-seq, but it catches IOExceptions from the socket,
@@ -10,14 +10,14 @@
   [reader]
   (when-let [line (try (.readLine reader)
                     (catch java.io.IOException _))]
-    (cons (messages/parse-incoming line) (lazy-seq (message-seq reader)))))
+    (cons (parse line) (lazy-seq (message-seq reader)))))
 
 (defn send-message!
   "Sends one or more messages through a connection's writer."
   [writer & messages]
   (binding [*out* writer]
     (doseq [message messages]
-      (println (messages/compose message)))))
+      (println (compose message)))))
 
 (defrecord Connection [socket
                        reader
@@ -41,10 +41,10 @@
           reader (clojure.java.io/reader socket)
           writer (clojure.java.io/writer socket)]
       (send-message! writer
-                     (messages/parse-outgoing (str "NICK " nick))
-                     (messages/parse-outgoing (str "USER " nick " i * " nick)))
+                     (messages/parse (str "NICK " nick))
+                     (messages/parse (str "USER " nick " i * " nick)))
       (send-message! writer
-                     (messages/parse-outgoing (str "JOIN " channel)))
+                     (messages/parse (str "JOIN " channel)))
       (async/thread
         (loop [messages (message-seq reader)]
           (if-let [message (first messages)]
