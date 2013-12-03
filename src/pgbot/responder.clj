@@ -9,7 +9,7 @@
    optionally return a response Message if the incoming Message
    satisfies arbitrary requirements."
   {:ping-pong (fn [m] (when (= (:type m) "PING")
-                        (messages/parse-outgoing (str "PONG :" (:content m)))))})
+                        (messages/parse (str "PONG :" (:content m)))))})
 
 (defrecord Responder [in out kill]
   Lifecycle
