@@ -10,7 +10,7 @@
   (when (seq chans)
     (let [put-operations (map vector chans (repeat x))
           [_ success-chan] (async/alts!! put-operations)]
-      (recur x (remove #{success-chan} chans)))))
+      (recur (remove #{success-chan} chans) x))))
 
 (defrecord Dispatcher [incoming
                        outgoing
