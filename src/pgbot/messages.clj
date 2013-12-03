@@ -22,16 +22,6 @@
         content (when content (str " :" content))]
     (str prefix type destination content)))
 
-(defn parse-incoming
-  "Uses parse to generate an incoming message map."
-  [line]
-  (parse line {:source :incoming}))
-
-(defn parse-outgoing
-  "Uses parse to generate an outgoing message map."
-  [line]
-  (parse line {:source :outgoing}))
-
 (defn privmsg
   "Generates an outgoing message map to go to the provided channel or
    user with the provided content."
