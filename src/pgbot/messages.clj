@@ -26,4 +26,4 @@
   "Generates an outgoing message map to go to the provided channel or
    user with the provided content."
   [destination content]
-  (parse-outgoing (str "PRIVMSG " destination " :" content)))
+  (parse (str "PRIVMSG " destination " :" content)))
