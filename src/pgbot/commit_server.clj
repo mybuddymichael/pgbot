@@ -5,8 +5,7 @@
             [compojure.core :refer [routes POST]]
             [compojure.handler :refer [api]]
             [ring.adapter.jetty :refer [run-jetty]]
-            [taoensso.timbre :refer [info]])
-  (:import org.eclipse.jetty.server.Server))
+            [taoensso.timbre :refer [info]]))
 
 (defrecord CommitServer [server out]
   Lifecycle
