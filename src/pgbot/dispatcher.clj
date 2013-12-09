@@ -32,7 +32,7 @@
         (loop [[message chan] (alts-fn)]
           (when (not= chan kill)
             (info "Message" (hash message) "read from an out-chan.")
-            (put-on-all-chans!! [outgoing incoming] message)
+            (async/>!! outgoing message)
             (info "Message" (hash message) "dispatched to outgoing.")
             (recur (alts-fn))))))
     (info "Dispatcher started.")
