@@ -11,7 +11,7 @@
   {:ping-pong (fn [m] (when (= (:type m) "PING")
                         (messages/parse (str "PONG :" (:content m)))))})
 
-(defrecord Responder [in out kill]
+(defrecord Responder [kill in out]
   Lifecycle
   (start [responder]
     (async/go
