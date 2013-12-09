@@ -7,7 +7,7 @@
                    [dispatcher :as dispatcher]
                    [responder :as responder])))
 
-(defn update
+(defn ^:private update
   "Takes an application map and a lifecycle function applies the
    function to each component. Returns the updated application."
   [application lifecycle-fn]
