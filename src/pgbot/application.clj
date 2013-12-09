@@ -6,6 +6,7 @@
                    [commit-server :as commit-server]
                    [connection :as connection]
                    [dispatcher :as dispatcher]
+                   [recorder :as recorder]
                    [responder :as responder])))
 
 (def db-uri "datomic:mem://pgbot")
@@ -31,9 +32,11 @@
   [{:keys [host port nick channel commit-server-port]}]
   (let [port (Integer/parseInt port)
         commit-server-port (Integer/parseInt commit-server-port)
-        commit-server (commit-server/create commit-server-port channel)
+        db-conn (get-db-conn db-uri)
+        recorder (recorder/create db-conn)
         responder (responder/create)
-        in-chans [(:in responder)]
+        commit-server (commit-server/create commit-server-port channel)
+        in-chans [(:in responder) (:in recorder)]
         out-chans [(:out responder) (:out commit-server)]
         connection (connection/create host port nick channel)
         dispatcher (dispatcher/create {:incoming (:in connection)
@@ -43,7 +46,8 @@
     {:connection connection
      :responder responder
      :commit-server commit-server
-     :dispatcher dispatcher}))
+     :dispatcher dispatcher
+     :recorder recorder}))
 
 (defn start
   "Runs various side effects to start up pgbot. Returns the started
