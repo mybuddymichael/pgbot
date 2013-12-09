@@ -1,0 +1,31 @@
+[
+ ;; messages
+ {:db/id #db/id [:db.part/db]
+  :db/ident :message/hash
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one}
+ {:db/id #db/id [:db.part/db]
+  :db/ident :message/prefix
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one}
+ {:db/id #db/id [:db.part/db]
+  :db/ident :message/user
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one}
+ {:db/id #db/id [:db.part/db]
+  :db/ident :message/uri
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one}
+ {:db/id #db/id [:db.part/db]
+  :db/ident :message/type
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one}
+ {:db/id #db/id [:db.part/db]
+  :db/ident :message/destination
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one}
+ {:db/id #db/id [:db.part/db]
+  :db/ident :message/content
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one}
+ ]
