@@ -1,11 +1,21 @@
 (ns pgbot.application
   (:require [clojure.core.async :as async]
+            [datomic.api :as d]
             [taoensso.timbre :refer [info]]
             (pgbot [lifecycle :as lifecycle :refer [Lifecycle]]
                    [commit-server :as commit-server]
                    [connection :as connection]
                    [dispatcher :as dispatcher]
                    [responder :as responder])))
+
+(def db-uri "datomic:mem://pgbot")
+
+(defn ^:private get-db-conn
+  "Creates a database for the uri if one doesn't already exist, connects
+   and returns the connection."
+  [uri]
+  (d/create-database uri)
+  (d/connect uri))
 
 (defn ^:private update
   "Takes an application map and a lifecycle function applies the
