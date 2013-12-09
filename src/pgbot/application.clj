@@ -6,6 +6,9 @@
                    [connection :as connection]
                    [responder :as responder])))
 
+(def config
+  {:buffer 20})
+
 (defn update
   "Takes an application map and a lifecycle function applies the
    function to each component. Returns the updated application."
@@ -21,7 +24,7 @@
   (let [port (Integer/parseInt port)
         commit-server-port (Integer/parseInt commit-server-port)
         commit-server (commit-server/create commit-server-port channel)
-        responder (responder/create)
+        responder (responder/create config)
         in-chans [(:in responder)]
         out-chans [(:out responder) (:out commit-server)]
         connection (connection/create host port nick channel)]
