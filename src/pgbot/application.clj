@@ -4,7 +4,6 @@
             (pgbot [lifecycle :as lifecycle :refer [Lifecycle]]
                    [commit-server :as commit-server]
                    [connection :as connection]
-                   [dispatcher :as dispatcher]
                    [responder :as responder])))
 
 (defn update
@@ -25,15 +24,10 @@
         responder (responder/create)
         in-chans [(:in responder)]
         out-chans [(:out responder) (:out commit-server)]
-        connection (connection/create host port nick channel)
-        dispatcher (dispatcher/create {:incoming (:in connection)
-                                       :outgoing (:out connection)
-                                       :in-chans in-chans
-                                       :out-chans out-chans})]
+        connection (connection/create host port nick channel)]
     {:connection connection
      :responder responder
-     :commit-server commit-server
-     :dispatcher dispatcher}))
+     :commit-server commit-server}))
 
 (defn start
   "Runs various side effects to start up pgbot. Returns the started
