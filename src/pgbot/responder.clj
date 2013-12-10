@@ -34,6 +34,5 @@
 
 (defn create
   "Initialize a responder."
-  [{:keys [buffer]}]
-  (apply ->Responder
-         (async/chan) (mapv (fn [_] (async/chan buffer)) (range 2))))
+  [buffer-size]
+  (apply ->Responder (map (fn [_] (async/chan buffer-size)) (range 3))))

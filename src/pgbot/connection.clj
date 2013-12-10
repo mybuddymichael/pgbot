@@ -78,7 +78,7 @@
 (defn create
   "Creates and returns a map for holding the physical connection to the
    IRC server."
-  [host port nick channel]
+  [buffer-size host port nick channel]
   (map->Connection {:socket nil
                     :reader nil
                     :writer nil
@@ -86,6 +86,6 @@
                     :port port
                     :nick nick
                     :channel channel
-                    :in (async/chan)
-                    :out (async/chan)
-                    :kill (async/chan)}))
+                    :in (async/chan buffer-size)
+                    :out (async/chan buffer-size)
+                    :kill (async/chan buffer-size)}))

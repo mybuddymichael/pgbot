@@ -20,8 +20,8 @@
 
 (defn create
   "Creates a stopped Jetty Server and returns it in a CommitServer."
-  [listening-port irc-channel]
-  (let [out (async/chan)
+  [buffer-size listening-port irc-channel]
+  (let [out (async/chan buffer-size)
         server (run-jetty
                  (api (routes
                         (POST "/" [user-name commit-message repo branch sha]
