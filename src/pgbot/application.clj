@@ -7,7 +7,7 @@
                    [responder :as responder])))
 
 (def config
-  {:buffer 20})
+  {:buffer-size 20})
 
 (defn update
   "Takes an application map and a lifecycle function applies the
