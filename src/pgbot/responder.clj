@@ -24,7 +24,7 @@
               (async/>! out r)
               (info "Outgoing message" (hash r) "placed on out.")))
           (info "Done processing incoming message" (hash message))
-          (recur (alts! [kill in] :priority true)))))
+          (recur (async/alts! [kill in] :priority true)))))
     (info "Responder started.")
     responder)
   (stop [responder]
