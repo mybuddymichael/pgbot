@@ -30,6 +30,10 @@
                      (:buffer-size config) host port nick channel)
         in-chans [(:in responder)]
         out-chans [(:out responder) (:out commit-server)]
+        incoming-mult (async/mult (:in connection))
+        outgoing-mix (async/mix (:out connection))]
+    (doseq [in in-chans] (async/tap incoming-mult in))
+    (doseq [out out-chans] (async/admix outgoing-mix out))
     {:connection connection
      :responder responder
      :commit-server commit-server}))
