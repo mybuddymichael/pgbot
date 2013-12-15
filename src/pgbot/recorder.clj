@@ -19,5 +19,5 @@
     (info "Recorder stopped.")
     recorder))
 
-(defn create [db-conn]
-  (Recorder. db-conn (async/chan) (async/chan)))
+(defn create [buffer-size db-conn]
+  (Recorder. db-conn (async/chan buffer-size) (async/chan buffer-size)))

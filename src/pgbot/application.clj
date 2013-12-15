@@ -35,7 +35,7 @@
   (let [port (Integer/parseInt port)
         commit-server-port (Integer/parseInt commit-server-port)
         db-conn (get-db-conn (:db-uri config))
-        recorder (recorder/create db-conn)
+        recorder (recorder/create (:buffer-size config) db-conn)
         commit-server (commit-server/create
                         (:buffer-size config) commit-server-port channel)
         responder (responder/create (:buffer-size config))
