@@ -3,7 +3,7 @@
   :license {:name "MIT"
             :url "http://choosealicense.com/licenses/mit/"}
   :dependencies [[org.clojure/clojure "1.5.1"]
-                 [org.clojure/core.async "0.1.242.0-44b1e3-alpha"]
+                 [org.clojure/core.async "0.1.267.0-0d7780-alpha"]
                  [compojure "1.1.6"]
                  [ring/ring-jetty-adapter "1.1.8"]
                  [org.clojure/core.typed "0.2.19"]
