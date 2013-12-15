@@ -8,16 +8,16 @@
                    [recorder :as recorder]
                    [responder :as responder])))
 
+(def config
+  {:buffer-size 20
+   :db-uri "datomic:mem://pgbot"})
+
 (defn ^:private get-db-conn
   "Creates a database for the uri if one doesn't already exist, connects
    and returns the connection."
   [uri]
   (d/create-database uri)
   (d/connect uri))
-
-(def config
-  {:buffer-size 20
-   :db-uri "datomic:mem://pgbot"})
 
 (defn ^:private update
   "Takes an application map and a lifecycle function applies the
