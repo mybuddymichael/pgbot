@@ -8,7 +8,6 @@
                    [recorder :as recorder]
                    [responder :as responder])))
 
-
 (defn ^:private get-db-conn
   "Creates a database for the uri if one doesn't already exist, connects
    and returns the connection."
