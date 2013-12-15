@@ -34,7 +34,7 @@
   [{:keys [host port nick channel commit-server-port]}]
   (let [port (Integer/parseInt port)
         commit-server-port (Integer/parseInt commit-server-port)
-        db-conn (get-db-conn db-uri)
+        db-conn (get-db-conn (:db-uri config))
         recorder (recorder/create db-conn)
         commit-server (commit-server/create
                         (:buffer-size config) commit-server-port channel)
