@@ -17,13 +17,13 @@
     (async/go
       (loop [[message chan] (async/alts! [kill in] :priority true)]
         (when (not= chan kill)
-          (info "Processing incoming message" (hash message))
+          (info "Processing message" (hash message))
           (as-> (map #(apply % [message]) (vals responses)) rs
             (filter identity rs)
             (doseq [r rs]
               (async/>! out r)
-              (info "Outgoing message" (hash r) "placed on out.")))
-          (info "Done processing incoming message" (hash message))
+              (info "Message" (hash r) "placed on out.")))
+          (info "Done processing message" (hash message))
           (recur (async/alts! [kill in] :priority true)))))
     (info "Responder started.")
     responder)
