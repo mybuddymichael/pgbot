@@ -49,10 +49,10 @@
         (loop [messages (message-seq reader)]
           (if-let [message (first messages)]
             (do
-              (info "Read incoming message" (hash message))
+              (info "Read message" (hash message))
               (debug "Message" (hash message) "is" message)
               (async/>!! in message)
-              (info "Incoming message" (hash message) "placed on in.")
+              (info "Message" (hash message) "placed on in.")
               (when (= (:type message) "ERROR")
                 (error "ERROR message received:" message))
               (recur (rest messages)))
@@ -61,7 +61,7 @@
         (loop [message (async/<!! out)]
           (when message
             (send-message! writer message)
-            (info "Outgoing message" (hash message) "sent to the writer.")
+            (info "Message" (hash message) "sent to the writer.")
             (recur (async/<!! out)))))
       (info "Connection started.")
       (assoc connection
@@ -78,7 +78,7 @@
 (defn create
   "Creates and returns a map for holding the physical connection to the
    IRC server."
-  [host port nick channel]
+  [buffer-size host port nick channel]
   (map->Connection {:socket nil
                     :reader nil
                     :writer nil
@@ -86,6 +86,6 @@
                     :port port
                     :nick nick
                     :channel channel
-                    :in (async/chan)
-                    :out (async/chan)
-                    :kill (async/chan)}))
+                    :in (async/chan buffer-size)
+                    :out (async/chan buffer-size)
+                    :kill (async/chan buffer-size)}))

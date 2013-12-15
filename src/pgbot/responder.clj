@@ -11,7 +11,7 @@
   {:ping-pong (fn [m] (when (= (:type m) "PING")
                         (messages/parse (str "PONG :" (:content m)))))})
 
-(defrecord Responder [in out kill]
+(defrecord Responder [kill in out]
   Lifecycle
   (start [responder]
     (async/go
@@ -23,7 +23,8 @@
             (doseq [r rs]
               (async/>! out r)
               (info "Outgoing message" (hash r) "placed on out.")))
-          (recur (alts! [kill in] :priority true)))))
+          (info "Done processing incoming message" (hash message))
+          (recur (async/alts! [kill in] :priority true)))))
     (info "Responder started.")
     responder)
   (stop [responder]
@@ -33,5 +34,5 @@
 
 (defn create
   "Initialize a responder."
-  []
-  (Responder. (async/chan) (async/chan) (async/chan)))
+  [buffer-size]
+  (apply ->Responder (map (fn [_] (async/chan buffer-size)) (range 3))))

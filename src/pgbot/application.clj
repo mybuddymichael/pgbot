@@ -5,11 +5,9 @@
             (pgbot [lifecycle :as lifecycle :refer [Lifecycle]]
                    [commit-server :as commit-server]
                    [connection :as connection]
-                   [dispatcher :as dispatcher]
                    [recorder :as recorder]
                    [responder :as responder])))
 
-(def db-uri "datomic:mem://pgbot")
 
 (defn ^:private get-db-conn
   "Creates a database for the uri if one doesn't already exist, connects
@@ -17,6 +15,10 @@
   [uri]
   (d/create-database uri)
   (d/connect uri))
+
+(def config
+  {:buffer-size 20
+   :db-uri "datomic:mem://pgbot"})
 
 (defn ^:private update
   "Takes an application map and a lifecycle function applies the
@@ -34,19 +36,20 @@
         commit-server-port (Integer/parseInt commit-server-port)
         db-conn (get-db-conn db-uri)
         recorder (recorder/create db-conn)
-        responder (responder/create)
-        commit-server (commit-server/create commit-server-port channel)
+        commit-server (commit-server/create
+                        (:buffer-size config) commit-server-port channel)
+        responder (responder/create (:buffer-size config))
+        connection (connection/create
+                     (:buffer-size config) host port nick channel)
         in-chans [(:in responder) (:in recorder)]
         out-chans [(:out responder) (:out commit-server)]
-        connection (connection/create host port nick channel)
-        dispatcher (dispatcher/create {:incoming (:in connection)
-                                       :outgoing (:out connection)
-                                       :in-chans in-chans
-                                       :out-chans out-chans})]
+        incoming-mult (async/mult (:in connection))
+        outgoing-mix (async/mix (:out connection))]
+    (doseq [in in-chans] (async/tap incoming-mult in))
+    (doseq [out out-chans] (async/admix outgoing-mix out))
     {:connection connection
      :responder responder
      :commit-server commit-server
-     :dispatcher dispatcher
      :recorder recorder}))
 
 (defn start
