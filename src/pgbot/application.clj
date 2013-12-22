@@ -44,6 +44,7 @@
         out-chans [(:out responder) (:out commit-server)]
         incoming-mult (async/mult (:in connection))
         outgoing-mix (async/mix (:out connection))]
+    (d/transact db-conn (read-string (slurp "resources/pgbot/schema.edn")))
     (doseq [in in-chans] (async/tap incoming-mult in))
     (doseq [out out-chans] (async/admix outgoing-mix out))
     {:connection connection
