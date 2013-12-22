@@ -50,7 +50,8 @@
     {:connection connection
      :responder responder
      :commit-server commit-server
-     :recorder recorder}))
+     :recorder recorder
+     :db-conn db-conn}))
 
 (defn start
   "Runs various side effects to start up pgbot. Returns the started
