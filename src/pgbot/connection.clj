@@ -28,7 +28,7 @@
                        channel
                        in
                        out
-                       kill]
+                       dead]
   Lifecycle
   (start [connection]
     (let [open-socket
@@ -56,7 +56,7 @@
               (when (= (:type message) "ERROR")
                 (error "ERROR message received:" message))
               (recur (rest messages)))
-            (async/close! kill))))
+            (.stop connection))))
       (async/thread
         (loop [message (async/<!! out)]
           (when message
@@ -71,7 +71,6 @@
   (stop [connection]
     (doseq [closeable [socket reader writer]]
       (.close closeable))
-    (async/close! kill)
     (info "Connection stopped.")
     connection))
 
@@ -88,4 +87,4 @@
                     :channel channel
                     :in (async/chan buffer-size)
                     :out (async/chan buffer-size)
-                    :kill (async/chan buffer-size)}))
+                    :dead (async/chan)}))
