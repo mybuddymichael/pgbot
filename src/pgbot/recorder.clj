@@ -3,21 +3,20 @@
             [taoensso.timbre :refer [info]]
             [pgbot.lifecycle :refer [Lifecycle]]))
 
-(defrecord Recorder [db-conn in kill]
+(defrecord Recorder [db-conn in]
   Lifecycle
   (start [recorder]
     (async/thread
-      (let [alts-fn #(async/alts!! [kill in] :priority true)]
-        (loop [[message chan] (alts-fn)]
-          (when (not= chan kill)
-            (info "Recording message" (hash message))
-            (recur (alts-fn))))))
+      (loop [message (async/<!! in)]
+        (when message
+          (info "Recording message" (hash message))
+          (recur (async/<!! in)))))
     (info "Recorder started.")
     recorder)
   (stop [recorder]
-    (async/close! kill)
+    (async/close! in)
     (info "Recorder stopped.")
     recorder))
 
 (defn create [buffer-size db-conn]
-  (Recorder. db-conn (async/chan buffer-size) (async/chan buffer-size)))
+  (Recorder. db-conn (async/chan buffer-size)))
