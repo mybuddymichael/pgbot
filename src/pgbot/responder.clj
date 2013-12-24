@@ -28,7 +28,7 @@
     (info "Responder started.")
     responder)
   (stop [responder]
-    (async/close! kill)
+    (doseq [c [in out]] (async/close! c))
     (info "Responder stopped.")
     responder))
 
