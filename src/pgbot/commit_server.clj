@@ -15,6 +15,7 @@
     commit-server)
   (stop [commit-server]
     (.stop server)
+    (async/close! out)
     (info "Commit server stopped.")
     commit-server))
 
