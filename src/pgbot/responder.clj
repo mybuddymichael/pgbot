@@ -11,12 +11,12 @@
   {:ping-pong (fn [m] (when (= (:type m) "PING")
                         (messages/parse (str "PONG :" (:content m)))))})
 
-(defrecord Responder [kill in out]
+(defrecord Responder [in out]
   Lifecycle
   (start [responder]
     (async/go
-      (loop [[message chan] (async/alts! [kill in] :priority true)]
-        (when (not= chan kill)
+      (loop [message (async/<!! in)]
+        (when message
           (info "Processing message" (hash message))
           (as-> (map #(apply % [message]) (vals responses)) rs
             (filter identity rs)
@@ -24,15 +24,15 @@
               (async/>! out r)
               (info "Message" (hash r) "placed on out.")))
           (info "Done processing message" (hash message))
-          (recur (async/alts! [kill in] :priority true)))))
+          (recur (async/<!! in)))))
     (info "Responder started.")
     responder)
   (stop [responder]
-    (async/close! kill)
+    (doseq [c [in out]] (async/close! c))
     (info "Responder stopped.")
     responder))
 
 (defn create
   "Initialize a responder."
   [buffer-size]
-  (apply ->Responder (map (fn [_] (async/chan buffer-size)) (range 3))))
+  (apply ->Responder (map (fn [_] (async/chan buffer-size)) (range 2))))
