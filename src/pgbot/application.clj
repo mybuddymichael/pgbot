@@ -38,16 +38,16 @@
         commit-server (commit-server/create
                         (:buffer-size config) commit-server-port channel)
         responder (responder/create (:buffer-size config))
-        connection (connection/create
+        conn (connection/create
                      (:buffer-size config) host port nick channel)
         in-chans [(:in responder) (:in recorder)]
         out-chans [(:out responder) (:out commit-server)]
-        incoming-mult (async/mult (:in connection))
-        outgoing-mix (async/mix (:out connection))]
+        incoming-mult (async/mult (:in conn))
+        outgoing-mix (async/mix (:out conn))]
     (d/transact db-conn (read-string (slurp "resources/pgbot/schema.edn")))
     (doseq [in in-chans] (async/tap incoming-mult in))
     (doseq [out out-chans] (async/admix outgoing-mix out))
-    {:connection connection
+    {:connection conn
      :responder responder
      :commit-server commit-server
      :recorder recorder
