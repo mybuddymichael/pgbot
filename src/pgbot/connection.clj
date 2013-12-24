@@ -4,6 +4,19 @@
             (pgbot [lifecycle :refer [Lifecycle]]
                    [messages :as messages :refer [parse compose]])))
 
+(defprotocol Closeable
+  (close! [this]))
+
+(extend-protocol Closeable
+  java.io.BufferedWriter
+  (close! [w] (.close w))
+  java.io.BufferedReader
+  (close! [r] (.close r))
+  java.net.Socket
+  (close! [s] (.close s))
+  clojure.core.async.impl.channels.ManyToManyChannel
+  (close! [c] (async/close! c)))
+
 (defn message-seq
   "Like line-seq, but it catches IOExceptions from the socket,
    in which case it will return nil. Lines are parsed into Message maps."
@@ -69,8 +82,8 @@
              :reader reader
              :writer writer)))
   (stop [connection]
-    (doseq [closeable [socket reader writer]]
-      (.close closeable))
+    (doseq [closeable [socket reader writer in out dead]]
+      (close! closeable))
     (info "Connection stopped.")
     connection))
 
