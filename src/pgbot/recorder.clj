@@ -1,5 +1,6 @@
 (ns pgbot.recorder
   (:require [clojure.core.async :as async]
+            [datomic.api :as d]
             [taoensso.timbre :refer [info]]
             [pgbot.lifecycle :refer [Lifecycle]]))
 
