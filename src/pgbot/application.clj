@@ -23,10 +23,11 @@
   "Takes an application map and a lifecycle function applies the
    function to each component. Returns the updated application."
   [application lifecycle-fn]
-  (let [components
-        (-> (map (fn [[k v]] [k (lifecycle-fn v)]) application)
-            flatten)]
-    (apply assoc application components)))
+  (let [updated-components
+        (->> (map (fn [[k v]] [k (lifecycle-fn v)]) (:components application))
+             flatten
+             (apply hash-map))]
+    (assoc-in application [:components] updated-components)))
 
 (defn create
   "Creates and returns a new instance of pgbot."
@@ -46,10 +47,10 @@
     (d/transact db-conn (read-string (slurp "resources/pgbot/schema.edn")))
     (doseq [in in-chans] (async/tap incoming-mult in))
     (doseq [out out-chans] (async/admix outgoing-mix out))
-    {:connection conn
-     :responder responder
-     :commit-server commit-server
-     :recorder recorder
+    {:components {:connection conn
+                  :responder responder
+                  :commit-server commit-server
+                  :recorder recorder}
      :db-conn db-conn}))
 
 (defn start
