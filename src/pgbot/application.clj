@@ -38,8 +38,7 @@
         commit-server (commit-server/create
                         (:buffer-size config) commit-server-port channel)
         responder (responder/create (:buffer-size config))
-        conn (connection/create
-                     (:buffer-size config) host port nick channel)
+        conn (connection/create (:buffer-size config) host port nick channel)
         in-chans [(:in responder) (:in recorder)]
         out-chans [(:out responder) (:out commit-server)]
         incoming-mult (async/mult (:in conn))
