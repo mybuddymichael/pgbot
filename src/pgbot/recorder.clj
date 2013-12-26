@@ -20,8 +20,8 @@
                   :message/type (str (message :type))
                   :message/destination (str (message :destination))
                   :message/content (str (message :content))}]]
-            (try @(d/transact db-conn transaction))
-              (catch Exception e (error e))
+            (try @(d/transact db-conn transaction)
+              (catch Exception e (error e)))
             (info "Message" (hash message) "recorded.")
             (recur (async/<!! in))))))
     (info "Recorder started.")
