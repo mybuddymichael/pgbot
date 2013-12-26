@@ -38,3 +38,17 @@
 (defn reset []
   (stop)
   (refresh :after 'user/go))
+
+
+(comment
+  (d/q '[:find ?name
+         :where
+         [_ :db.install/attribute ?a]
+         [?a :db/ident ?name]]
+       (d/db (application :db-conn)))
+  (d/q '[:find ?hash ?time
+         :where
+         [?e :message/hash ?hash ?t]
+         [?e :message/type "PING"]
+         [?t :db/txInstant ?time]]
+       (d/db (application :db-conn))))
