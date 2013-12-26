@@ -4,6 +4,7 @@
             [clojure.pprint :refer [pprint]]
             [clojure.test :refer [run-tests]]
             [taoensso.timbre :as timbre]
+            [datomic.api :as d]
             (pgbot application debug)))
 
 (def application nil)
