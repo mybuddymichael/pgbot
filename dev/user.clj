@@ -40,12 +40,14 @@
   (refresh :after 'user/go))
 
 
-(comment
+(defn get-attributes []
   (d/q '[:find ?name
          :where
          [_ :db.install/attribute ?a]
          [?a :db/ident ?name]]
-       (d/db (application :db-conn)))
+       (d/db (application :db-conn))))
+
+(defn get-pings []
   (d/q '[:find ?hash ?time
          :where
          [?e :message/hash ?hash ?t]
