@@ -13,6 +13,7 @@
           (info "Recording message" (hash message))
           (let [transaction
                 [{:db/id #db/id [:db.part/user]
+                  :message/hash (hash message)
                   :message/prefix (str (message :prefix))
                   :message/user (str (message :user))
                   :message/uri (str (message :uri))
