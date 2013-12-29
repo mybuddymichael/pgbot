@@ -7,12 +7,14 @@
   (let [[[_ prefix user uri type destination content]]
         (re-seq #"^(?:[:](([^!]+)![^@]*@(\S+)) )?(\S+)(?: (?!:)(.+?))?(?: [:](.+))?$"
                 line)]
-    {:prefix (some-> prefix str)
-     :user (some-> user str)
-     :uri (some-> uri str)
-     :type (some-> type str)
-     :destination (some-> destination str)
-     :content (some-> content str)}))
+    (->> {:prefix prefix
+          :user user
+          :uri uri
+          :type type
+          :destination destination
+          :content content}
+         (filter #(identity (second %)))
+         (apply conj {}))))
 
 (defn compose
   "Takes a Message and returns a reconstructed line."
