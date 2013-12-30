@@ -8,8 +8,8 @@
   "A map of keywords to functions that take a message and optionally
    return a response message if the message satisfies arbitrary
    requirements."
-  {:ping-pong (fn [m] (when (= (:type m) "PING")
-                        (messages/parse (str "PONG :" (:content m)))))})
+  {:ping-pong (fn [m] (when (= (:message/type m) "PING")
+                        (messages/parse (str "PONG :" (:message/content m)))))})
 
 (defrecord Responder [in out]
   Lifecycle

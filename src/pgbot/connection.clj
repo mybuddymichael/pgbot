@@ -66,7 +66,7 @@
               (debug "Message" (hash message) "is" message)
               (async/>!! in message)
               (info "Message" (hash message) "placed on in.")
-              (when (= (:type message) "ERROR")
+              (when (= (:message/type message) "ERROR")
                 (error "ERROR message received:" message))
               (recur (rest messages)))
             (.stop connection))))

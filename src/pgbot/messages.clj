@@ -7,12 +7,12 @@
   (let [[[_ prefix user uri type destination content]]
         (re-seq #"^(?:[:](([^!]+)![^@]*@(\S+)) )?(\S+)(?: (?!:)(.+?))?(?: [:](.+))?$"
                 line)]
-    (->> {:prefix prefix
-          :user user
-          :uri uri
-          :type type
-          :destination destination
-          :content content}
+    (->> {:message/prefix prefix
+          :message/user user
+          :message/uri uri
+          :message/type type
+          :message/destination destination
+          :message/content content}
          (filter #(identity (second %)))
          (apply conj {}))))
 
