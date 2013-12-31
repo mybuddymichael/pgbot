@@ -18,7 +18,10 @@
 
 (defn compose
   "Takes a Message and returns a reconstructed line."
-  [{:keys [prefix type destination content]}]
+  [{prefix :message/prefix
+    type :message/type
+    content :message/content
+    destination :message/destination}]
   (let [prefix (when prefix (str ":" prefix " "))
         type (if destination (str type " ") type)
         content (when content (str " :" content))]
