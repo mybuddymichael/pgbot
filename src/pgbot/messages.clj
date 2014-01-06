@@ -1,18 +1,21 @@
 (ns pgbot.messages
-  "Functions for parsing and composing IRC lines.")
+  "Functions for parsing and composing IRC lines."
+  (:require [clj-time.core :as clj-time]))
 
 (defn parse
   "Takes a line and returns a constructed message map."
-  [line]
-  (let [[[_ prefix user uri type destination content]]
-        (re-seq #"^(?:[:](([^!]+)![^@]*@(\S+)) )?(\S+)(?: (?!:)(.+?))?(?: [:](.+))?$"
-                line)]
-    {:prefix (some-> prefix str)
-     :user (some-> user str)
-     :uri (some-> uri str)
-     :type (some-> type str)
-     :destination (some-> destination str)
-     :content (some-> content str)}))
+  ([line] (parse line (clj-time/now)))
+  ([line instant]
+   (let [[[_ prefix user uri type destination content]]
+         (re-seq #"^(?:[:](([^!]+)![^@]*@(\S+)) )?(\S+)(?: (?!:)(.+?))?(?: [:](.+))?$"
+                 line)]
+     {:prefix (some-> prefix str)
+      :user (some-> user str)
+      :uri (some-> uri str)
+      :type (some-> type str)
+      :destination (some-> destination str)
+      :content (some-> content str)
+      :time instant})))
 
 (defn compose
   "Takes a Message and returns a reconstructed line."

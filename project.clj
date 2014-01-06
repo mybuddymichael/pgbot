@@ -7,7 +7,8 @@
                  [compojure "1.1.6"]
                  [ring/ring-jetty-adapter "1.1.8"]
                  [org.clojure/core.typed "0.2.19"]
-                 [com.taoensso/timbre "2.7.1"]]
+                 [com.taoensso/timbre "2.7.1"]
+                 [clj-time "0.6.0"]]
   :repositories {"sonatype-oss-public"
                  "https://oss.sonatype.org/content/groups/public/"}
   :main pgbot.core
