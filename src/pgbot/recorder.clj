@@ -20,6 +20,14 @@
       (catch Exception e (error e)))
     (info "Done recording message" (hash message))))
 
+(defn ^:private message-attributes [db]
+  (as-> (d/q '[:find ?ident
+               :where
+               [?e :db/ident ?ident]]
+             db) attributes
+    (for [a attributes :when (re-seq #":message/" (str a))] a)
+    (flatten attributes)))
+
 (defrecord Recorder [db-conn in]
   Lifecycle
   (start [recorder]
