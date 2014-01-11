@@ -9,8 +9,8 @@
   ([message] (message->transaction message (d/tempid :db.part/user)))
   ([message tempid]
    (list (merge {:db/id tempid
-                   :message/hash (hash message)}
-                  message))))
+                 :message/hash (hash message)}
+                message))))
 
 (defrecord Recorder [db-conn in]
   Lifecycle
