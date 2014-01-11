@@ -4,6 +4,14 @@
             [taoensso.timbre :refer [debug info error]]
             [pgbot.lifecycle :refer [Lifecycle]]))
 
+(defn ^:private message->transaction
+  "Converts a message map to a Datomic transaction list."
+  ([message] (message->transaction message (d/tempid :db.part/user)))
+  ([message tempid]
+   (list (merge {:db/id tempid
+                   :message/hash (hash message)}
+                  message))))
+
 (defrecord Recorder [db-conn in]
   Lifecycle
   (start [recorder]
