@@ -1,7 +1,7 @@
 (ns pgbot.recorder
   (:require [clojure.core.async :as async]
             [datomic.api :as d]
-            [taoensso.timbre :refer [error info]]
+            [taoensso.timbre :refer [debug info error]]
             [pgbot.lifecycle :refer [Lifecycle]]))
 
 (defrecord Recorder [db-conn in]
