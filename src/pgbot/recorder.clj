@@ -12,6 +12,14 @@
                  :message/hash (hash message)}
                 message))))
 
+(defn ^:private record-message [db-conn message]
+  (info "Recording message" (hash message))
+  (let [transaction (message->transaction message)]
+    (debug "Transaction is" transaction)
+    (try @(d/transact db-conn transaction)
+      (catch Exception e (error e)))
+    (info "Done recording message" (hash message))))
+
 (defrecord Recorder [db-conn in]
   Lifecycle
   (start [recorder]
