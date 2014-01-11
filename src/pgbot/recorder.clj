@@ -26,20 +26,8 @@
     (async/thread
       (loop [message (async/<!! in)]
         (when message
-          (info "Recording message" (hash message))
-          (let [transaction
-                [{:db/id #db/id [:db.part/user]
-                  :message/hash (hash message)
-                  :message/prefix (str (message :prefix))
-                  :message/user (str (message :user))
-                  :message/uri (str (message :uri))
-                  :message/type (str (message :type))
-                  :message/destination (str (message :destination))
-                  :message/content (str (message :content))}]]
-            (try @(d/transact db-conn transaction)
-              (catch Exception e (error e)))
-            (info "Message" (hash message) "recorded.")
-            (recur (async/<!! in))))))
+          (record-message db-conn message)
+          (recur (async/<!! in)))))
     (info "Recorder started.")
     recorder)
   (stop [recorder]
