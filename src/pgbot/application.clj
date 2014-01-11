@@ -9,7 +9,7 @@
                    [responder :as responder])))
 
 (def config
-  {:buffer-size 20
+  {:buffer-size 100
    :db-uri "datomic:mem://pgbot"})
 
 (defn ^:private get-db-conn
