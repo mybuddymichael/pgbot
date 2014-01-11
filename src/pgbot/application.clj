@@ -23,11 +23,12 @@
   "Takes an application map and a lifecycle function applies the
    function to each component. Returns the updated application."
   [application lifecycle-fn]
-  (let [updated-components
-        (->> (map (fn [[k v]] [k (lifecycle-fn v)]) (:components application))
-             flatten
-             (apply hash-map))]
-    (assoc-in application [:components] updated-components)))
+  (update-in application
+             [:components]
+             (fn [components]
+               (->> components
+                    (map (fn [[k v]] [k (lifecycle-fn v)]))
+                    (apply conj {})))))
 
 (defn create
   "Creates and returns a new instance of pgbot."
