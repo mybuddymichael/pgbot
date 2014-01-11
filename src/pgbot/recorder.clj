@@ -35,5 +35,8 @@
     (info "Recorder stopped.")
     recorder))
 
-(defn create [buffer-size db-conn]
-  (Recorder. db-conn (async/chan buffer-size)))
+(defn create
+  "Creates and returns a Recorder. A sliding buffer is used to prevent
+   blocking should calls to datomic.api/transact start timing out."
+  [buffer-size db-conn]
+  (Recorder. db-conn (async/chan (async/sliding-buffer buffer-size))))
