@@ -2,7 +2,7 @@
   (:require (pgbot [lifecycle :refer [Lifecycle]]
                    [messages :as messages])
             [clojure.core.async :as async]
-            [compojure.core :refer [routes POST]]
+            compojure.core
             [compojure.handler :refer [api]]
             [ring.adapter.jetty :refer [run-jetty]]
             [taoensso.timbre :refer [info]]))
@@ -12,6 +12,17 @@
    e.g. \"Michael in pgbot/master: \\\"Fix things\\\" (abcd0124)\""
   [user-name commit-message repo branch sha]
   (str user-name " in " repo "/" branch ": \"" commit-message"\" (" sha ")"))
+
+(defn ^:private routes
+  "Takes an outgoing core.async channel and an irc-channel string
+   returns a ring-handler. Incoming messages will be placed on the out
+   channel."
+  [out irc-channel]
+  (compojure.core/routes
+    (compojure.core/POST "/" [user-name commit-message repo branch sha]
+      (let [message (->commit-string user-name commit-message repo branch sha)]
+        (async/put! out (messages/privmsg irc-channel message))
+        {:body nil}))))
 
 (defrecord WebServer [jetty out]
   Lifecycle
@@ -29,15 +40,7 @@
   "Creates a stopped Jetty Server and returns it in a pgbot WebServer."
   [buffer-size listening-port irc-channel]
   (let [out (async/chan buffer-size)
-        jetty (run-jetty
-                 (api (routes
-                        (POST "/" [user-name commit-message repo branch sha]
-                          (let [message
-                                (str user-name " in " repo "/" branch ": \""
-                                     commit-message"\" (" sha ")")]
-                            (async/put! out (messages/privmsg irc-channel
-                                                              message))
-                          {:body nil}))))
-                 {:port listening-port :join? false})]
+        jetty (run-jetty (api (routes out irc-channel))
+                         {:port listening-port :join? false})]
     (.stop jetty)
     (WebServer. jetty out)))
