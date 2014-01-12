@@ -2,6 +2,12 @@
   "Functions for parsing and composing IRC lines."
   (:require [clj-time.core :as clj-time]))
 
+(defn ^:private filter-into-map
+  "Takes a collection of logical key-value pairs and returns a new map
+   where each (pred value) returns true."
+  [pred coll]
+  (into {} (filter (fn [[_ v]] (pred v)) coll)))
+
 (defn parse
   "Takes a line and returns a constructed message map."
   ([line] (parse line (clj-time/now)))
@@ -9,15 +15,14 @@
    (let [[[_ prefix user uri type destination content]]
          (re-seq #"^(?:[:](([^!]+)![^@]*@(\S+)) )?(\S+)(?: (?!:)(.+?))?(?: [:](.+))?$"
                  line)]
-     (->> {:message/time instant
-           :message/prefix prefix
-           :message/user user
-           :message/uri uri
-           :message/type type
-           :message/destination destination
-           :message/content content}
-          (filter #(identity (second %)))
-          (apply conj {})))))
+     (filter-into-map identity
+                      {:message/time instant
+                       :message/prefix prefix
+                       :message/user user
+                       :message/uri uri
+                       :message/type type
+                       :message/destination destination
+                       :message/content content}))))
 
 (defn compose
   "Takes a Message and returns a reconstructed line."
