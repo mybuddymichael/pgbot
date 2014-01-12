@@ -7,6 +7,12 @@
             [ring.adapter.jetty :refer [run-jetty]]
             [taoensso.timbre :refer [info]]))
 
+(defn ^:private ->commit-string
+  "Generates a human-readable summary of Git commit information.
+   e.g. \"Michael in pgbot/master: \\\"Fix things\\\" (abcd0124)\""
+  [user-name commit-message repo branch sha]
+  (str user-name " in " repo "/" branch ": \"" commit-message"\" (" sha ")"))
+
 (defrecord WebServer [jetty out]
   Lifecycle
   (start [this]
