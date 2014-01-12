@@ -2,7 +2,7 @@
   "Functions for parsing and composing IRC lines."
   (:require [clj-time.core :as clj-time]))
 
-(defn ^:private filter-into-map
+(defn filter-into-map
   "Takes a collection of logical key-value pairs and returns a new map
    where each (pred value) returns true."
   [pred coll]
