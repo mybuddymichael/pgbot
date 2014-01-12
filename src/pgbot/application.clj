@@ -3,7 +3,7 @@
             [datomic.api :as d]
             [taoensso.timbre :refer [info]]
             (pgbot [lifecycle :as lifecycle :refer [Lifecycle]]
-                   [commit-server :as commit-server]
+                   [web-server :as web-server]
                    [connection :as connection]
                    [recorder :as recorder]
                    [responder :as responder])))
@@ -32,17 +32,17 @@
 
 (defn create
   "Creates and returns a new instance of pgbot."
-  [{:keys [host port nick channel commit-server-port]}]
+  [{:keys [host port nick channel web-server-port]}]
   (let [port (Integer/parseInt port)
-        commit-server-port (Integer/parseInt commit-server-port)
+        web-server-port (Integer/parseInt web-server-port)
         db-conn (get-db-conn (:db-uri config))
         recorder (recorder/create (:buffer-size config) db-conn)
-        commit-server (commit-server/create
-                        (:buffer-size config) commit-server-port channel)
+        web-server (server/create
+                     (:buffer-size config) web-server-port channel)
         responder (responder/create (:buffer-size config))
         conn (connection/create (:buffer-size config) host port nick channel)
         in-chans [(:in responder) (:in recorder)]
-        out-chans [(:out responder) (:out commit-server)]
+        out-chans [(:out responder) (:out web-server)]
         incoming-mult (async/mult (:in conn))
         outgoing-mix (async/mix (:out conn))]
     (d/transact db-conn (read-string (slurp "resources/pgbot/schema.edn")))
@@ -50,7 +50,7 @@
     (doseq [out out-chans] (async/admix outgoing-mix out))
     {:components {:connection conn
                   :responder responder
-                  :commit-server commit-server
+                  :web-server web-server
                   :recorder recorder}
      :db-conn db-conn}))
 

@@ -14,14 +14,14 @@
 (defn -main
   "Start pgbot. This will block until the connection closes, at which
    point it will automatically try to reconnect."
-  [host port nick channel commit-server-port]
+  [host port nick channel web-server-port]
   (info "Starting pgbot.")
   (let [application (-> (pgbot.application/create
                           {:host host :port port :nick nick :channel channel
-                           :commit-server-port commit-server-port})
+                           :web-server-port web-server-port})
                         pgbot.application/start)]
     (info "Pgbot started.")
     (<!! (get-in application [:connection :dead]))
     (info "Connection died, stopping pgbot.")
     (pgbot.application/stop application)
-    (recur host port nick channel commit-server-port)))
+    (recur host port nick channel web-server-port)))

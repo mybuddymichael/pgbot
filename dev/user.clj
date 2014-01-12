@@ -17,7 +17,7 @@
                                                :port "6667"
                                                :nick "pgbottest"
                                                :channel "##pgbottest"
-                                               :commit-server-port "8080"}))))
+                                               :web-server-port "8080"}))))
 
 (defn start
   "Starts the current application."

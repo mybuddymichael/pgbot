@@ -1,4 +1,4 @@
-(ns pgbot.commit-server
+(ns pgbot.web-server
   (:require (pgbot [lifecycle :refer [Lifecycle]]
                    [messages :as messages])
             [clojure.core.async :as async]
@@ -7,23 +7,23 @@
             [ring.adapter.jetty :refer [run-jetty]]
             [taoensso.timbre :refer [info]]))
 
-(defrecord CommitServer [server out]
+(defrecord WebServer [jetty out]
   Lifecycle
-  (start [commit-server]
-    (.start server)
-    (info "Commit server started.")
-    commit-server)
-  (stop [commit-server]
-    (.stop server)
+  (start [this]
+    (.start jetty)
+    (info "Server started.")
+    this)
+  (stop [this]
+    (.stop jetty)
     (async/close! out)
-    (info "Commit server stopped.")
-    commit-server))
+    (info "Server stopped.")
+    this))
 
 (defn create
-  "Creates a stopped Jetty Server and returns it in a CommitServer."
+  "Creates a stopped Jetty Server and returns it in a pgbot WebServer."
   [buffer-size listening-port irc-channel]
   (let [out (async/chan buffer-size)
-        server (run-jetty
+        jetty (run-jetty
                  (api (routes
                         (POST "/" [user-name commit-message repo branch sha]
                           (let [message
@@ -33,5 +33,5 @@
                                                               message))
                           {:body nil}))))
                  {:port listening-port :join? false})]
-    (.stop server)
-    (CommitServer. server out)))
+    (.stop jetty)
+    (WebServer. jetty out)))
