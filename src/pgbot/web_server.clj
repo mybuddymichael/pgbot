@@ -14,7 +14,7 @@
   (str user-name " in " repo "/" branch ": \"" commit-message"\" (" sha ")"))
 
 (defn ^:private routes
-  "Takes an outgoing core.async channel and an irc-channel string
+  "Takes an outgoing core.async channel and an irc-channel string and
    returns a ring-handler. Incoming messages will be placed on the out
    channel."
   [out irc-channel]
