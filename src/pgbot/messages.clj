@@ -3,7 +3,7 @@
   (:require [clj-time.core :as clj-time]))
 
 (defn filter-into-map
-  "Takes a collection of key-value pairs and returns a new map where
+  "Takes a map or a seq of key-value pairs and returns a new map where
    each (pred value) returns true."
   [pred coll]
   (into {} (filter (fn [[_ v]] (pred v)) coll)))
