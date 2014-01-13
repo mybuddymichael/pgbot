@@ -37,7 +37,7 @@
         web-server-port (Integer/parseInt web-server-port)
         db-conn (get-db-conn (:db-uri config))
         recorder (recorder/create (:buffer-size config) db-conn)
-        web-server (server/create
+        web-server (web-server/create
                      (:buffer-size config) web-server-port channel)
         responder (responder/create (:buffer-size config))
         conn (connection/create (:buffer-size config) host port nick channel)
