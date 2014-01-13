@@ -21,7 +21,7 @@
   (compojure.core/routes
     (compojure.core/POST "/" [user-name commit-message repo branch sha]
       (let [message (->commit-string user-name commit-message repo branch sha)]
-        (async/put! out (messages/privmsg irc-channel message))
+        (async/>!! out (messages/privmsg irc-channel message))
         {:body nil}))))
 
 (defrecord WebServer [jetty out]
